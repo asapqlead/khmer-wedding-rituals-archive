@@ -12,11 +12,11 @@ export default function StepAccordion({ steps, langMode }) {
 
   return (
     <div style={{ marginTop: 24 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-        <h3 className="khmer-title" style={{ fontSize: 18, color: "var(--oxblood-800)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 16, paddingBottom: 8, borderBottom: "1px solid var(--border-light)" }}>
+        <h3 className="khmer-title" style={{ fontSize: 20, color: "var(--text-primary)", margin: 0 }}>
           {langMode === "km" ? "លំដាប់លម្អិតនៃពិធី និងអត្ថន័យ" : "Step-by-Step Sequence & Meaning"}
         </h3>
-        <span style={{ fontSize: 12, color: "var(--ink-500)" }}>
+        <span style={{ fontSize: 13, color: "var(--text-tertiary)", fontWeight: 500, paddingBottom: 4 }}>
           {steps.length} {langMode === "km" ? "ជំហានបន្តបន្ទាប់" : "Sequential Steps"}
         </span>
       </div>

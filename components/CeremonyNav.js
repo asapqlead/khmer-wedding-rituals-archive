@@ -3,12 +3,12 @@
 
 export default function CeremonyNav({ ceremonies, activeId, onSelectCeremony, langMode }) {
   return (
-    <div style={{ marginBottom: 28 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-        <p style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.5, color: "var(--oxblood-700)", textTransform: "uppercase" }}>
+    <div style={{ marginBottom: 32 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+        <p style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.5, color: "var(--text-secondary)", textTransform: "uppercase" }}>
           {langMode === "km" ? "លំដាប់កាលវេលានៃពិធីការ (Dawn → Sunset)" : "Chronological Order of Ceremonies"}
         </p>
-        <span style={{ fontSize: 12, color: "var(--ink-500)", fontStyle: "italic" }}>
+        <span style={{ fontSize: 13, color: "var(--text-tertiary)", fontWeight: 500 }}>
           {ceremonies.length} {langMode === "km" ? "ពិធីពេញលេញ" : "Key Rituals"}
         </span>
       </div>
@@ -16,12 +16,8 @@ export default function CeremonyNav({ ceremonies, activeId, onSelectCeremony, la
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-          gap: 8,
-          backgroundColor: "var(--cream-100)",
-          padding: 8,
-          borderRadius: 8,
-          border: "1px solid var(--border-cream)",
+          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+          gap: 12,
         }}
       >
         {ceremonies.map((c) => {
@@ -29,49 +25,49 @@ export default function CeremonyNav({ ceremonies, activeId, onSelectCeremony, la
           return (
             <button
               key={c.id}
+              className="modern-card"
               onClick={() => onSelectCeremony(c.id)}
               style={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "flex-start",
-                padding: "10px 12px",
-                borderRadius: 6,
+                padding: "16px",
                 textAlign: "left",
-                backgroundColor: isActive ? "var(--oxblood-800)" : "transparent",
-                color: isActive ? "var(--cream-50)" : "var(--ink-900)",
-                border: isActive ? "1px solid var(--gold-500)" : "1px solid transparent",
-                boxShadow: isActive ? "0 4px 12px rgba(62,11,18,0.18)" : "none",
-                minHeight: 64,
+                backgroundColor: isActive ? "var(--accent-red-light)" : "var(--bg-secondary)",
+                borderColor: isActive ? "var(--accent-red)" : "var(--border-light)",
+                boxShadow: isActive ? "var(--shadow-md)" : "var(--shadow-sm)",
+                minHeight: 80,
+                transform: isActive ? "translateY(-2px)" : "none",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 6, width: "100%", marginBottom: 4 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", marginBottom: 8 }}>
                 <span
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    width: 20,
-                    height: 20,
+                    width: 24,
+                    height: 24,
                     borderRadius: "50%",
-                    fontSize: 11,
+                    fontSize: 12,
                     fontWeight: 700,
-                    backgroundColor: isActive ? "var(--gold-500)" : "var(--cream-300)",
-                    color: isActive ? "var(--oxblood-900)" : "var(--ink-800)",
+                    backgroundColor: isActive ? "var(--accent-red)" : "var(--bg-tertiary)",
+                    color: isActive ? "var(--bg-secondary)" : "var(--text-secondary)",
                   }}
                 >
                   {c.order}
                 </span>
-                <span style={{ fontSize: 11, color: isActive ? "var(--gold-300)" : "var(--ink-500)" }}>
+                <span style={{ fontSize: 12, fontWeight: 500, color: isActive ? "var(--accent-red-hover)" : "var(--text-tertiary)" }}>
                   {c.timeOfDay.split("•")[1] || c.timeOfDay}
                 </span>
               </div>
               <span
                 className="khmer-title"
                 style={{
-                  fontSize: 13,
+                  fontSize: 15,
                   fontWeight: 600,
                   lineHeight: 1.3,
-                  color: isActive ? "var(--cream-50)" : "var(--oxblood-800)",
+                  color: isActive ? "var(--accent-red-hover)" : "var(--text-primary)",
                 }}
               >
                 {langMode === "en" ? c.titleEn.split("—")[0] : c.titleKhmer.split("(")[0]}

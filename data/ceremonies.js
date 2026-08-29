@@ -68,7 +68,8 @@ export const ceremonies = [
       type: "photo",
       titleEn: "Archival Photo: Village Fruit Procession (Hai Chomnoon)",
       descriptionEn: "Photograph of the groom's family carrying 36 brass and silver fruit trays along a village lane, led by elder matchmakers in traditional silk sabai.",
-      recommendedRatio: "16:9"
+      recommendedRatio: "16:9",
+      image: "/images/hai-goer/ceremony.jpg"
     }
   },
   {
@@ -127,7 +128,8 @@ export const ceremonies = [
       type: "audio-video",
       titleEn: "Field Audio: Oral Chanting of the Hair Cutting Song (Kae Sar)",
       descriptionEn: "Raw cassette/digital field recording of traditional master singers performing the comedic dialogue and sacred blessings during Pithei Gaat Sah.",
-      recommendedRatio: "4:3"
+      recommendedRatio: "4:3",
+      image: "/images/gaat-sah/ceremony.jpg"
     }
   },
   {
@@ -185,7 +187,8 @@ export const ceremonies = [
       type: "photo",
       titleEn: "Archival Photo: Preah Thong Holding the Sabai Scarf",
       descriptionEn: "Historic family photograph capturing the bride in embroidered silk sabai leading the groom holding her trailing sash into the family home.",
-      recommendedRatio: "4:3"
+      recommendedRatio: "4:3",
+      image: "/images/plerng-ka/ceremony.jpg"
     }
   },
   {
@@ -242,7 +245,8 @@ export const ceremonies = [
       type: "photo",
       titleEn: "Archival Photo: Circular Passing of the Sacred Popil",
       descriptionEn: "Documentary photograph showing elders seated in a circle fanning lit Popil candle smoke over the bride and groom's bowed heads.",
-      recommendedRatio: "16:9"
+      recommendedRatio: "16:9",
+      image: "/images/bongvel-popil/ceremony.jpg"
     }
   },
   {
@@ -300,7 +304,8 @@ export const ceremonies = [
       type: "photo",
       titleEn: "Archival Close-Up: Tying the Red Blessing Thread (Chang Dai)",
       descriptionEn: "Intimate close-up photograph of wrinkled grandmother's hands tying the red cotton thread onto the bride's wrist over the golden silk cushion.",
-      recommendedRatio: "1:1"
+      recommendedRatio: "1:1",
+      image: "/images/chang-dai/ceremony.jpg"
     }
   },
   {
@@ -349,7 +354,8 @@ export const ceremonies = [
       type: "photo",
       titleEn: "Archival Photo: Showering with Areca Palm Flowers (Phka Sla)",
       descriptionEn: "Historic photo showing the white mist of flying areca palm blossoms catching the afternoon sunlight over the smiling bride and groom.",
-      recommendedRatio: "16:9"
+      recommendedRatio: "16:9",
+      image: "/images/phat-phka-sla/ceremony.jpg"
     }
   }
 ];

@@ -1,77 +1,69 @@
 // app/page.js
 "use client";
-
 import { useState } from "react";
-import Header from "../components/Header.js";
-import CeremonyNav from "../components/CeremonyNav.js";
-import CeremonyView from "../components/CeremonyView.js";
-import InteractiveBlessing from "../components/InteractiveBlessing.js";
-import AboutSource from "../components/AboutSource.js";
-import GlossarySection from "../components/GlossarySection.js";
-import CommunityContributions from "../components/CommunityContributions.js";
-import Footer from "../components/Footer.js";
+import GalleryHeader from "../components/GalleryHeader.js";
+import HorizontalGallery from "../components/HorizontalGallery.js";
+import GalleryCounter from "../components/GalleryCounter.js";
+import FullscreenCeremonyView from "../components/FullscreenCeremonyView.js";
+import CeremonyDrawer from "../components/CeremonyDrawer.js";
+import AboutView from "../components/AboutView.js";
+import GlossaryModal from "../components/GlossaryModal.js";
+import NoiseOverlay from "../components/NoiseOverlay.js";
 import { ceremonies } from "../data/ceremonies.js";
-import { initialContributions } from "../data/defaultContributions.js";
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState("rituals");
-  const [selectedCeremonyId, setSelectedCeremonyId] = useState(ceremonies[0].id);
-  const [langMode, setLangMode] = useState("dual"); // "km" | "en" | "dual"
-  const [contributions, setContributions] = useState(initialContributions);
+  const [currentView, setCurrentView] = useState("work");
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedIdx, setSelectedIdx] = useState(null);
+  const [selectedRect, setSelectedRect] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [langMode, setLangMode] = useState("en");
 
-  const activeCeremony = ceremonies.find((c) => c.id === selectedCeremonyId) || ceremonies[0];
+  const selectedCeremony = selectedIdx !== null ? ceremonies[selectedIdx] : null;
+  const activeCeremony = ceremonies[activeIndex] || ceremonies[0];
 
-  const handleAddContribution = (newEntry) => {
-    setContributions((prev) => [newEntry, ...prev]);
+  const handleSelect = (ceremony, rect) => {
+    const idx = ceremonies.findIndex((c) => c.id === ceremony.id);
+    setSelectedRect(rect || null);
+    setSelectedIdx(idx !== -1 ? idx : 0);
+    setShowDetails(false);
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Header
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
+    <main style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden", backgroundColor: "#121212" }}>
+      <NoiseOverlay />
+      <GalleryHeader
+        currentView={currentView}
+        setCurrentView={setCurrentView}
+        isFullscreen={selectedCeremony !== null}
+        onCloseFullscreen={() => setSelectedIdx(null)}
         langMode={langMode}
         setLangMode={setLangMode}
       />
-
-      <main className="container" style={{ flex: 1, padding: "32px 20px" }}>
-        {activeTab === "rituals" && (
-          <div>
-            <CeremonyNav
-              ceremonies={ceremonies}
-              activeId={selectedCeremonyId}
-              onSelectCeremony={setSelectedCeremonyId}
-              langMode={langMode}
-            />
-            <CeremonyView
-              ceremony={activeCeremony}
-              langMode={langMode}
-            />
-          </div>
-        )}
-
-        {activeTab === "blessing" && (
-          <InteractiveBlessing langMode={langMode} />
-        )}
-
-        {activeTab === "about" && (
-          <AboutSource langMode={langMode} />
-        )}
-
-        {activeTab === "glossary" && (
-          <GlossarySection langMode={langMode} />
-        )}
-
-        {activeTab === "contribute" && (
-          <CommunityContributions
-            contributions={contributions}
-            onAddContribution={handleAddContribution}
-            langMode={langMode}
-          />
-        )}
-      </main>
-
-      <Footer langMode={langMode} />
-    </div>
+      <HorizontalGallery
+        ceremonies={ceremonies}
+        activeIndex={activeIndex}
+        onIndexChange={setActiveIndex}
+        onSelectCeremony={handleSelect}
+        langMode={langMode}
+      />
+      <GalleryCounter current={(selectedCeremony !== null ? selectedIdx : activeIndex) + 1} total={ceremonies.length} />
+      {selectedCeremony && (
+        <FullscreenCeremonyView
+          ceremonies={ceremonies}
+          currentIndex={selectedIdx}
+          onSelectIndex={(idx) => setSelectedIdx(idx)}
+          initialRect={selectedRect}
+          onClose={() => setSelectedIdx(null)}
+          onOpenDetails={() => setShowDetails(true)}
+          langMode={langMode}
+        />
+      )}
+      {showDetails && selectedCeremony && (
+        <CeremonyDrawer ceremony={selectedCeremony} onClose={() => setShowDetails(false)} langMode={langMode} />
+      )}
+      {currentView === "about" && <AboutView onClose={() => setCurrentView("work")} langMode={langMode} />}
+      {currentView === "glossary" && <GlossaryModal onClose={() => setCurrentView("work")} langMode={langMode} />}
+    </main>
   );
 }

@@ -5,12 +5,13 @@ export default function StepAccordionItem({ step, isOpen, onToggle, langMode }) 
   return (
     <div
       style={{
-        border: "1px solid var(--border-cream)",
-        borderRadius: 8,
-        backgroundColor: isOpen ? "var(--cream-50)" : "var(--cream-100)",
-        marginBottom: 10,
+        border: "1px solid var(--border-light)",
+        borderRadius: 12,
+        backgroundColor: isOpen ? "var(--bg-secondary)" : "var(--bg-primary)",
+        marginBottom: 12,
         overflow: "hidden",
-        transition: "all 180ms ease-out",
+        transition: "all 200ms ease-out",
+        boxShadow: isOpen ? "var(--shadow-md)" : "none",
       }}
     >
       <button
@@ -21,25 +22,26 @@ export default function StepAccordionItem({ step, isOpen, onToggle, langMode }) 
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "14px 18px",
+          padding: "16px 20px",
           textAlign: "left",
-          backgroundColor: isOpen ? "rgba(92, 19, 29, 0.04)" : "transparent",
+          backgroundColor: "transparent",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <span
             style={{
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              width: 28,
-              height: 28,
+              width: 32,
+              height: 32,
               borderRadius: "50%",
-              backgroundColor: isOpen ? "var(--oxblood-800)" : "var(--cream-300)",
-              color: isOpen ? "var(--cream-50)" : "var(--ink-800)",
-              fontSize: 13,
+              backgroundColor: isOpen ? "var(--accent-red)" : "var(--bg-tertiary)",
+              color: isOpen ? "var(--bg-secondary)" : "var(--text-secondary)",
+              fontSize: 14,
               fontWeight: 700,
               flexShrink: 0,
+              transition: "all 200ms ease",
             }}
           >
             {step.stepNumber}
@@ -48,43 +50,39 @@ export default function StepAccordionItem({ step, isOpen, onToggle, langMode }) 
             <h4
               className="khmer-title"
               style={{
-                fontSize: 15,
-                color: isOpen ? "var(--oxblood-900)" : "var(--ink-900)",
+                fontSize: 16,
+                color: isOpen ? "var(--accent-red-hover)" : "var(--text-primary)",
                 fontWeight: 600,
+                transition: "color 200ms ease",
               }}
             >
               {langMode === "en" ? step.titleEn : step.titleKhmer}
             </h4>
-            {langMode === "dual" && (
-              <p style={{ fontSize: 12, color: "var(--ink-500)", margin: "2px 0 0" }}>
-                {step.titleEn}
-              </p>
-            )}
           </div>
         </div>
-        <span style={{ fontSize: 18, color: "var(--gold-600)", fontWeight: 700, paddingLeft: 8 }}>
-          {isOpen ? "−" : "+"}
+        <span style={{ fontSize: 20, color: "var(--text-tertiary)", fontWeight: 400, paddingLeft: 8, transform: isOpen ? "rotate(45deg)" : "rotate(0deg)", transition: "transform 200ms ease" }}>
+          +
         </span>
       </button>
 
       {isOpen && (
-        <div style={{ padding: "14px 18px 18px", borderTop: "1px solid var(--border-cream)" }}>
-          <p style={{ fontSize: 14, color: "var(--ink-800)", lineHeight: 1.6, marginBottom: 12 }}>
+        <div style={{ padding: "0 20px 20px", borderTop: "1px solid transparent" }}>
+          <p style={{ fontSize: 15, color: "var(--text-secondary)", lineHeight: 1.7, marginBottom: 16, marginTop: 8 }}>
             {langMode === "km" ? step.detailKhmer : step.detailEn}
           </p>
 
           <div
             style={{
-              backgroundColor: "var(--sacred-red-subtle)",
-              borderLeft: "3px solid var(--sacred-red)",
-              padding: "10px 14px",
-              borderRadius: "0 6px 6px 0",
+              backgroundColor: "var(--accent-red-light)",
+              borderLeft: "3px solid var(--accent-red)",
+              padding: "12px 16px",
+              borderRadius: "0 8px 8px 0",
             }}
           >
-            <p style={{ fontSize: 12, fontWeight: 700, color: "var(--oxblood-800)", textTransform: "uppercase", marginBottom: 4, letterSpacing: 0.5 }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: "var(--accent-red-hover)", textTransform: "uppercase", marginBottom: 4, letterSpacing: 0.5 }}>
               {langMode === "km" ? "អត្ថន័យជ្រាលជ្រៅ និងជំនឿ" : "Cultural Meaning & Symbolism"}
             </p>
-            <p style={{ fontSize: 13.5, color: "var(--ink-800)", fontStyle: "italic", lineHeight: 1.5, margin: 0 }}>
+            <p style={{ fontSize: 14, color: "var(--text-primary)", fontStyle: "italic", lineHeight: 1.6, margin: 0 }}>
               "{langMode === "km" ? step.meaningKhmer : step.meaningEn}"
             </p>
           </div>

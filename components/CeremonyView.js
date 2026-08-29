@@ -19,7 +19,9 @@ export default function CeremonyView({ ceremony, langMode }) {
       }}
     >
       <CeremonyOverview ceremony={ceremony} langMode={langMode} />
-      
+
+      <ArchivalPlaceholder placeholder={ceremony.mediaPlaceholder} ceremonyId={ceremony.id} />
+
       <StepAccordion steps={ceremony.steps} langMode={langMode} />
 
       <div
@@ -38,8 +40,7 @@ export default function CeremonyView({ ceremony, langMode }) {
           {langMode === "km" ? ceremony.regionalNotesKhmer : ceremony.regionalNotesEn}
         </p>
       </div>
-
-      <ArchivalPlaceholder placeholder={ceremony.mediaPlaceholder} ceremonyId={ceremony.id} />
     </article>
   );
 }
+
