@@ -5,7 +5,7 @@ import GalleryHeader from "../components/GalleryHeader.js";
 import HorizontalGallery from "../components/HorizontalGallery.js";
 import GalleryCounter from "../components/GalleryCounter.js";
 import FullscreenCeremonyView from "../components/FullscreenCeremonyView.js";
-import CeremonyDrawer from "../components/CeremonyDrawer.js";
+import CeremonyInfoView from "../components/CeremonyInfoView.js";
 import AboutView from "../components/AboutView.js";
 import GlossaryModal from "../components/GlossaryModal.js";
 import NoiseOverlay from "../components/NoiseOverlay.js";
@@ -39,6 +39,7 @@ export default function Home() {
         onCloseFullscreen={() => setSelectedIdx(null)}
         langMode={langMode}
         setLangMode={setLangMode}
+        isHidden={showDetails}
       />
       <HorizontalGallery
         ceremonies={ceremonies}
@@ -57,10 +58,16 @@ export default function Home() {
           onClose={() => setSelectedIdx(null)}
           onOpenDetails={() => setShowDetails(true)}
           langMode={langMode}
+          isInfoOpen={showDetails}
         />
       )}
       {showDetails && selectedCeremony && (
-        <CeremonyDrawer ceremony={selectedCeremony} onClose={() => setShowDetails(false)} langMode={langMode} />
+        <CeremonyInfoView
+          ceremony={selectedCeremony}
+          onClose={() => setShowDetails(false)}
+          langMode={langMode}
+          onNext={() => setSelectedIdx((prev) => (prev + 1) % ceremonies.length)}
+        />
       )}
       {currentView === "about" && <AboutView onClose={() => setCurrentView("work")} langMode={langMode} />}
       {currentView === "glossary" && <GlossaryModal onClose={() => setCurrentView("work")} langMode={langMode} />}

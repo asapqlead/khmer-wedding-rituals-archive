@@ -3,24 +3,82 @@
 import { useEffect, useState, useRef } from "react";
 import WheelText from "./WheelText.js";
 
-export default function FullscreenCeremonyView({ ceremonies, currentIndex, onSelectIndex, initialRect, onClose, onOpenDetails, langMode }) {
+export default function FullscreenCeremonyView({ ceremonies, currentIndex, onSelectIndex, initialRect, onClose, onOpenDetails, langMode, isInfoOpen }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [dir, setDir] = useState(1);
+  const [isRevealingFromBlack, setIsRevealingFromBlack] = useState(false);
+  const [curtainOpacity, setCurtainOpacity] = useState(0);
   const isNav = useRef(false);
+  const isClosing = useRef(false);
+  const isInfoOpenRef = useRef(isInfoOpen);
+  const prevInfoOpen = useRef(isInfoOpen);
 
   useEffect(() => {
+    isInfoOpenRef.current = isInfoOpen;
+    if (prevInfoOpen.current && !isInfoOpen) {
+      setIsRevealingFromBlack(true);
+      setCurtainOpacity(1);
+      const fadeTimer = setTimeout(() => {
+        setCurtainOpacity(0);
+      }, 40);
+      const cleanupTimer = setTimeout(() => {
+        setIsRevealingFromBlack(false);
+      }, 700);
+      return () => {
+        clearTimeout(fadeTimer);
+        clearTimeout(cleanupTimer);
+      };
+    }
+    prevInfoOpen.current = isInfoOpen;
+  }, [isInfoOpen]);
+
+  useEffect(() => {
+    let canScrollClose = false;
+    const cooldown = setTimeout(() => { canScrollClose = true; }, 350);
     const raf = requestAnimationFrame(() => setIsExpanded(true));
+
     const onKey = (e) => {
+      if (isInfoOpenRef.current) return;
       if (e.key === "Escape") handleClose();
       if (e.key === "ArrowLeft") handleNav(-1);
       if (e.key === "ArrowRight") handleNav(1);
     };
+
+    const onWheel = (e) => {
+      if (!canScrollClose || isInfoOpenRef.current) return;
+      if (e.deltaY > 30) {
+        handleClose();
+      }
+    };
+
+    let touchStartY = 0;
+    const onTouchStart = (e) => {
+      touchStartY = e.touches[0].clientY;
+    };
+    const onTouchMove = (e) => {
+      if (!canScrollClose || isInfoOpenRef.current) return;
+      if (touchStartY - e.touches[0].clientY > 50) {
+        handleClose();
+      }
+    };
+
     window.addEventListener("keydown", onKey);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("keydown", onKey); };
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+
+    return () => {
+      clearTimeout(cooldown);
+      cancelAnimationFrame(raf);
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+    };
   }, []);
 
   const handleNav = (direction) => {
-    if (isNav.current) return;
+    if (isNav.current || isClosing.current) return;
     const nextIdx = currentIndex + direction;
     if (nextIdx < 0 || nextIdx >= ceremonies.length) return;
     
@@ -31,6 +89,8 @@ export default function FullscreenCeremonyView({ ceremonies, currentIndex, onSel
   };
 
   const handleClose = () => {
+    if (isClosing.current) return;
+    isClosing.current = true;
     setIsExpanded(false);
     setTimeout(() => onClose(), 900);
   };
@@ -56,7 +116,21 @@ export default function FullscreenCeremonyView({ ceremonies, currentIndex, onSel
       <button type="button" onClick={() => handleNav(1)} aria-label="Next ritual" style={{ position: "absolute", right: "clamp(20px, 4vw, 48px)", top: "50%", transform: "translateY(-50%)", color: "#FFFFFF", fontSize: 28, opacity: isExpanded && currentIndex < ceremonies.length - 1 ? 0.9 : 0, pointerEvents: currentIndex < ceremonies.length - 1 ? "auto" : "none", transition: isExpanded ? "opacity 500ms ease 200ms, transform 200ms ease" : "opacity 200ms ease, transform 200ms ease", zIndex: 10 }}>→</button>
 
       <div style={{ position: "relative", zIndex: 5, textAlign: "center", padding: "0 40px", maxWidth: 960, opacity: isExpanded ? 1 : 0, transition: isExpanded ? "opacity 500ms ease 200ms" : "opacity 200ms ease" }}>
-        <div style={{ minHeight: "clamp(52px, 6vw, 76px)", width: "min(90vw, 840px)", margin: "0 auto 12px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div
+          onClick={onOpenDetails}
+          role="button"
+          tabIndex={0}
+          aria-label="Click to view ritual details"
+          style={{
+            minHeight: "clamp(52px, 6vw, 76px)",
+            width: "min(90vw, 840px)",
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
           <WheelText
             text={langMode === "km" ? ceremonies[currentIndex].titleKhmer : ceremonies[currentIndex].titleEn}
             direction={dir}
@@ -65,13 +139,23 @@ export default function FullscreenCeremonyView({ ceremonies, currentIndex, onSel
             as="h1"
           />
         </div>
-
-        <div>
-          <button type="button" onClick={onOpenDetails} className="font-mono-tag" style={{ fontSize: 11, color: "#F2F2F0", backgroundColor: "rgba(0, 0, 0, 0.65)", backdropFilter: "blur(12px)", padding: "10px 24px", borderRadius: 100, border: "1px solid rgba(255, 255, 255, 0.25)", transition: "transform 200ms ease, border-color 200ms ease" }}>
-            {langMode === "km" ? "មើលព័ត៌មានលម្អិតនៃពិធី ↓" : "VIEW RITUAL DETAILS ↓"}
-          </button>
-        </div>
       </div>
+
+      {/* Slow and smooth black curtain revealing the full screen page */}
+      {isRevealingFromBlack && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundColor: "#000000",
+            zIndex: 40,
+            pointerEvents: "none",
+            opacity: curtainOpacity,
+            transition: "opacity 600ms cubic-bezier(0.16, 1, 0.3, 1)",
+            willChange: "opacity",
+          }}
+        />
+      )}
     </div>
   );
 }

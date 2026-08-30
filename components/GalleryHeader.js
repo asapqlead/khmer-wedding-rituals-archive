@@ -2,7 +2,7 @@
 "use client";
 import collection from "../collection.config.js";
 
-export default function GalleryHeader({ currentView, setCurrentView, isFullscreen, onCloseFullscreen, langMode, setLangMode }) {
+export default function GalleryHeader({ currentView, setCurrentView, isFullscreen, onCloseFullscreen, langMode, setLangMode, isHidden }) {
   const handleCeremonyClick = () => {
     if (isFullscreen) onCloseFullscreen?.();
     setCurrentView("work");
@@ -22,7 +22,11 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
         display: "grid",
         gridTemplateColumns: "1fr auto 1fr",
         alignItems: "center",
-        pointerEvents: "auto",
+        pointerEvents: isHidden ? "none" : "auto",
+        transform: isHidden ? "translateY(-100%)" : "translateY(0%)",
+        opacity: isHidden ? 0 : 1,
+        transition: "transform 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 600ms ease",
+        willChange: "transform, opacity",
       }}
     >
       {/* Top Left: Navigation Bar */}
