@@ -90,10 +90,12 @@ body {
 /* Typography styles */
 .khmer-serif {
   font-family: var(--font-khmer-serif);
+  letter-spacing: 0 !important;
 }
 
 .khmer-sans {
   font-family: var(--font-khmer-sans);
+  letter-spacing: 0 !important;
 }
 
 .font-mono-tag {
