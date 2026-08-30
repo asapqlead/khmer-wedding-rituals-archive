@@ -118,33 +118,21 @@ a {
 .gallery-track {
   display: flex;
   align-items: center;
-  gap: clamp(16px, 2.5vw, 36px);
-  padding: 0 max(40px, calc((100vw - 380px) / 2));
+  gap: clamp(20px, 3vw, 40px);
+  padding: 0 max(40px, calc((100vw - 380px) / 2)) 0 clamp(48px, 6vw, 120px);
   height: 100%;
   width: max-content;
   will-change: transform;
 }
 
-/* Crosshair indicator */
-.crosshair-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 28px;
-  height: 28px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 250ms ease, transform 250ms var(--ease-out-expo);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Hero introductory typography block to the left of card 0 */
+.gallery-hero {
+  position: relative;
+  z-index: 2;
+  will-change: transform, opacity;
 }
 
-.gallery-card:hover .crosshair-icon {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1.1);
-}
+
 
 /* 3D Wheel Rotating Text Stage & Items */
 .wheel-stage {

@@ -44,34 +44,6 @@ export default function GalleryCard({ ceremony, isActive, onClick, langMode }) {
         onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.04)"; }}
         onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
       />
-
-      <div className="crosshair-icon" style={{ opacity: isActive ? 0.9 : 0 }}>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="1.5">
-          <line x1="12" y1="5" x2="12" y2="19" />
-          <line x1="5" y1="12" x2="19" y2="12" />
-        </svg>
-      </div>
-
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: "20px",
-          background: "linear-gradient(to top, rgba(18,18,18,0.85), transparent)",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-end",
-        }}
-      >
-        <div>
-          <span className="font-mono-tag" style={{ color: "var(--accent-gold)", fontSize: 10 }}>0{ceremony.order}</span>
-          <h3 className={langMode === "km" ? "khmer-serif" : ""} style={{ fontSize: 16, color: "#F2F2F0", marginTop: 2 }}>
-            {langMode === "km" ? ceremony.titleKhmer : ceremony.titleEn}
-          </h3>
-        </div>
-      </div>
     </div>
   );
 }

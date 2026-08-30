@@ -1,6 +1,7 @@
 // components/HorizontalGallery.js
 "use client";
 import { useRef, useEffect } from "react";
+import GalleryHero from "./GalleryHero.js";
 import GalleryCard from "./GalleryCard.js";
 
 export default function HorizontalGallery({ ceremonies, activeIndex, onIndexChange, onSelectCeremony, langMode }) {
@@ -86,6 +87,7 @@ export default function HorizontalGallery({ ceremonies, activeIndex, onIndexChan
   return (
     <div ref={elRef} className="no-scrollbar" style={{ position: "fixed", inset: 0, display: "flex", alignItems: "center", overflowX: "auto", overflowY: "hidden", touchAction: "none", cursor: "grab" }}>
       <div className="gallery-track">
+        <GalleryHero langMode={langMode} />
         {ceremonies.map((ceremony, idx) => (
           <GalleryCard key={ceremony.id} ceremony={ceremony} isActive={activeIndex === idx} onClick={onSelectCeremony} langMode={langMode} />
         ))}
