@@ -1,29 +1,50 @@
 // components/AboutView.js
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import collection from "../collection.config.js";
 import WheelText from "./WheelText.js";
+import ScrollProgress from "./ScrollProgress.js";
 
-export default function AboutView({ onClose, langMode }) {
+export default function AboutView({ onClose, langMode, onScrollTopChange }) {
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => setIsVisible(true));
     const onKey = (e) => { if (e.key === "Escape") handleClose(); };
     window.addEventListener("keydown", onKey);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("keydown", onKey); };
-  }, []);
+
+    const el = containerRef.current;
+    const handleScroll = () => {
+      if (!el) return;
+      onScrollTopChange?.(el.scrollTop > 20);
+    };
+
+    if (el) {
+      el.addEventListener("scroll", handleScroll, { passive: true });
+    }
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("keydown", onKey);
+      if (el) el.removeEventListener("scroll", handleScroll);
+      onScrollTopChange?.(false);
+    };
+  }, [onScrollTopChange]);
 
   const handleClose = () => {
+    onScrollTopChange?.(false);
     setIsClosing(true);
     setTimeout(() => onClose(), 420);
   };
 
   return (
     <div
+      ref={containerRef}
       role="dialog"
       aria-modal="true"
+      className="custom-scrollbar"
       style={{
         position: "fixed",
         inset: 0,
@@ -39,6 +60,7 @@ export default function AboutView({ onClose, langMode }) {
         opacity: isClosing ? 0 : 1,
       }}
     >
+      <ScrollProgress containerRef={containerRef} />
       <div className={`page-view ${isVisible && !isClosing ? "is-visible" : "is-exiting"}`} style={{ maxWidth: 680, textAlign: "center", margin: "auto" }}>
         <span className="font-mono-tag" style={{ color: "var(--accent-gold)", marginBottom: 16, display: "inline-block" }}>
           ARCHIVAL PROVENANCE & ORAL TRANSMISSION

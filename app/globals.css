@@ -39,14 +39,62 @@ body {
   user-select: none;
 }
 
+/* ============================================================
+   Custom Scrollbar System (Minimal Luxury Editorial)
+   ============================================================ */
+
+/* Global Scrollbar defaults for all scrollable elements */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(197, 160, 89, 0.35);
+  border-radius: 999px;
+  transition: background-color 200ms ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(197, 160, 89, 0.75);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox standard scrollbar properties */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(197, 160, 89, 0.35) transparent;
+}
+
+/* Explicit class for modal/view overlays with bespoke white progressive scrollbar */
+.custom-scrollbar {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 /* Hide scrollbars for the clean gallery track */
 .no-scrollbar::-webkit-scrollbar {
-  display: none;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }
 
 /* Navigation Item Styles (Equal Weight + Smooth Hover Color) */

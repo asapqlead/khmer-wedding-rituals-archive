@@ -32,6 +32,22 @@ export default function CeremonyInfoContent({ ceremony, langMode, isVisible }) {
         >
           {isKhmer ? ceremony.titleKhmer : ceremony.titleEn}
         </h1>
+        {ceremony.translationEn && (
+          <p
+            style={{
+              fontFamily: "var(--font-sans)",
+              fontSize: "clamp(15px, 1.4vw, 18px)",
+              color: "var(--accent-gold-light)",
+              fontStyle: "italic",
+              fontWeight: 400,
+              marginTop: 10,
+              lineHeight: 1.4,
+              letterSpacing: "0.01em",
+            }}
+          >
+            {ceremony.translationEn}
+          </p>
+        )}
       </div>
 
       {/* Liturgical Meaning Block */}

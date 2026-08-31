@@ -17,7 +17,7 @@ export default function CeremonyOverview({ ceremony, langMode }) {
         {ceremony.titleKhmer}
       </h2>
       <p style={{ fontSize: "1.15rem", fontFamily: "var(--font-serif-en)", color: "var(--accent-gold)", fontStyle: "italic", marginBottom: 20 }}>
-        {ceremony.titleEn}
+        {ceremony.titleEn}{ceremony.translationEn ? ` — ${ceremony.translationEn}` : ""}
       </p>
 
       <p style={{ fontSize: 15, color: "var(--text-secondary)", lineHeight: 1.7, backgroundColor: "var(--bg-tertiary)", padding: "16px 20px", borderRadius: 8, borderLeft: "4px solid var(--accent-gold)", marginBottom: 24 }}>

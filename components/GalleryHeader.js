@@ -2,13 +2,14 @@
 "use client";
 import collection from "../collection.config.js";
 
-export default function GalleryHeader({ currentView, setCurrentView, isFullscreen, onCloseFullscreen, langMode, setLangMode, isHidden }) {
+export default function GalleryHeader({ currentView, setCurrentView, isFullscreen, onCloseFullscreen, langMode, setLangMode, isHidden, isScrolled }) {
   const handleCeremonyClick = () => {
     if (isFullscreen) onCloseFullscreen?.();
     setCurrentView("work");
   };
 
   const khmerTitle = "ពិធីមង្គលការខ្មែរបុរាណ";
+  const shouldHide = isHidden || isScrolled;
 
   return (
     <header
@@ -22,11 +23,10 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
         display: "grid",
         gridTemplateColumns: "1fr auto 1fr",
         alignItems: "center",
-        pointerEvents: isHidden ? "none" : "auto",
-        transform: isHidden ? "translateY(-100%)" : "translateY(0%)",
-        opacity: isHidden ? 0 : 1,
-        transition: "transform 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 600ms ease",
-        willChange: "transform, opacity",
+        pointerEvents: shouldHide ? "none" : "auto",
+        transform: shouldHide ? "translateY(-100%)" : "translateY(0%)",
+        transition: "transform 500ms cubic-bezier(0.16, 1, 0.3, 1)",
+        willChange: "transform",
       }}
     >
       {/* Top Left: Navigation Bar */}
@@ -55,7 +55,13 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
       </nav>
 
       {/* Middle: Bilingual Website Title */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <span
           className={langMode === "km" ? "khmer-sans" : ""}
           style={{

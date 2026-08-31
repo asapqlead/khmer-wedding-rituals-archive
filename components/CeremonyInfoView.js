@@ -1,12 +1,14 @@
 // components/CeremonyInfoView.js
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import CeremonyInfoContent from "./CeremonyInfoContent.js";
+import ScrollProgress from "./ScrollProgress.js";
 
 export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }) {
   const [isSlidUp, setIsSlidUp] = useState(false);
   const [isTextVisible, setIsTextVisible] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => setIsSlidUp(true));
@@ -38,8 +40,10 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
 
   return (
     <div
+      ref={containerRef}
       role="dialog"
       aria-modal="true"
+      className="custom-scrollbar"
       onWheel={(e) => e.stopPropagation()}
       onTouchMove={(e) => e.stopPropagation()}
       style={{
@@ -54,6 +58,7 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
         willChange: "transform",
       }}
     >
+      <ScrollProgress containerRef={containerRef} />
       <div
         style={{
           position: "fixed",
@@ -95,7 +100,7 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
         onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateX(-3px)"; }}
         onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.85"; e.currentTarget.style.transform = "translateX(0)"; }}
       >
-        {langMode === "km" ? "← ត្រឡប់ក្រោយ" : "Back"}
+        {langMode === "km" ? "ត្រឡប់ក្រោយ" : "Back"}
       </button>
 
       {onNext && (
@@ -120,7 +125,7 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
           onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateX(3px)"; }}
           onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.85"; e.currentTarget.style.transform = "translateX(0)"; }}
         >
-          {langMode === "km" ? "បន្ទាប់ →" : "Next"}
+          {langMode === "km" ? "បន្ទាប់" : "Next"}
         </button>
       )}
 

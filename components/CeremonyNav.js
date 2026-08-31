@@ -6,7 +6,7 @@ export default function CeremonyNav({ ceremonies, activeId, onSelectCeremony, la
     <div style={{ marginBottom: 32 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
         <p style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.5, color: "var(--text-secondary)", textTransform: "uppercase" }}>
-          {langMode === "km" ? "លំដាប់កាលវេលានៃពិធីការ (Dawn → Sunset)" : "Chronological Order of Ceremonies"}
+          {langMode === "km" ? "លំដាប់កាលវេលានៃពិធីការ" : "Chronological Order of Ceremonies"}
         </p>
         <span style={{ fontSize: 13, color: "var(--text-tertiary)", fontWeight: 500 }}>
           {ceremonies.length} {langMode === "km" ? "ពិធីពេញលេញ" : "Key Rituals"}

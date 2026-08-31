@@ -1,23 +1,42 @@
 // components/GlossaryModal.js
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { glossaryTerms } from "../data/glossary.js";
 import WheelText from "./WheelText.js";
+import ScrollProgress from "./ScrollProgress.js";
 
-export default function GlossaryModal({ onClose, langMode }) {
+export default function GlossaryModal({ onClose, langMode, onScrollTopChange }) {
   const [activeCategory, setActiveCategory] = useState("All");
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const containerRef = useRef(null);
   const categories = ["All", "Sacred Objects", "People & Roles", "Rituals", "Attire", "Music & Art"];
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => setIsVisible(true));
     const onKey = (e) => { if (e.key === "Escape") handleClose(); };
     window.addEventListener("keydown", onKey);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("keydown", onKey); };
-  }, []);
+
+    const el = containerRef.current;
+    const handleScroll = () => {
+      if (!el) return;
+      onScrollTopChange?.(el.scrollTop > 20);
+    };
+
+    if (el) {
+      el.addEventListener("scroll", handleScroll, { passive: true });
+    }
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("keydown", onKey);
+      if (el) el.removeEventListener("scroll", handleScroll);
+      onScrollTopChange?.(false);
+    };
+  }, [onScrollTopChange]);
 
   const handleClose = () => {
+    onScrollTopChange?.(false);
     setIsClosing(true);
     setTimeout(() => onClose(), 420);
   };
@@ -26,8 +45,10 @@ export default function GlossaryModal({ onClose, langMode }) {
 
   return (
     <div
+      ref={containerRef}
       role="dialog"
       aria-modal="true"
+      className="custom-scrollbar"
       style={{
         position: "fixed",
         inset: 0,
@@ -40,6 +61,7 @@ export default function GlossaryModal({ onClose, langMode }) {
         opacity: isClosing ? 0 : 1,
       }}
     >
+      <ScrollProgress containerRef={containerRef} />
       <div className={`page-view ${isVisible && !isClosing ? "is-visible" : "is-exiting"}`} style={{ maxWidth: 840, margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 32 }}>
           <div>

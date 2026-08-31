@@ -1,11 +1,13 @@
 // components/CeremonyDrawer.js
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import CeremonyStepItem from "./CeremonyStepItem.js";
+import ScrollProgress from "./ScrollProgress.js";
 
 export default function CeremonyDrawer({ ceremony, onClose, langMode }) {
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => setIsVisible(true));
@@ -25,8 +27,10 @@ export default function CeremonyDrawer({ ceremony, onClose, langMode }) {
 
   return (
     <div
+      ref={containerRef}
       role="dialog"
       aria-modal="true"
+      className="custom-scrollbar"
       style={{
         position: "fixed",
         inset: 0,
@@ -39,6 +43,7 @@ export default function CeremonyDrawer({ ceremony, onClose, langMode }) {
         opacity: isClosing ? 0 : 1,
       }}
     >
+      <ScrollProgress containerRef={containerRef} />
       <div className={`page-view ${isVisible && !isClosing ? "is-visible" : "is-exiting"}`} style={{ maxWidth: 840, margin: "0 auto", backgroundColor: "#181818", border: "1px solid var(--border-subtle)", borderRadius: 6, padding: "clamp(24px, 4vw, 44px)", position: "relative" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
           <div>
@@ -46,6 +51,11 @@ export default function CeremonyDrawer({ ceremony, onClose, langMode }) {
             <h2 className={langMode === "km" ? "khmer-serif" : ""} style={{ fontSize: "clamp(22px, 3.2vw, 34px)", color: "var(--text-primary)", marginTop: 4 }}>
               {langMode === "km" ? ceremony.titleKhmer : ceremony.titleEn}
             </h2>
+            {ceremony.translationEn && (
+              <p style={{ fontSize: 15, color: "var(--accent-gold-light)", fontStyle: "italic", marginTop: 4 }}>
+                {ceremony.translationEn}
+              </p>
+            )}
             <p className="font-mono-tag" style={{ color: "var(--text-muted)", marginTop: 4 }}>{ceremony.phonetic}</p>
           </div>
           <button type="button" onClick={handleClose} className="font-mono-tag" style={{ padding: "8px 16px", borderRadius: 100, border: "1px solid var(--border-subtle)", color: "var(--text-primary)", fontSize: 11 }}>
