@@ -1,8 +1,14 @@
 // components/GalleryCounter.js
 "use client";
 
-export default function GalleryCounter({ current, total, isHidden }) {
+const KHMER_DIGITS = "០១២៣៤៥៦៧៨៩";
+const toKhmerNum = (n) => String(n).replace(/\d/g, (d) => KHMER_DIGITS[d]);
+
+export default function GalleryCounter({ current, total, isHidden, langMode }) {
   const isComplete = current === total;
+  const isKhmer = langMode === "km";
+  const displayCurrent = isKhmer ? toKhmerNum(current) : current;
+  const displayTotal = isKhmer ? toKhmerNum(total) : total;
 
   return (
     <footer
@@ -24,19 +30,21 @@ export default function GalleryCounter({ current, total, isHidden }) {
     >
       <div style={{ height: 22, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 4 }}>
         <span
+          className={isKhmer ? "khmer-sans" : ""}
           style={{
             fontSize: 13,
-            fontFamily: "var(--font-mono)",
+            fontFamily: isKhmer ? "var(--font-khmer-sans)" : "var(--font-mono)",
             color: isComplete ? "var(--accent-gold)" : "var(--text-primary)",
             textShadow: isComplete ? "0 0 12px rgba(197, 160, 89, 0.45)" : "none",
             fontWeight: 500,
-            letterSpacing: "0.1em",
+            letterSpacing: isKhmer ? "0.05em" : "0.1em",
             transition: "color 300ms ease, text-shadow 300ms ease",
           }}
         >
-          {current} — {total}
+          {displayCurrent} — {displayTotal}
         </span>
       </div>
     </footer>
   );
 }
+

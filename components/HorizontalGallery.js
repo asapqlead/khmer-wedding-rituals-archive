@@ -4,8 +4,11 @@ import { useRef, useEffect } from "react";
 import GalleryHero from "./GalleryHero.js";
 import GalleryCard from "./GalleryCard.js";
 
-export default function HorizontalGallery({ ceremonies, activeIndex, onIndexChange, onSelectCeremony, langMode }) {
+export default function HorizontalGallery({ ceremonies, activeIndex, onIndexChange, onSelectCeremony, langMode, isInteractive }) {
   const elRef = useRef(null);
+  const interactiveRef = useRef(isInteractive);
+
+  useEffect(() => { interactiveRef.current = isInteractive; }, [isInteractive]);
 
   useEffect(() => {
     const el = elRef.current;
@@ -13,6 +16,8 @@ export default function HorizontalGallery({ ceremonies, activeIndex, onIndexChan
 
     let target = el.scrollLeft, current = el.scrollLeft, velocity = 0;
     let animId = null, isDragging = false, lastX = 0, lastTime = 0;
+    let dragDistance = 0, wasDragging = false;
+    let lastReportedIndex = -1;
 
     const maxScroll = () => el.scrollWidth - el.clientWidth;
 
@@ -24,15 +29,20 @@ export default function HorizontalGallery({ ceremonies, activeIndex, onIndexChan
         const d = Math.abs(center - (c.offsetLeft + c.clientWidth / 2));
         if (d < minDist) { minDist = d; closest = i; }
       });
-      onIndexChange(closest);
+      if (closest !== lastReportedIndex) {
+        lastReportedIndex = closest;
+        onIndexChange(closest);
+      }
     };
 
     const loop = () => {
       if (!isDragging) {
         target += velocity;
-        velocity *= 0.90;
+        velocity *= 0.94;
+        if (Math.abs(velocity) < 0.01) velocity = 0;
         target = Math.max(0, Math.min(maxScroll(), target));
-        current += (target - current) * 0.09;
+        current += (target - current) * 0.048;
+        if (Math.abs(target - current) < 0.05) current = target;
         el.scrollLeft = current;
         updateIndex(current);
       }
@@ -42,24 +52,29 @@ export default function HorizontalGallery({ ceremonies, activeIndex, onIndexChan
 
     const onWheel = (e) => {
       e.preventDefault();
+      if (!interactiveRef.current) return;
       const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      velocity += delta * 0.75;
+      velocity += delta * 0.42;
     };
 
     const onDown = (e) => {
+      if (!interactiveRef.current) return;
       isDragging = true;
-      lastX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+      dragDistance = 0;
+      lastX = e.clientX;
       lastTime = Date.now();
       velocity = 0;
     };
 
     const onMove = (e) => {
       if (!isDragging) return;
-      const x = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+      const x = e.clientX;
       const dx = lastX - x;
+      dragDistance += Math.abs(dx);
       const now = Date.now();
       const dt = Math.max(1, now - lastTime);
-      velocity = (dx / dt) * 14;
+      const rawV = (dx / dt) * 6.0;
+      velocity = Math.max(-28, Math.min(28, rawV));
       target = Math.max(0, Math.min(maxScroll(), el.scrollLeft + dx));
       current = target;
       el.scrollLeft = current;
@@ -68,18 +83,32 @@ export default function HorizontalGallery({ ceremonies, activeIndex, onIndexChan
       updateIndex(current);
     };
 
-    const onUp = () => { isDragging = false; };
+    const onUp = (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      if (dragDistance > 5) wasDragging = true;
+    };
+
+    const onClickCapture = (e) => {
+      if (wasDragging) {
+        e.stopPropagation();
+        e.preventDefault();
+        wasDragging = false;
+      }
+    };
 
     el.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("pointerdown", onDown, { passive: true });
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerup", onUp, { passive: true });
+    el.addEventListener("pointerdown", onDown);
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerup", onUp);
+    el.addEventListener("click", onClickCapture, true);
 
     return () => {
       el.removeEventListener("wheel", onWheel);
-      window.removeEventListener("pointerdown", onDown);
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", onUp);
+      el.removeEventListener("pointerdown", onDown);
+      el.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerup", onUp);
+      el.removeEventListener("click", onClickCapture, true);
       if (animId) cancelAnimationFrame(animId);
     };
   }, [onIndexChange]);

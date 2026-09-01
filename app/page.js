@@ -23,6 +23,7 @@ export default function Home() {
 
   const selectedCeremony = selectedIdx !== null ? ceremonies[selectedIdx] : null;
   const activeCeremony = ceremonies[activeIndex] || ceremonies[0];
+  const isGalleryInteractive = currentView === "work" && selectedIdx === null;
 
   const handleSelect = (ceremony, rect) => {
     const idx = ceremonies.findIndex((c) => c.id === ceremony.id);
@@ -56,11 +57,13 @@ export default function Home() {
         onIndexChange={setActiveIndex}
         onSelectCeremony={handleSelect}
         langMode={langMode}
+        isInteractive={isGalleryInteractive}
       />
       <GalleryCounter
         current={(selectedCeremony !== null ? selectedIdx : activeIndex) + 1}
         total={ceremonies.length}
         isHidden={currentView !== "work" || showDetails}
+        langMode={langMode}
       />
       {selectedCeremony && (
         <FullscreenCeremonyView
