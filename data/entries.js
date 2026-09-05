@@ -1,11 +1,11 @@
-// data/ceremonies.js
+// data/entries.js
 // Chronological sequence of traditional Khmer wedding rituals
 
-export const ceremonies = [
+export const entries = [
   {
-    id: "hai-goer",
+    id: "hae-chomnoon",
     order: 1,
-    titleKhmer: "ពិធីហែជំនូន (ហែកូនកំលោះ)",
+    titleKhmer: "កិច្ចហែជំនូន (ហែកូនកំលោះ)",
     titleEn: "Hae Chomnoon",
     translationEn: "Groom's Morning Procession & Fruit Offerings",
     phonetic: "Hae Chomnoon",
@@ -70,14 +70,84 @@ export const ceremonies = [
       titleEn: "Archival Photo: Village Fruit Procession (Hae Chomnoon)",
       descriptionEn: "Photograph of the groom's family carrying 36 brass and silver fruit trays along a village lane, led by elder matchmakers in traditional silk sabai.",
       recommendedRatio: "16:9",
-      image: "/images/hai-goer/ceremony.jpg"
+      image: "/images/hae-chomnoon/ceremony.jpg"
     }
   },
   {
-    id: "gaat-sah",
+    id: "sen-pren-may-ba",
     order: 2,
-    titleKhmer: "ពិធីកាត់សក់បង្កក់សិរី",
-    titleEn: "Pithi Kat Sork",
+    titleKhmer: "កិច្ចសែនព្រេនមេបា",
+    titleEn: "Sen Pren May Ba",
+    translationEn: "Honoring the Ancestors & Calling Ancestral Spirits",
+    phonetic: "Pithi Sen Pren May Ba",
+    timeOfDay: "ព្រឹក • 08:00 AM (Morning)",
+    summaryEn: "The bride, groom, and both families gather before the ancestral altar with offerings of roasted meats, fresh fruits, betel, and wine to invite departed ancestors to witness the union, bestow their blessings, and welcome the groom into the lineage.",
+    summaryKhmer: "កូនកំលោះ កូនក្រមុំ និងក្រុមគ្រួសារទាំងសងខាងជួបជុំគ្នានៅមុខរានដូនតា ដោយមានគ្រឿងសក្ការបូជា ជ្រូកខ្វៃ ផ្លែឈើ ម្លូស្លា និងស្រា ដើម្បីអញ្ជើញដូនតាចែកឋាន និងមេបាចាស់ទុំឱ្យដឹងឮ ប្រទានពរជ័យ និងទទួលស្គាល់កូនកំលោះជាសមាជិកគ្រួសារថ្មី។",
+    participants: [
+      { roleKhmer: "កូនកំលោះ និងកូនក្រមុំ", roleEn: "Bride & Groom (kneeling at ancestral altar)" },
+      { roleKhmer: "មេបា / ឪពុកម្តាយទាំងសងខាង", roleEn: "Parents & Maternal/Paternal Lineage Elders" },
+      { roleKhmer: "លោកអាចារ្យ", roleEn: "Achar (Ceremonial Master invoking spirits)" },
+      { roleKhmer: "សាច់ញាតិ និងបុព្វការីជន", roleEn: "Extended Family & Honored Witnesses" }
+    ],
+    sacredItems: [
+      { nameKhmer: "ក្បាលជ្រូក ឬជ្រូកខ្វៃ និងមាន់ស្ងោរមួយគូ", nameEn: "Whole Roasted Pig & Paired Ceremonial Boiled Chickens" },
+      { nameKhmer: "ស្លាធម៌ និងបាយសី", nameEn: "Slathor & Tiered Banana-Leaf Bay Sei Shrines" },
+      { nameKhmer: "ស្រាស និងតែក្រអូប ៣ កែវ", nameEn: "Three Cups of Sacred Rice Wine & Jasmine Tea" },
+      { nameKhmer: "ទៀន ធូប និងម្លូស្លាពានប្រាក់", nameEn: "Beeswax Candles, Incense & Silver Betel Trays" }
+    ],
+    steps: [
+      {
+        stepNumber: 1,
+        titleKhmer: "ការរៀបចំរានទេវតា និងរានដូនតា",
+        titleEn: "Arranging Offerings on the Ancestral Altar",
+        detailEn: "Offerings including boiled chickens with feet tucked, roasted pig, matched fruit pairs, rice wine, and betel leaves are arranged systematically facing the ancestral altar.",
+        detailKhmer: "គ្រឿងសំណែនមានដូចជា មាន់ស្ងោរបត់ជើង ជ្រូកខ្វៃ ពានផ្លែឈើជាគូ ស្រាស និងម្លូស្លា ត្រូវបានរៀបចំយ៉ាងផ្ចិតផ្ចិតនៅមុខរានដូនតា។",
+        meaningEn: "Honors the continuous lineage; in Khmer belief, marriage is not only between two individuals, but a sacred introduction joining two ancestral bloodlines.",
+        meaningKhmer: "ការគោរពពូជពង្សវង្សត្រកូល ព្រោះក្នុងជំនឿខ្មែរ អាពាហ៍ពិពាហ៍មិនមែនគ្រាន់តែរវាងមនុស្សពីរនាក់នោះទេ តែជាការផ្សារភ្ជាប់ខ្សែស្រឡាយដូនតាទាំងសងខាង។"
+      },
+      {
+        stepNumber: 2,
+        titleKhmer: "អាចារ្យអុជធូបសូត្រហៅដូនតា (បួងសួង)",
+        titleEn: "The Achar Invokes the Ancestral Spirits",
+        detailEn: "The Achar lights incense sticks and chants ritual invocations, calling the spirits of departed grandparents and ancestors across generations to partake in the banquet.",
+        detailKhmer: "លោកអាចារ្យអុជធូបសូត្រធម៌បួងសួង អញ្ជើញវិញ្ញាណក្ខន្ធជីដូនជីតា និងដូនតាជាច្រើនជំនាន់មកទទួលដង្វាយ និងធ្វើជាសាក្សីដឹងឮ។",
+        meaningEn: "Affirms filial gratitude (Katannu). Seeking permission and blessings from the departed protects the young couple from spiritual misfortune and ensures family harmony.",
+        meaningKhmer: "បង្ហាញពីកតញ្ញូតាធម៌ចំពោះបុព្វការីជន។ ការសុំការអនុញ្ញាត និងពរជ័យពីដូនតាជួយការពារគូស្វាមីភរិយាពីឧបទ្រពចង្រៃ និងនាំមកនូវភាពសុខដុម។"
+      },
+      {
+        stepNumber: 3,
+        titleKhmer: "កូនទាំងពីរក្រាបសំពះ និងចាក់ស្រាជូនដូនតា",
+        titleEn: "Kneeling, Bowing, and Pouring Ceremonial Rice Wine",
+        detailEn: "Holding burning incense between their clasped hands, the bride and groom bow three times. The groom pours rice wine and tea into cups three times as an offering of devotion.",
+        detailKhmer: "កូនកំលោះនិងកូនក្រមុំកាន់ធូបក្រាបសំពះ ៣ ដង ហើយកូនកំលោះចាក់ស្រាស និងតែ ៣ ដង ឧទ្ទិសជូនដូនតា និងមេបា។",
+        meaningEn: "Pouring libations seals the groom's official introduction and acceptance into the bride's family fold, creating lasting mutual accountability.",
+        meaningKhmer: "ការច្រូចស្រាតំណាងឱ្យការប្រគល់ខ្លួន និងការទទួលស្គាល់កូនកំលោះចូលក្នុងត្រកូលខាងស្រីយ៉ាងពេញសិទ្ធិ។"
+      },
+      {
+        stepNumber: 4,
+        titleKhmer: "មេបាប្រគល់ពរជ័យ និងចែកម្លូស្លា",
+        titleEn: "Elders Imparting Ancestral Blessings",
+        detailEn: "Parents and maternal/paternal elders (May Ba) conclude the offering, share betel leaves, and bestow traditional moral advice for building a peaceful, resilient home.",
+        detailKhmer: "មាតាបិតា និងចាស់ទុំមេបាទាំងសងខាង ធ្វើពិធីសែនព្រេនរួច ប្រទានពរជ័យ និងផ្តល់ដំបូន្មានល្អៗដល់កូនទាំងពីរក្នុងការកសាងគ្រួសារ។",
+        meaningEn: "Consolidates family unity and communal blessing, grounding the newly formed marriage within a strong intergenerational safety net.",
+        meaningKhmer: "ពង្រឹងសាមគ្គីភាពក្នុងគ្រួសារ និងការទទួលស្គាល់ពីសហគមន៍ ដោយភ្ជាប់ចំណងស្នេហ៍ទៅនឹងឫសគល់ដូនតាដ៏រឹងមាំ។"
+      }
+    ],
+    regionalNotesEn: "In Kampong Speu and Takeo countryside, the Sen Pren ceremony always requires a pair of boiled chickens with intact feet and beaks for elders to observe auspicious omens. In modern Phnom Penh weddings, this ritual is often held immediately after the fruit counting in the main room before Kat Sork begins.",
+    regionalNotesKhmer: "នៅតាមស្រុកស្រែក្នុងខេត្តកំពង់ស្ពឺ និងតាកែវ ពិធីសែនមេបាតម្រូវឱ្យមានមាន់ស្ងោរមួយគូដែលមានជើងនិងចំពុះពេញលេញដើម្បីទស្សន៍ទាយជោគជតារាសី។ នៅរាជធានីភ្នំពេញ ពិធីនេះច្រើនធ្វើឡើងភ្លាមៗបន្ទាប់ពីរាប់ផ្លែឈើរួច នៅបន្ទប់កណ្តាល មុនពេលពិធីកាត់សក់ចាប់ផ្តើម។",
+    mediaPlaceholder: {
+      type: "photo",
+      titleEn: "Archival Photo: Ancestral Offering and Libation (Pithi Sen Pren May Ba)",
+      descriptionEn: "Documentary photograph of the bride and groom bowing before the tiered offering altar with roasted pig, slathor, and incense smoke during the ancestral spirit ceremony.",
+      recommendedRatio: "16:9",
+      image: "/images/sen-pren-may-ba/ceremony.jpg"
+    }
+  },
+  {
+    id: "kat-sork",
+    order: 3,
+    titleKhmer: "កិច្ចកាត់សក់បង្កក់សិរី",
+    titleEn: "Kat Sork",
     translationEn: "Symbolic Hair Cutting & Cleansing Rite",
     phonetic: "Pithi Kat Sork",
     timeOfDay: "ព្រឹក • 09:00 AM (Morning)",
@@ -103,7 +173,7 @@ export const ceremonies = [
         detailEn: "Two humorous singers portray angels who flew down from Mount Meru searching for fragrant perfume and golden scissors to dress the bride and groom.",
         detailKhmer: "តួកំប្លែងពីរនាក់សម្តែងជាទេវតាចុះពីភ្នំព្រះសុមេរុ ដោយនាំយកកន្ត្រៃមាស និងទឹកអប់ទិព្វមកតុបតែងកូនកំលោះកូនក្រមុំ។",
         meaningEn: "Laughter is medicine. The comedy relaxes the couple, dispels nervous tension, and welcomes auspicious heavenly blessings through joy.",
-        meaningKhmer: "សំណើចជួយបន្ធូរភាពតានតឹងរបស់គូស្វាមីភរិយា និងនាំមកនូវសិរីសួស្តីតាមរយៈភាពរីករាយ។"
+        meaningKhmer: "សំណើចជួយបន្ធូរភាពតានតឹងរបស់គូស្វាមីភរិយា និងនាំមកនូវសិរីសួស្តីតាមរយៈភាពរីក្រាយ។"
       },
       {
         stepNumber: 2,
@@ -131,133 +201,14 @@ export const ceremonies = [
       titleEn: "Field Audio: Oral Chanting of the Hair Cutting Song (Kae Sar)",
       descriptionEn: "Raw cassette/digital field recording of traditional master singers performing the comedic dialogue and sacred blessings during Pithi Kat Sork.",
       recommendedRatio: "4:3",
-      image: "/images/gaat-sah/ceremony.jpg"
+      image: "/images/kat-sork/ceremony.jpg"
     }
   },
   {
-    id: "sompeas-ptem",
-    order: 3,
-    titleKhmer: "ពិធីសំពះផ្ទឹម និងតោងជាយស្បៃ",
-    titleEn: "Sompeas Ptem",
-    translationEn: "Nuptial Pair Union & Holding the Bride's Sabai",
-    phonetic: "Sompeas Ptem",
-    timeOfDay: "ថ្ងៃត្រង់ • 11:30 AM (Midday)",
-    summaryEn: "The couple wears traditional royal silk garments. The groom holds the bride's scarf, reenacting the ancient Khmer origin myth of Prince Preah Thong and the Naga Princess Neang Neak.",
-    summaryKhmer: "កូនកំលោះកូនក្រមុំស្លៀកសម្លៀកបំពាក់ប្រពៃណីហូលផាមួង។ កូនកំលោះតោងជាយស្បៃកូនក្រមុំ តាមរឿងព្រេងបុរាណព្រះថោងតោងស្បៃនាងនាគ។",
-    participants: [
-      { roleKhmer: "កូនកំលោះ និងកូនក្រមុំ", roleEn: "Bride & Groom" },
-      { roleKhmer: "លោកអាចារ្យ", roleEn: "Achar (Ceremony Master)" },
-      { roleKhmer: "មាតាបិតាទាំងសងខាង", roleEn: "Parents of Bride and Groom" },
-      { roleKhmer: "សាច់ញាតិជិតស្និទ្ធ", roleEn: "Close Lineage Elders" }
-    ],
-    sacredItems: [
-      { nameKhmer: "សម្លៀកបំពាក់ក្បិនហូល និងស្បៃមាស", nameEn: "Royal Sampot Chang Kben Silk & Golden Embroidered Sabai" },
-      { nameKhmer: "ព្រះខ័នរាជ្យ (ដាវជានិមិត្តរូប)", nameEn: "Sacred Ceremonial Dagger (Symbol of Protection)" },
-      { nameKhmer: "ជើងពានប្រាក់ដាក់ទៀន និងស្លាធម៌", nameEn: "Silver Pedestal Tray with Candles & Ancestral Slathor" }
-    ],
-    steps: [
-      {
-        stepNumber: 1,
-        titleKhmer: "ការគោរពព្រះរតនត្រ័យ និងជម្រាបដូនតា",
-        titleEn: "Homage to the Triple Gem and Ancestral Spirits",
-        detailEn: "The couple lights three incense sticks and bows three times, honoring the Buddha, Dhamma, Sangha, and their departed ancestors.",
-        detailKhmer: "កូនទាំងពីរអុជធូប ៣ សរសៃ និងក្រាបសំពះ ៣ ដង ដើម្បីគោរពព្រះពុទ្ធ ព្រះធម៌ ព្រះសង្ឃ និងដូនតាដែលបានចែកឋាន។",
-        meaningEn: "Rooted in Buddhist filial piety (Katannu), a marriage succeeds when founded on humility, gratitude, and moral discipline.",
-        meaningKhmer: "បង្កប់នូវគុណធម៌កតញ្ញូ ដោយជឿជាក់ថាអាពាហ៍ពិពាហ៍នឹងគង់វង្សបានអាស្រ័យលើសីលធម៌ និងការដឹងគុណ។"
-      },
-      {
-        stepNumber: 2,
-        titleKhmer: "ពិធីកូនកំលោះតោងជាយស្បៃកូនក្រមុំ",
-        titleEn: "The Groom Holding the Bride's Sabai (Scarf)",
-        detailEn: "The groom grasps the golden tail of the bride's scarf as she leads him gently into the ceremonial room.",
-        detailKhmer: "កូនកំលោះកាន់ជាយស្បៃមាសរបស់កូនក្រមុំ ខណៈដែលកូនក្រមុំដើរនាំមុខចូលក្នុងរោងពិធី។",
-        meaningEn: "Re-enacts Prince Preah Thong holding Princess Neang Neak's tail to descend into the ocean kingdom, acknowledging the matriarchal reverence in Khmer culture.",
-        meaningKhmer: "រំឭករឿងព្រេងព្រះថោងតោងស្បៃនាងនាគចុះឋានភុជង្គនាគ បង្ហាញពីការផ្តល់តម្លៃដល់ស្ត្រីក្នុងសង្គមខ្មែរ។"
-      },
-      {
-        stepNumber: 3,
-        titleKhmer: "ការកាន់ព្រះខ័នការពារគ្រួសារ",
-        titleEn: "The Handing of the Protective Dagger",
-        detailEn: "The Achar places a ceremonial silver dagger (replica of Preah Khan) between the couple's clasped hands.",
-        detailKhmer: "លោកអាចារ្យប្រគល់ដាវប្រាក់ជានិមិត្តរូប (ព្រះខ័ន) ឱ្យកូនទាំងពីរកាន់រួមគ្នា។",
-        meaningEn: "The dagger symbolizes courage, loyalty, and the husband and wife's shared duty to protect the peace and honor of their home.",
-        meaningKhmer: "តំណាងឱ្យភាពក្លាហាន ភាពស្មោះត្រង់ និងកាតព្វកិច្ចរួមគ្នាក្នុងការការពារសេចក្តីសុខក្នុងគ្រួសារ។"
-      }
-    ],
-    regionalNotesEn: "In Southern provinces (Takeo, Kampot), the groom traditionally walks around the altar three times before holding the sabai. In diaspora weddings in France and the US, this remains the most emotional, visually iconic moment of cultural identity.",
-    regionalNotesKhmer: "នៅខេត្តតាកែវ និងកំពត កូនកំលោះតែងដើរព័ទ្ធរានពិធី ៣ ជុំសិនមុនតោងស្បៃ។ សម្រាប់ខ្មែរនៅក្រៅប្រទេស នេះជាពិធីដ៏ពិសិដ្ឋបំផុតដើម្បីថែរក្សាអត្តសញ្ញាណជាតិ។",
-    mediaPlaceholder: {
-      type: "photo",
-      titleEn: "Archival Photo: Preah Thong Holding the Sabai Scarf",
-      descriptionEn: "Historic family photograph capturing the bride in embroidered silk sabai leading the groom holding her trailing sash into the family home.",
-      recommendedRatio: "4:3",
-      image: "/images/plerng-ka/ceremony.jpg"
-    }
-  },
-  {
-    id: "bongvel-popil",
+    id: "chorng-dai",
     order: 4,
-    titleKhmer: "ពិធីបង្វិលពពិល",
-    titleEn: "Pithi Bongvil Popil",
-    translationEn: "Passing of the Sacred Candle Smoke Blessing",
-    phonetic: "Pithi Bongvil Popil",
-    timeOfDay: "រសៀល • 01:30 PM (Early Afternoon)",
-    summaryEn: "Happily married elder couples sit in a circle surrounding the bride and groom, passing lit beeswax candles on sacred leaf-shaped holders to envelop the couple in protective smoke.",
-    summaryKhmer: "គូស្វាមីភរិយាចាស់ទុំដែលមានសុភមង្គល អង្គុយព័ទ្ធជុំវិញកូនទាំងពីរ ហើយបង្វិលពពិលដោតទៀនក្រមួនឃ្មុំ ព្រមទាំងបក់ផ្សែងជម្រះឧបទ្រព និងផ្តល់ពរ។",
-    participants: [
-      { roleKhmer: "កូនកំលោះ និងកូនក្រមុំ", roleEn: "Bride & Groom (seated at center)" },
-      { roleKhmer: "គូស្វាមីភរិយាចាស់ទុំ (មានសុភមង្គលគង់វង្ស)", roleEn: "Married Elder Couples (Role Models of Enduring Union)" },
-      { roleKhmer: "លោកអាចារ្យ", roleEn: "Achar (Directing the circular flow)" }
-    ],
-    sacredItems: [
-      { nameKhmer: "ពពិលប្រាក់ ឬសំរិទ្ធ ៣ ឬ ៧ (រាងស្លឹកពោធិ៍)", nameEn: "3, 7, or 9 Silver Popil (Bodhi-leaf shaped candle holders)" },
-      { nameKhmer: "ទៀនក្រមួនឃ្មុំសុទ្ធ", nameEn: "Pure Natural Beeswax Candles" },
-      { nameKhmer: "ស្លឹកម្លូសម្រាប់បក់ផ្សែង", nameEn: "Fresh Betel Leaves for Waving Smoke" }
-    ],
-    steps: [
-      {
-        stepNumber: 1,
-        titleKhmer: "ការអុជទៀន និងបង្វិលតាមទ្រនិចនាឡិកា ៧ ឬ ៩ ជុំ",
-        titleEn: "Clockwise Rotation of the Popil (7 or 9 Rounds)",
-        detailEn: "The elders pass the Popil from right hand to right hand in a sun-wise direction (Pradaksina) around the couple exactly 7 or 9 times.",
-        detailKhmer: "ចាស់ទុំហុចពពិលពីដៃស្តាំទៅដៃស្តាំតាមទិសទ្រនិចនាឡិកា (ប្រទក្សិណ) ព័ទ្ធជុំវិញកូនទាំងពីរចំនួន ៧ ឬ ៩ ជុំ។",
-        meaningEn: "The circle of light symbolizes the continuous cycle of solar energy, wholeness, and the protective embrace of the extended community.",
-        meaningKhmer: "រង្វង់ពន្លឺតំណាងឱ្យថាមពលព្រះអាទិត្យ ភាពពេញលេញ និងការការពារយ៉ាងកក់ក្តៅពីសហគមន៍។"
-      },
-      {
-        stepNumber: 2,
-        titleKhmer: "ការបក់ផ្សែងទៀនចូលកណ្តាល",
-        titleEn: "Waving the Fragrant Smoke Toward the Couple",
-        detailEn: "As each elder receives the Popil, they use a fresh betel leaf in their left hand to gently fan the sweet beeswax smoke toward the couple's face and heart.",
-        detailKhmer: "ពេលកាន់ពពិល ចាស់ទុំយកស្លឹកម្លូបក់ផ្សែងទៀនក្រមួនឃ្មុំថ្នមៗសំដៅទៅទ្រូង និងផ្ទៃមុខរបស់កូនទាំងពីរ។",
-        meaningEn: "The sacred smoke purifies the couple's aura, transferring the moral endurance, patience, and fidelity of the elders into their hearts.",
-        meaningKhmer: "ផ្សែងបរិសុទ្ធជួយស្រូបយកឧបទ្រពចង្រៃ និងផ្ទេរនូវភាពអត់ធ្មត់ ក្តីស្រឡាញ់ដ៏គង់វង្សពីចាស់ទុំចូលក្នុងដួងចិត្តកូន។"
-      },
-      {
-        stepNumber: 3,
-        titleKhmer: "ការពន្លត់ទៀនដោយស្លឹកម្លូនៅជុំចុងក្រោយ",
-        titleEn: "Extinguishing the Flame with Betel Leaf on the Final Round",
-        detailEn: "On the final round, the Achar uses the betel leaf to smother the candle flame, allowing a thick plume of holy smoke to rise over the couple.",
-        detailKhmer: "នៅជុំចុងក្រោយ លោកអាចារ្យយកស្លឹកម្លូសង្កត់ពន្លត់ភ្លើងទៀន ឱ្យផ្សែងហុយឡើងគ្របដណ្តប់លើកូនទាំងពីរ។",
-        meaningEn: "Seals the blessings inside the couple, binding their souls (*Prung*) together before the ancestors.",
-        meaningKhmer: "ជាការចងព្រលឹង និងផ្សារភ្ជាប់ពរជ័យឱ្យស្ថិតស្ថេរក្នុងខ្លួនកូនទាំងពីរជានិច្ច។"
-      }
-    ],
-    regionalNotesEn: "Tradition strictly requires that the elders passing the Popil must be happily married living spouses whose first union has remained faithful without divorce. In some rural communities, 9 Popil are used; in city settings, 3 or 7 are standard.",
-    regionalNotesKhmer: "ទំនៀមទម្លាប់តម្រូវឱ្យអ្នកបង្វិលពពិលជាគូស្វាមីភរិយាដែលរស់នៅជាមួយគ្នាយ៉ាងសុខសាន្តមិនធ្លាប់បែកបាក់។ នៅតាមស្រុកខ្លះប្រើពពិល ៩ ចំណែកទីក្រុងនិយមប្រើ ៣ ឬ ៧។",
-    mediaPlaceholder: {
-      type: "photo",
-      titleEn: "Archival Photo: Circular Passing of the Sacred Popil",
-      descriptionEn: "Documentary photograph showing elders seated in a circle fanning lit Popil candle smoke over the bride and groom's bowed heads.",
-      recommendedRatio: "16:9",
-      image: "/images/bongvel-popil/ceremony.jpg"
-    }
-  },
-  {
-    id: "chang-dai",
-    order: 5,
-    titleKhmer: "ពិធីចងដៃ (ចងអំបោះក្រហម)",
-    titleEn: "Pithi Chorng Dai",
+    titleKhmer: "កិច្ចចងដៃ (ចងអំបោះក្រហម)",
+    titleEn: "Chorng Dai",
     translationEn: "Tying the Sacred Red Thread & Knot Blessing",
     phonetic: "Pithi Chorng Dai",
     timeOfDay: "រសៀល • 02:30 PM (Afternoon)",
@@ -310,14 +261,73 @@ export const ceremonies = [
       titleEn: "Archival Close-Up: Tying the Red Blessing Thread (Pithi Chorng Dai)",
       descriptionEn: "Intimate close-up photograph of wrinkled grandmother's hands tying the red cotton thread onto the bride's wrist over the golden silk cushion.",
       recommendedRatio: "1:1",
-      image: "/images/chang-dai/ceremony.jpg"
+      image: "/images/chorng-dai/ceremony.jpg"
     }
   },
   {
-    id: "phat-phka-sla",
+    id: "bongvil-popil",
+    order: 5,
+    titleKhmer: "កិច្ចបង្វិលពពិល",
+    titleEn: "Bongvil Popil",
+    translationEn: "Passing of the Sacred Candle Smoke Blessing",
+    phonetic: "Pithi Bongvil Popil",
+    timeOfDay: "រសៀល • 01:30 PM (Early Afternoon)",
+    summaryEn: "Happily married elder couples sit in a circle surrounding the bride and groom, passing lit beeswax candles on sacred leaf-shaped holders to envelop the couple in protective smoke.",
+    summaryKhmer: "គូស្វាមីភរិយាចាស់ទុំដែលមានសុភមង្គល អង្គុយព័ទ្ធជុំវិញកូនទាំងពីរ ហើយបង្វិលពពិលដោតទៀនក្រមួនឃ្មុំ ព្រមទាំងបក់ផ្សែងជម្រះឧបទ្រព និងផ្តល់ពរ។",
+    participants: [
+      { roleKhmer: "កូនកំលោះ និងកូនក្រមុំ", roleEn: "Bride & Groom (seated at center)" },
+      { roleKhmer: "គូស្វាមីភរិយាចាស់ទុំ (មានសុភមង្គលគង់វង្ស)", roleEn: "Married Elder Couples (Role Models of Enduring Union)" },
+      { roleKhmer: "លោកអាចារ្យ", roleEn: "Achar (Directing the circular flow)" }
+    ],
+    sacredItems: [
+      { nameKhmer: "ពពិលប្រាក់ ឬសំរិទ្ធ ៣ ឬ ៧ (រាងស្លឹកពោធិ៍)", nameEn: "3, 7, or 9 Silver Popil (Bodhi-leaf shaped candle holders)" },
+      { nameKhmer: "ទៀនក្រមួនឃ្មុំសុទ្ធ", nameEn: "Pure Natural Beeswax Candles" },
+      { nameKhmer: "ស្លឹកម្លូសម្រាប់បក់ផ្សែង", nameEn: "Fresh Betel Leaves for Waving Smoke" }
+    ],
+    steps: [
+      {
+        stepNumber: 1,
+        titleKhmer: "ការអុជទៀន និងបង្វិលតាមទ្រនិចនាឡិកា ៧ ឬ ៩ ជុំ",
+        titleEn: "Clockwise Rotation of the Popil (7 or 9 Rounds)",
+        detailEn: "The elders pass the Popil from right hand to right hand in a sun-wise direction (Pradaksina) around the couple exactly 7 or 9 times.",
+        detailKhmer: "ចាស់ទុំហុចពពិលពីដៃស្តាំទៅដៃស្តាំតាមទិសទ្រនិចនាឡិកា (ប្រទក្សិណ) ព័ទ្ធជុំវិញកូនទាំងពីរចំនួន ៧ ឬ ៩ ជុំ។",
+        meaningEn: "The circle of light symbolizes the continuous cycle of solar energy, wholeness, and the protective embrace of the extended community.",
+        meaningKhmer: "រង្វង់ពន្លឺតំណាងឱ្យថាមពលព្រះអាទិត្យ ភាពពេញលេញ និងការការពារយ៉ាងកក់ក្តៅពីសហគមន៍។"
+      },
+      {
+        stepNumber: 2,
+        titleKhmer: "ការបក់ផ្សែងទៀនចូលកណ្តាល",
+        titleEn: "Waving the Fragrant Smoke Toward the Couple",
+        detailEn: "As each elder receives the Popil, they use a fresh betel leaf in their left hand to gently fan the sweet beeswax smoke toward the couple's face and heart.",
+        detailKhmer: "ពេលកាន់ពពិល ចាស់ទុំយកស្លឹកម្លូបក់ផ្សែងទៀនក្រមួនឃ្មុំថ្នមៗសំដៅទៅទ្រូង និងផ្ទៃមុខរបស់កូនទាំងពីរ។",
+        meaningEn: "The sacred smoke purifies the couple's aura, transferring the moral endurance, patience, and fidelity of the elders into their hearts.",
+        meaningKhmer: "ផ្សែងបរិសុទ្ធជួយស្រូបយកឧបទ្រពចង្រៃ និងផ្ទេរនូវភាពអត់ធ្មត់ ក្តីស្រឡាញ់ដ៏គង់វង្សពីចាស់ទុំចូលក្នុងដួងចិត្តកូន។"
+      },
+      {
+        stepNumber: 3,
+        titleKhmer: "ការពន្លត់ទៀនដោយស្លឹកម្លូនៅជុំចុងក្រោយ",
+        titleEn: "Extinguishing the Flame with Betel Leaf on the Final Round",
+        detailEn: "On the final round, the Achar uses the betel leaf to smother the candle flame, allowing a thick plume of holy smoke to rise over the couple.",
+        detailKhmer: "នៅជុំចុងក្រោយ លោកអាចារ្យយកស្លឹកម្លូសង្កត់ពន្លត់ភ្លើងទៀន ឱ្យផ្សែងហុយឡើងគ្របដណ្តប់លើកូនទាំងពីរ។",
+        meaningEn: "Seals the blessings inside the couple, binding their souls (*Prung*) together before the ancestors.",
+        meaningKhmer: "ជាការចងព្រលឹង និងផ្សារភ្ជាប់ពរជ័យឱ្យស្ថិតស្ថេរក្នុងខ្លួនកូនទាំងពីរជានិច្ច។"
+      }
+    ],
+    regionalNotesEn: "Tradition strictly requires that the elders passing the Popil must be happily married living spouses whose first union has remained faithful without divorce. In some rural communities, 9 Popil are used; in city settings, 3 or 7 are standard.",
+    regionalNotesKhmer: "ទំនៀមទម្លាប់តម្រូវឱ្យអ្នកបង្វិលពពិលជាគូស្វាមីភរិយាដែលរស់នៅជាមួយគ្នាយ៉ាងសុខសាន្តមិនធ្លាប់បែកបាក់។ នៅតាមស្រុកខ្លះប្រើពពិល ៩ ចំណែកទីក្រុងនិយមប្រើ ៣ ឬ ៧។",
+    mediaPlaceholder: {
+      type: "photo",
+      titleEn: "Archival Photo: Circular Passing of the Sacred Popil",
+      descriptionEn: "Documentary photograph showing elders seated in a circle fanning lit Popil candle smoke over the bride and groom's bowed heads.",
+      recommendedRatio: "16:9",
+      image: "/images/bongvil-popil/ceremony.jpg"
+    }
+  },
+  {
+    id: "bach-phka-sla",
     order: 6,
-    titleKhmer: "ពិធីបាចផ្កាស្លា និងចូលបន្ទប់ផ្សំដំណេក",
-    titleEn: "Pithi Bach Phka Sla",
+    titleKhmer: "កិច្ចបាចផ្កាស្លា និងចូលបន្ទប់ផ្សំដំណេក",
+    titleEn: "Bach Phka Sla",
     translationEn: "Scattering Areca Palm Blossoms & Nuptial Chamber Entrance",
     phonetic: "Pithi Bach Phka Sla",
     timeOfDay: "ល្ងាច • 04:30 PM (Late Afternoon / Sunset)",
@@ -361,7 +371,67 @@ export const ceremonies = [
       titleEn: "Archival Photo: Showering with Areca Palm Flowers (Phka Sla)",
       descriptionEn: "Historic photo showing the white mist of flying areca palm blossoms catching the afternoon sunlight over the smiling bride and groom.",
       recommendedRatio: "16:9",
-      image: "/images/phat-phka-sla/ceremony.jpg"
+      image: "/images/bach-phka-sla/ceremony.jpg"
+    }
+  },
+  {
+    id: "sompeas-ptem",
+    order: 7,
+    titleKhmer: "កិច្ចព្រះថោងតោងស្បៃនាងនាគ",
+    titleEn: "Preah Thong Torng Sbai Neang Neak",
+    translationEn: "Holding the Bride's Sbai",
+    phonetic: "Preah Thong Torng Sbai Neang Neak",
+    timeOfDay: "ថ្ងៃត្រង់ • 11:30 AM (Midday)",
+    summaryEn: "The couple wears traditional royal silk garments. The groom holds the bride's scarf, reenacting the ancient Khmer origin myth of Prince Preah Thong and the Naga Princess Neang Neak.",
+    summaryKhmer: "កូនកំលោះកូនក្រមុំស្លៀកសម្លៀកបំពាក់ប្រពៃណីហូលផាមួង។ កូនកំលោះតោងជាយស្បៃកូនក្រមុំ តាមរឿងព្រេងបុរាណព្រះថោងតោងស្បៃនាងនាគ។",
+    participants: [
+      { roleKhmer: "កូនកំលោះ និងកូនក្រមុំ", roleEn: "Bride & Groom" },
+      { roleKhmer: "លោកអាចារ្យ", roleEn: "Achar (Ceremony Master)" },
+      { roleKhmer: "មាតាបិតាទាំងសងខាង", roleEn: "Parents of Bride and Groom" },
+      { roleKhmer: "សាច់ញាតិជិតស្និទ្ធ", roleEn: "Close Lineage Elders" }
+    ],
+    sacredItems: [
+      { nameKhmer: "សម្លៀកបំពាក់ក្បិនហូល និងស្បៃមាស", nameEn: "Royal Sampot Chang Kben Silk & Golden Embroidered Sabai" },
+      { nameKhmer: "ព្រះខ័នរាជ្យ (ដាវជានិមិត្តរូប)", nameEn: "Sacred Ceremonial Dagger (Symbol of Protection)" },
+      { nameKhmer: "ជើងពានប្រាក់ដាក់ទៀន និងស្លាធម៌", nameEn: "Silver Pedestal Tray with Candles & Ancestral Slathor" }
+    ],
+    steps: [
+      {
+        stepNumber: 1,
+        titleKhmer: "ការគោរពព្រះរតនត្រ័យ និងជម្រាបដូនតា",
+        titleEn: "Homage to the Triple Gem and Ancestral Spirits",
+        detailEn: "The couple lights three incense sticks and bows three times, honoring the Buddha, Dhamma, Sangha, and their departed ancestors.",
+        detailKhmer: "កូនទាំងពីរអុជធូប ៣ សរសៃ និងក្រាបសំពះ ៣ ដង ដើម្បីគោរពព្រះពុទ្ធ ព្រះធម៌ ព្រះសង្ឃ និងដូនតាដែលបានចែកឋាន។",
+        meaningEn: "Rooted in Buddhist filial piety (Katannu), a marriage succeeds when founded on humility, gratitude, and moral discipline.",
+        meaningKhmer: "បង្កប់នូវគុណធម៌កតញ្ញូ ដោយជឿជាក់ថាអាពាហ៍ពិពាហ៍នឹងគង់វង្សបានអាស្រ័យលើសីលធម៌ និងការដឹងគុណ។"
+      },
+      {
+        stepNumber: 2,
+        titleKhmer: "ពិធីកូនកំលោះតោងជាយស្បៃកូនក្រមុំ",
+        titleEn: "The Groom Holding the Bride's Sabai (Scarf)",
+        detailEn: "The groom grasps the golden tail of the bride's scarf as she leads him gently into the ceremonial room.",
+        detailKhmer: "កូនកំលោះកាន់ជាយស្បៃមាសរបស់កូនក្រមុំ ខណៈដែលកូនក្រមុំដើរនាំមុខចូលក្នុងរោងពិធី។",
+        meaningEn: "Re-enacts Prince Preah Thong holding Princess Neang Neak's tail to descend into the ocean kingdom, acknowledging the matriarchal reverence in Khmer culture.",
+        meaningKhmer: "រំឭករឿងព្រេងព្រះថោងតោងស្បៃនាងនាគចុះឋានភុជង្គនាគ បង្ហាញពីការផ្តល់តម្លៃដល់ស្ត្រីក្នុងសង្គមខ្មែរ។"
+      },
+      {
+        stepNumber: 3,
+        titleKhmer: "ការកាន់ព្រះខ័នការពារគ្រួសារ",
+        titleEn: "The Handing of the Protective Dagger",
+        detailEn: "The Achar places a ceremonial silver dagger (replica of Preah Khan) between the couple's clasped hands.",
+        detailKhmer: "លោកអាចារ្យប្រគល់ដាវប្រាក់ជានិមិត្តរូប (ព្រះខ័ន) ឱ្យកូនទាំងពីរកាន់រួមគ្នា។",
+        meaningEn: "The dagger symbolizes courage, loyalty, and the husband and wife's shared duty to protect the peace and honor of their home.",
+        meaningKhmer: "តំណាងឱ្យភាពក្លាហាន ភាពស្មោះត្រង់ និងកាតព្វកិច្ចរួមគ្នាក្នុងការការពារសេចក្តីសុខក្នុងគ្រួសារ។"
+      }
+    ],
+    regionalNotesEn: "In Southern provinces (Takeo, Kampot), the groom traditionally walks around the altar three times before holding the sabai. In diaspora weddings in France and the US, this remains the most emotional, visually iconic moment of cultural identity.",
+    regionalNotesKhmer: "នៅខេត្តតាកែវ និងកំពត កូនកំលោះតែងដើរព័ទ្ធរានពិធី ៣ ជុំសិនមុនតោងស្បៃ។ សម្រាប់ខ្មែរនៅក្រៅប្រទេស នេះជាពិធីដ៏ពិសិដ្ឋបំផុតដើម្បីថែរក្សាអត្តសញ្ញាណជាតិ។",
+    mediaPlaceholder: {
+      type: "photo",
+      titleEn: "Archival Photo: Preah Thong Holding the Sabai Scarf",
+      descriptionEn: "Historic family photograph capturing the bride in embroidered silk sabai leading the groom holding her trailing sash into the family home.",
+      recommendedRatio: "4:3",
+      image: "/images/sompeas-ptem/ceremony.jpg"
     }
   }
 ];

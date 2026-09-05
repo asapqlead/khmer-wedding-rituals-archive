@@ -36,7 +36,7 @@ export default function AboutView({ onClose, langMode, onScrollTopChange }) {
   const handleClose = () => {
     onScrollTopChange?.(false);
     setIsClosing(true);
-    setTimeout(() => onClose(), 420);
+    setTimeout(() => onClose(), 480);
   };
 
   return (
@@ -56,8 +56,6 @@ export default function AboutView({ onClose, langMode, onScrollTopChange }) {
         justifyContent: "center",
         padding: "120px 24px 60px",
         overflowY: "auto",
-        transition: "opacity 500ms ease",
-        opacity: isClosing ? 0 : 1,
       }}
     >
       <ScrollProgress containerRef={containerRef} />
@@ -88,6 +86,18 @@ export default function AboutView({ onClose, langMode, onScrollTopChange }) {
           <span className="font-mono-tag" style={{ color: "var(--text-muted)" }}>AUPP ICT 340</span>
         </div>
       </div>
+
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          backgroundColor: "#000000",
+          zIndex: 100,
+          pointerEvents: "none",
+          opacity: isClosing ? 1 : 0,
+          transition: "opacity 480ms cubic-bezier(0.25, 1, 0.5, 1)",
+        }}
+      />
     </div>
   );
 }

@@ -38,10 +38,10 @@ export default function HorizontalGallery({ ceremonies, activeIndex, onIndexChan
     const loop = () => {
       if (!isDragging) {
         target += velocity;
-        velocity *= 0.94;
+        velocity *= 0.88;
         if (Math.abs(velocity) < 0.01) velocity = 0;
         target = Math.max(0, Math.min(maxScroll(), target));
-        current += (target - current) * 0.048;
+        current += (target - current) * 0.035;
         if (Math.abs(target - current) < 0.05) current = target;
         el.scrollLeft = current;
         updateIndex(current);
@@ -54,7 +54,7 @@ export default function HorizontalGallery({ ceremonies, activeIndex, onIndexChan
       e.preventDefault();
       if (!interactiveRef.current) return;
       const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      velocity += delta * 0.42;
+      velocity += delta * 0.22;
     };
 
     const onDown = (e) => {

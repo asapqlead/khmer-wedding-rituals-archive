@@ -30,7 +30,7 @@ export default function GalleryCounter({ current, total, isHidden, langMode }) {
     >
       <div style={{ height: 22, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 4 }}>
         <span
-          className={isKhmer ? "khmer-sans" : ""}
+          className={`${isKhmer ? "khmer-sans" : ""} lang-text`.trim()}
           style={{
             fontSize: 13,
             fontFamily: isKhmer ? "var(--font-khmer-sans)" : "var(--font-mono)",

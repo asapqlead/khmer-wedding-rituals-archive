@@ -82,6 +82,7 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
       <button
         type="button"
         onClick={handleBack}
+        className="lang-text"
         style={{
           position: "fixed",
           top: "clamp(24px, 4vh, 48px)",
@@ -107,6 +108,7 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
         <button
           type="button"
           onClick={onNext}
+          className="lang-text"
           style={{
             position: "fixed",
             bottom: "clamp(24px, 4vh, 48px)",

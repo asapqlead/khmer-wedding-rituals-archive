@@ -63,7 +63,7 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
         }}
       >
         <span
-          className={langMode === "km" ? "khmer-sans" : ""}
+          className={`${langMode === "km" ? "khmer-sans" : ""} lang-text`.trim()}
           style={{
             color: "var(--text-primary)",
             fontSize: 18,

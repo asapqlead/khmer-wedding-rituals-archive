@@ -80,25 +80,18 @@ export const glossaryTerms = [
     definitionKhmer: "ក្បួនហែផ្លែឈើជាគូៗរបស់កូនកំលោះ និងសាច់ញាតិឆ្ពោះទៅកាន់គេហដ្ឋានខាងស្រី។"
   },
   {
+    khmer: "ពិធីសែនព្រេនមេបា",
+    romanized: "Pithi Sen Pren May Ba",
+    category: "Rituals",
+    definitionEn: "The ancestral homage ritual where the couple presents offerings of food, wine, and betel to invite departed ancestors and lineage elders to witness and bless the marriage.",
+    definitionKhmer: "ពិធីសែនដង្វាយ ម្ហូបអាហារ ស្រា និងម្លូស្លា ជូនដូនតាចែកឋាន និងមេបាចាស់ទុំ ដើម្បីសុំពរជ័យ និងសេចក្តីសុខក្នុងគ្រួសារថ្មី។"
+  },
+  {
     khmer: "ពិធីកាត់សក់បង្កក់សិរី",
     romanized: "Pithi Kat Sork",
     category: "Rituals",
     definitionEn: "A joyful ritual where comedic celestial barbers symbolically snip hair and perfume the couple to cleanse bad luck and welcome happiness.",
     definitionKhmer: "ពិធីកាត់សក់ជានិមិត្តរូបដើម្បីជម្រះឧបទ្រពចង្រៃ និងនាំមកនូវសិរីសួស្តី។"
-  },
-  {
-    khmer: "ពិធីសំពះផ្ទឹម",
-    romanized: "Sompeas Ptem",
-    category: "Rituals",
-    definitionEn: "The central nuptial union ritual where the bride and groom sit side-by-side on silk mats to honor the Triple Gem and receive formal blessings.",
-    definitionKhmer: "ពិធីផ្ទឹមមុខមេបា គោរពព្រះរតនត្រ័យ និងផ្សារភ្ជាប់និស្ស័យប្តីប្រពន្ធ។"
-  },
-  {
-    khmer: "ពិធីបង្វិលពពិល",
-    romanized: "Pithi Bongvil Popil",
-    category: "Rituals",
-    definitionEn: "The sacred passing of lit beeswax candles in a circle to envelop the couple in protective smoke and transfer the elders' enduring virtue.",
-    definitionKhmer: "ពិធីបង្វិលពពិល ៧ ឬ ៩ ជុំ និងបក់ផ្សែងទៀនក្រមួនឃ្មុំប្រសិទ្ធពរជ័យដល់គូស្វាមីភរិយា។"
   },
   {
     khmer: "ពិធីចងដៃ",
@@ -108,10 +101,24 @@ export const glossaryTerms = [
     definitionKhmer: "ពិធីចងអំបោះក្រហមលើកដៃកូនកំលោះកូនក្រមុំ និងជូនពរឱ្យមានសុខភាពល្អ និងសុភមង្គល។"
   },
   {
+    khmer: "ពិធីបង្វិលពពិល",
+    romanized: "Pithi Bongvil Popil",
+    category: "Rituals",
+    definitionEn: "The sacred passing of lit beeswax candles in a circle to envelop the couple in protective smoke and transfer the elders' enduring virtue.",
+    definitionKhmer: "ពិធីបង្វិលពពិល ៧ ឬ ៩ ជុំ និងបក់ផ្សែងទៀនក្រមួនឃ្មុំប្រសិទ្ធពរជ័យដល់គូស្វាមីភរិយា។"
+  },
+  {
     khmer: "ពិធីបាចផ្កាស្លា",
     romanized: "Pithi Bach Phka Sla",
     category: "Rituals",
     definitionEn: "The showering of fragrant white areca palm blossoms over the newlyweds to impart fertility, serenity, and domestic prosperity.",
     definitionKhmer: "ការបាចផ្កាស្លាពណ៌សក្រអូបលើកូនទាំងពីរ មុនពេលនាំចូលបន្ទប់ផ្សំដំណេក។"
+  },
+  {
+    khmer: "កិច្ចព្រះថោងតោងស្បៃនាងនាគ",
+    romanized: "Preah Thong Torng Sbai Neang Neak",
+    category: "Rituals",
+    definitionEn: "The central nuptial union ritual where the bride and groom sit side-by-side on silk mats to honor the Triple Gem and receive formal blessings.",
+    definitionKhmer: "ពិធីផ្ទឹមមុខមេបា គោរពព្រះរតនត្រ័យ និងផ្សារភ្ជាប់និស្ស័យប្តីប្រពន្ធ។"
   }
 ];

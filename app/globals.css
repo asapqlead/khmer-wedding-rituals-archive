@@ -206,6 +206,51 @@ a {
   will-change: transform, opacity, filter;
 }
 
+/* ============================================================
+   Language Switching Typographic Animation
+   ============================================================ */
+[data-lang-phase="out"] h1:not(.wheel-stage):not(.wheel-stage *),
+[data-lang-phase="out"] h2:not(.wheel-stage):not(.wheel-stage *),
+[data-lang-phase="out"] h3:not(.wheel-stage):not(.wheel-stage *),
+[data-lang-phase="out"] p:not(.wheel-stage):not(.wheel-stage *),
+[data-lang-phase="out"] blockquote:not(.wheel-stage):not(.wheel-stage *),
+[data-lang-phase="out"] .nav-item,
+[data-lang-phase="out"] .font-mono-tag,
+[data-lang-phase="out"] .lang-text {
+  opacity: 0 !important;
+  transform: translateY(-4px) !important;
+  filter: blur(4px) !important;
+  transition: opacity 160ms cubic-bezier(0.4, 0, 1, 1),
+              transform 160ms cubic-bezier(0.4, 0, 1, 1),
+              filter 160ms cubic-bezier(0.4, 0, 1, 1) !important;
+  will-change: transform, opacity, filter;
+}
+
+[data-lang-phase="in"] h1:not(.wheel-stage):not(.wheel-stage *),
+[data-lang-phase="in"] h2:not(.wheel-stage):not(.wheel-stage *),
+[data-lang-phase="in"] h3:not(.wheel-stage):not(.wheel-stage *),
+[data-lang-phase="in"] p:not(.wheel-stage):not(.wheel-stage *),
+[data-lang-phase="in"] blockquote:not(.wheel-stage):not(.wheel-stage *),
+[data-lang-phase="in"] .nav-item,
+[data-lang-phase="in"] .font-mono-tag,
+[data-lang-phase="in"] .lang-text {
+  animation: langTextIn 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+
+@keyframes langTextIn {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
 /* Reduced Motion Override */
 @media (prefers-reduced-motion: reduce) {
 
@@ -232,5 +277,32 @@ a {
     transform: none !important;
     filter: none !important;
     transition: opacity 200ms ease !important;
+  }
+
+  [data-lang-phase="out"] h1,
+  [data-lang-phase="out"] h2,
+  [data-lang-phase="out"] h3,
+  [data-lang-phase="out"] p,
+  [data-lang-phase="out"] blockquote,
+  [data-lang-phase="out"] .nav-item,
+  [data-lang-phase="out"] .font-mono-tag,
+  [data-lang-phase="out"] .lang-text {
+    transform: none !important;
+    filter: none !important;
+    transition: opacity 100ms ease !important;
+  }
+
+  [data-lang-phase="in"] h1,
+  [data-lang-phase="in"] h2,
+  [data-lang-phase="in"] h3,
+  [data-lang-phase="in"] p,
+  [data-lang-phase="in"] blockquote,
+  [data-lang-phase="in"] .nav-item,
+  [data-lang-phase="in"] .font-mono-tag,
+  [data-lang-phase="in"] .lang-text {
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+    opacity: 1 !important;
   }
 }

@@ -16,7 +16,7 @@ export const metadata = {
     "Living Archive",
     "Hae Chomnoon",
     "Pithi Kat Sork",
-    "Sompeas Ptem",
+    "Preah Thong Torng Sbai Neang Neak",
     "Pithi Bongvil Popil",
     "Pithi Chorng Dai",
     "Pithi Bach Phka Sla",
