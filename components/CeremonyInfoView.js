@@ -3,14 +3,18 @@
 import { useEffect, useState, useRef } from "react";
 import CeremonyInfoContent from "./CeremonyInfoContent.js";
 import ScrollProgress from "./ScrollProgress.js";
+import useIsMobile from "./useIsMobile.js";
 
 export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }) {
   const [isSlidUp, setIsSlidUp] = useState(false);
   const [isTextVisible, setIsTextVisible] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
   const containerRef = useRef(null);
+  const { isMobile } = useIsMobile();
 
   useEffect(() => {
+    let canScrollClose = false;
+    const cooldown = setTimeout(() => { canScrollClose = true; }, 300);
     const raf = requestAnimationFrame(() => setIsSlidUp(true));
     const textTimer = setTimeout(() => {
       setIsTextVisible(true);
@@ -19,11 +23,20 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
     const onKey = (e) => {
       if (e.key === "Escape" || e.key === "Backspace") handleBack();
     };
+
+    const onWheel = (e) => {
+      if (!canScrollClose) return;
+      if (e.deltaY > 20) handleBack();
+    };
+
     window.addEventListener("keydown", onKey);
+    window.addEventListener("wheel", onWheel, { passive: true });
     return () => {
+      clearTimeout(cooldown);
       clearTimeout(textTimer);
       cancelAnimationFrame(raf);
       window.removeEventListener("keydown", onKey);
+      window.removeEventListener("wheel", onWheel);
     };
   }, []);
 
@@ -44,7 +57,9 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
       role="dialog"
       aria-modal="true"
       className="custom-scrollbar"
-      onWheel={(e) => e.stopPropagation()}
+      onWheel={(e) => {
+        if (e.deltaY > 20) handleBack();
+      }}
       onTouchMove={(e) => e.stopPropagation()}
       style={{
         position: "fixed",
@@ -73,8 +88,9 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
           style={{
             position: "absolute",
             inset: 0,
-            background:
-              "linear-gradient(to right, rgba(0, 0, 0, 0.3) 0%, rgba(10, 10, 10, 0.65) 45%, rgba(14, 14, 14, 0.92) 80%, rgba(14, 14, 14, 0.98) 100%)",
+            background: isMobile
+              ? "linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0%, rgba(10, 10, 10, 0.7) 40%, rgba(14, 14, 14, 0.95) 70%, rgba(14, 14, 14, 0.99) 100%)"
+              : "linear-gradient(to right, rgba(0, 0, 0, 0.3) 0%, rgba(10, 10, 10, 0.65) 45%, rgba(14, 14, 14, 0.92) 80%, rgba(14, 14, 14, 0.98) 100%)",
           }}
         />
       </div>
@@ -85,23 +101,34 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
         className="lang-text"
         style={{
           position: "fixed",
-          top: "clamp(24px, 4vh, 48px)",
-          left: "clamp(28px, 4vw, 56px)",
+          top: isMobile ? "clamp(16px, 3vh, 32px)" : "clamp(24px, 4vh, 48px)",
+          left: isMobile ? "clamp(16px, 3vw, 28px)" : "clamp(28px, 4vw, 56px)",
           zIndex: 50,
           color: "#FFFFFF",
-          fontSize: 15,
+          fontSize: isMobile ? 13.5 : 15,
           fontWeight: 400,
           fontFamily: langMode === "km" ? "var(--font-khmer-sans)" : "var(--font-sans)",
-          opacity: isTextVisible && !isFadingOut ? 0.85 : 0,
+          opacity: isTextVisible && !isFadingOut ? 0.95 : 0,
           pointerEvents: isTextVisible && !isFadingOut ? "auto" : "none",
           letterSpacing: "0.02em",
           transition: "opacity 700ms ease, transform 200ms ease",
           cursor: "pointer",
+          minWidth: 44,
+          minHeight: 44,
+          padding: isMobile ? "6px 14px" : "0",
+          backgroundColor: isMobile ? "rgba(18, 18, 18, 0.75)" : "transparent",
+          borderRadius: 999,
+          border: isMobile ? "1px solid rgba(255, 255, 255, 0.18)" : "none",
+          backdropFilter: isMobile ? "blur(12px)" : "none",
+          WebkitBackdropFilter: isMobile ? "blur(12px)" : "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
         onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateX(-3px)"; }}
-        onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.85"; e.currentTarget.style.transform = "translateX(0)"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.95"; e.currentTarget.style.transform = "translateX(0)"; }}
       >
-        {langMode === "km" ? "ត្រឡប់ក្រោយ" : "Back"}
+        {langMode === "km" ? "← ត្រឡប់ក្រោយ" : "← Back"}
       </button>
 
       {onNext && (
@@ -111,23 +138,34 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
           className="lang-text"
           style={{
             position: "fixed",
-            bottom: "clamp(24px, 4vh, 48px)",
-            right: "clamp(28px, 4vw, 56px)",
+            bottom: isMobile ? "clamp(16px, 3vh, 32px)" : "clamp(24px, 4vh, 48px)",
+            right: isMobile ? "clamp(16px, 3vw, 28px)" : "clamp(28px, 4vw, 56px)",
             zIndex: 50,
             color: "#FFFFFF",
-            fontSize: 15,
+            fontSize: isMobile ? 13.5 : 15,
             fontWeight: 400,
             fontFamily: langMode === "km" ? "var(--font-khmer-sans)" : "var(--font-sans)",
-            opacity: isTextVisible && !isFadingOut ? 0.85 : 0,
+            opacity: isTextVisible && !isFadingOut ? 0.95 : 0,
             pointerEvents: isTextVisible && !isFadingOut ? "auto" : "none",
             letterSpacing: "0.02em",
             transition: "opacity 700ms ease, transform 200ms ease",
             cursor: "pointer",
+            minWidth: 44,
+            minHeight: 44,
+            padding: isMobile ? "6px 14px" : "0",
+            backgroundColor: isMobile ? "rgba(18, 18, 18, 0.75)" : "transparent",
+            borderRadius: 999,
+            border: isMobile ? "1px solid rgba(255, 255, 255, 0.18)" : "none",
+            backdropFilter: isMobile ? "blur(12px)" : "none",
+            WebkitBackdropFilter: isMobile ? "blur(12px)" : "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
           onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateX(3px)"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.85"; e.currentTarget.style.transform = "translateX(0)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.95"; e.currentTarget.style.transform = "translateX(0)"; }}
         >
-          {langMode === "km" ? "បន្ទាប់" : "Next"}
+          {langMode === "km" ? "បន្ទាប់ →" : "Next →"}
         </button>
       )}
 
@@ -136,12 +174,14 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
           position: "relative",
           zIndex: 10,
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: isMobile ? "center" : "flex-end",
           minHeight: "100vh",
-          padding: "clamp(80px, 12vh, 120px) clamp(28px, 5vw, 72px) clamp(60px, 8vh, 90px)",
+          padding: isMobile
+            ? "clamp(70px, 10vh, 100px) clamp(16px, 4vw, 28px) clamp(40px, 6vh, 60px)"
+            : "clamp(80px, 12vh, 120px) clamp(28px, 5vw, 72px) clamp(60px, 8vh, 90px)",
         }}
       >
-        <CeremonyInfoContent ceremony={ceremony} langMode={langMode} isVisible={isTextVisible && !isFadingOut} />
+        <CeremonyInfoContent key={ceremony.id} ceremony={ceremony} langMode={langMode} isVisible={isTextVisible && !isFadingOut} isMobile={isMobile} />
       </div>
 
       <div

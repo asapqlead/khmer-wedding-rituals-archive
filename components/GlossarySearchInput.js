@@ -2,7 +2,7 @@
 "use client";
 import { useState, useRef } from "react";
 
-export default function GlossarySearchInput({ value, onChange, onClear, langMode, resultCount }) {
+export default function GlossarySearchInput({ value, onChange, onClear, langMode, resultCount, isMobile }) {
   const [isFocused, setIsFocused] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const inputRef = useRef(null);
@@ -23,7 +23,9 @@ export default function GlossarySearchInput({ value, onChange, onClear, langMode
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{
-        position: "relative", display: "flex", alignItems: "center", width: "clamp(220px, 26vw, 290px)", height: 38,
+        position: "relative", display: "flex", alignItems: "center",
+        width: isMobile ? "100%" : "clamp(220px, 26vw, 290px)",
+        height: isMobile ? 44 : 38,
         backgroundColor: isFocused ? "rgba(255, 255, 255, 0.05)" : "rgba(255, 255, 255, 0.025)",
         border: `1px solid ${borderColor}`, borderRadius: 100, padding: "0 10px 0 14px",
         boxShadow: isFocused ? "0 0 0 1px var(--accent-gold), 0 2px 16px rgba(197, 160, 89, 0.12)" : "none",
@@ -47,7 +49,8 @@ export default function GlossarySearchInput({ value, onChange, onClear, langMode
         className={`lang-text ${isKhmer ? "khmer-sans" : ""}`}
         style={{
           flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: "var(--text-primary)",
-          fontSize: isKhmer ? 13 : 13.5, fontFamily: isKhmer ? "var(--font-khmer-sans)" : "var(--font-sans)", letterSpacing: isKhmer ? "0" : "0.01em",
+          fontSize: isMobile ? (isKhmer ? 14 : 14) : (isKhmer ? 13 : 13.5),
+          fontFamily: isKhmer ? "var(--font-khmer-sans)" : "var(--font-sans)", letterSpacing: isKhmer ? "0" : "0.01em",
         }}
       />
 
@@ -57,8 +60,8 @@ export default function GlossarySearchInput({ value, onChange, onClear, langMode
           onClick={() => { onClear(); inputRef.current?.focus(); }}
           aria-label="Clear search"
           style={{
-            width: 20, height: 20, borderRadius: "50%", backgroundColor: "rgba(255, 255, 255, 0.15)", color: "var(--text-primary)",
-            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, lineHeight: 1, cursor: "pointer", flexShrink: 0,
+            width: 28, height: 28, borderRadius: "50%", backgroundColor: "rgba(255, 255, 255, 0.15)", color: "var(--text-primary)",
+            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, lineHeight: 1, cursor: "pointer", flexShrink: 0,
             transition: "transform 150ms ease",
           }}
           onMouseDown={(e) => { e.currentTarget.style.transform = "scale(0.88)"; }}

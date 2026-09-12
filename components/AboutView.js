@@ -4,11 +4,13 @@ import { useEffect, useState, useRef } from "react";
 import collection from "../collection.config.js";
 import WheelText from "./WheelText.js";
 import ScrollProgress from "./ScrollProgress.js";
+import useIsMobile from "./useIsMobile.js";
 
 export default function AboutView({ onClose, langMode, onScrollTopChange }) {
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const containerRef = useRef(null);
+  const { isMobile } = useIsMobile();
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => setIsVisible(true));
@@ -54,7 +56,7 @@ export default function AboutView({ onClose, langMode, onScrollTopChange }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "120px 24px 60px",
+        padding: isMobile ? "80px 16px 40px" : "120px 24px 60px",
         overflowY: "auto",
       }}
     >
@@ -69,20 +71,27 @@ export default function AboutView({ onClose, langMode, onScrollTopChange }) {
             text={langMode === "km" ? "ការចងក្រងនូវកម្រងពិធីការអាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ" : collection.description}
             direction={1}
             className={langMode === "km" ? "khmer-serif" : ""}
-            style={{ fontSize: "clamp(24px, 3.5vw, 36px)", color: "#FFFFFF", lineHeight: 1.35 }}
+            style={{ fontSize: isMobile ? "clamp(20px, 5.5vw, 28px)" : "clamp(24px, 3.5vw, 36px)", color: "#FFFFFF", lineHeight: 1.35 }}
             as="h2"
           />
         </div>
 
-        <blockquote style={{ borderLeft: "2px solid var(--accent-gold)", paddingLeft: 20, textAlign: "left", margin: "24px 0" }}>
-          <p className={langMode === "km" ? "khmer-sans" : ""} style={{ fontSize: 16, fontStyle: "italic", color: "var(--text-primary)", lineHeight: 1.7 }}>
+        <blockquote style={{ borderLeft: "2px solid var(--accent-gold)", paddingLeft: isMobile ? 14 : 20, textAlign: "left", margin: "24px 0" }}>
+          <p className={langMode === "km" ? "khmer-sans" : ""} style={{ fontSize: isMobile ? 14 : 16, fontStyle: "italic", color: "var(--text-primary)", lineHeight: 1.7 }}>
             &ldquo;{collection.source}&rdquo;
           </p>
         </blockquote>
 
-        <div style={{ marginTop: 32, display: "flex", justifyContent: "center", gap: 24, alignItems: "center" }}>
+        <div style={{
+          marginTop: 32,
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          justifyContent: "center",
+          gap: isMobile ? 12 : 24,
+          alignItems: "center",
+        }}>
           <span className="font-mono-tag" style={{ color: "var(--text-muted)" }}>CURATED BY {collection.curator.toUpperCase()}</span>
-          <span style={{ width: 4, height: 4, borderRadius: "50%", backgroundColor: "var(--accent-gold)" }} />
+          {!isMobile && <span style={{ width: 4, height: 4, borderRadius: "50%", backgroundColor: "var(--accent-gold)" }} />}
           <span className="font-mono-tag" style={{ color: "var(--text-muted)" }}>AUPP ICT 340</span>
         </div>
       </div>

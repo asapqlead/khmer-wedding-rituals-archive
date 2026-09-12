@@ -10,6 +10,8 @@ import AboutView from "../components/AboutView.js";
 import GlossaryModal from "../components/GlossaryModal.js";
 import NoiseOverlay from "../components/NoiseOverlay.js";
 import ScrollProgress from "../components/ScrollProgress.js";
+import useIsMobile from "../components/useIsMobile.js";
+import MobileMainView from "../components/MobileMainView.js";
 import { entries as ceremonies } from "../data/entries.js";
 
 export default function Home() {
@@ -24,6 +26,7 @@ export default function Home() {
   const [isScrolledInModal, setIsScrolledInModal] = useState(false);
   const [pageCurtain, setPageCurtain] = useState(false);
   const isTransitioning = useRef(false);
+  const { isMobile } = useIsMobile();
 
   const selectedCeremony = selectedIdx !== null ? ceremonies[selectedIdx] : null;
   const activeCeremony = ceremonies[activeIndex] || ceremonies[0];
@@ -62,14 +65,37 @@ export default function Home() {
     setShowDetails(false);
   };
 
-  const handleViewChange = (view) => {
-    if (isTransitioning.current || view === currentView) return;
-    setIsScrolledInModal(false);
-
-    // Fade to black, swap views behind curtain, fade back in
+  const handleCloseFullscreen = (options = {}) => {
+    if (options?.fade === false) {
+      setSelectedIdx(null);
+      setSelectedRect(null);
+      setShowDetails(false);
+      return;
+    }
+    if (isTransitioning.current) return;
     isTransitioning.current = true;
     setPageCurtain(true);
     setTimeout(() => {
+      setSelectedIdx(null);
+      setSelectedRect(null);
+      setShowDetails(false);
+      setTimeout(() => {
+        setPageCurtain(false);
+        isTransitioning.current = false;
+      }, 80);
+    }, 380);
+  };
+
+  const handleViewChange = (view) => {
+    if (isTransitioning.current || (view === currentView && selectedIdx === null)) return;
+    setIsScrolledInModal(false);
+
+    isTransitioning.current = true;
+    setPageCurtain(true);
+    setTimeout(() => {
+      setSelectedIdx(null);
+      setSelectedRect(null);
+      setShowDetails(false);
       setCurrentView(view);
       setTimeout(() => {
         setPageCurtain(false);
@@ -81,7 +107,15 @@ export default function Home() {
   return (
     <main
       data-lang-phase={langPhase}
-      style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden", backgroundColor: "#121212" }}
+      style={{
+        position: "relative",
+        width: isMobile ? "100%" : "100vw",
+        height: isMobile ? "auto" : "100vh",
+        minHeight: "100vh",
+        overflowX: "hidden",
+        overflowY: isMobile ? "auto" : "hidden",
+        backgroundColor: "#121212",
+      }}
     >
       <NoiseOverlay />
       <ScrollProgress />
@@ -89,33 +123,47 @@ export default function Home() {
         currentView={currentView}
         setCurrentView={handleViewChange}
         isFullscreen={selectedCeremony !== null}
-        onCloseFullscreen={() => setSelectedIdx(null)}
+        onCloseFullscreen={handleCloseFullscreen}
         langMode={langMode}
         setLangMode={handleToggleLang}
         isHidden={showDetails}
         isScrolled={currentView !== "work" && isScrolledInModal}
       />
-      <HorizontalGallery
-        ceremonies={ceremonies}
-        activeIndex={activeIndex}
-        onIndexChange={setActiveIndex}
-        onSelectCeremony={handleSelect}
-        langMode={langMode}
-        isInteractive={isGalleryInteractive}
-      />
-      <GalleryCounter
-        current={(selectedCeremony !== null ? selectedIdx : activeIndex) + 1}
-        total={ceremonies.length}
-        isHidden={currentView !== "work" || showDetails}
-        langMode={langMode}
-      />
+
+      {isMobile ? (
+        currentView === "work" && (
+          <MobileMainView
+            ceremonies={ceremonies}
+            onSelectCeremony={handleSelect}
+            langMode={langMode}
+          />
+        )
+      ) : (
+        <>
+          <HorizontalGallery
+            ceremonies={ceremonies}
+            activeIndex={activeIndex}
+            onIndexChange={setActiveIndex}
+            onSelectCeremony={handleSelect}
+            langMode={langMode}
+            isInteractive={isGalleryInteractive}
+          />
+          <GalleryCounter
+            current={(selectedCeremony !== null ? selectedIdx : activeIndex) + 1}
+            total={ceremonies.length}
+            isHidden={currentView !== "work" || showDetails}
+            langMode={langMode}
+          />
+        </>
+      )}
+
       {selectedCeremony && (
         <FullscreenCeremonyView
           ceremonies={ceremonies}
           currentIndex={selectedIdx}
           onSelectIndex={(idx) => setSelectedIdx(idx)}
           initialRect={selectedRect}
-          onClose={() => setSelectedIdx(null)}
+          onClose={handleCloseFullscreen}
           onOpenDetails={() => setShowDetails(true)}
           langMode={langMode}
           isInfoOpen={showDetails}

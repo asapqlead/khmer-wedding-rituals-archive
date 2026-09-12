@@ -1,101 +1,73 @@
 // components/GalleryHeader.js
 "use client";
+import { useState } from "react";
 import collection from "../collection.config.js";
+import useIsMobile from "./useIsMobile.js";
+import MobileMenuOverlay from "./MobileMenuOverlay.js";
 
 export default function GalleryHeader({ currentView, setCurrentView, isFullscreen, onCloseFullscreen, langMode, setLangMode, isHidden, isScrolled }) {
-  const handleCeremonyClick = () => {
+  const { isMobile } = useIsMobile();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const handleCeremony = () => {
     if (isFullscreen) onCloseFullscreen?.();
     setCurrentView("work");
+    setMenuOpen(false);
   };
 
-  const khmerTitle = "ពិធីមង្គលការខ្មែរបុរាណ";
-  const shouldHide = isHidden || isScrolled;
+  const navItems = [
+    { view: "work", labelEn: "Ceremony", labelKm: "កម្រងពិធីការ", onClick: handleCeremony },
+    { view: "about", labelEn: "About", labelKm: "អំពីបណ្ណសារ", onClick: () => { setCurrentView("about"); setMenuOpen(false); } },
+    { view: "glossary", labelEn: "Glossary", labelKm: "សទ្ទានុក្រម", onClick: () => { setCurrentView("glossary"); setMenuOpen(false); } },
+  ];
 
   return (
-    <header
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 600,
-        padding: "25px 36px",
-        display: "grid",
-        gridTemplateColumns: "1fr auto 1fr",
-        alignItems: "center",
-        pointerEvents: shouldHide ? "none" : "auto",
-        transform: shouldHide ? "translateY(-100%)" : "translateY(0%)",
-        transition: "transform 500ms cubic-bezier(0.16, 1, 0.3, 1)",
-        willChange: "transform",
-      }}
-    >
-      {/* Top Left: Navigation Bar */}
-      <nav style={{ display: "flex", alignItems: "center", gap: 24 }}>
-        <button
-          type="button"
-          onClick={handleCeremonyClick}
-          className={`nav-item ${currentView === "work" ? "is-active" : ""}`}
-        >
-          {langMode === "km" ? "កម្រងពិធីការ" : "Ceremony"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setCurrentView("about")}
-          className={`nav-item ${currentView === "about" ? "is-active" : ""}`}
-        >
-          {langMode === "km" ? "អំពីបណ្ណសារ" : "About"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setCurrentView("glossary")}
-          className={`nav-item ${currentView === "glossary" ? "is-active" : ""}`}
-        >
-          {langMode === "km" ? "សទ្ទានុក្រម" : "Glossary"}
-        </button>
-      </nav>
-
-      {/* Middle: Bilingual Website Title */}
-      <div
+    <>
+      <header
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          position: "fixed", top: 0, left: 0, right: 0, zIndex: 600,
+          padding: isMobile ? "14px 22px" : "25px 36px", display: "flex",
+          justifyContent: "space-between", alignItems: "center",
+          backgroundColor: isMobile ? "rgba(18, 18, 18, 0.92)" : "transparent",
+          backdropFilter: isMobile ? "blur(20px)" : "none",
+          borderBottom: isMobile ? "1px solid rgba(255, 255, 255, 0.06)" : "none",
+          transform: (isHidden || isScrolled) ? "translateY(-100%)" : "translateY(0%)",
+          transition: "transform 500ms cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
-        <span
-          className={`${langMode === "km" ? "khmer-sans" : ""} lang-text`.trim()}
-          style={{
-            color: "var(--text-primary)",
-            fontSize: 18,
-            fontWeight: 500,
-            letterSpacing: "0.02em",
-            textAlign: "center",
-          }}
-        >
-          {langMode === "km" ? khmerTitle : collection.name}
-        </span>
-      </div>
+        {isMobile ? (
+          <button type="button" onClick={() => setMenuOpen((p) => !p)} aria-label="Menu" style={{ display: "flex", alignItems: "center", justifyContent: "center", minWidth: 44, minHeight: 44, color: "var(--text-primary)", padding: 4 }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><line x1="3" y1="7" x2="21" y2="7" /><line x1="3" y1="17" x2="21" y2="17" /></svg>
+          </button>
+        ) : (
+          <nav style={{ display: "flex", alignItems: "center", gap: 24 }}>
+            {navItems.map((item) => (
+              <button key={item.view} type="button" onClick={item.onClick} className={`nav-item ${currentView === item.view ? "is-active" : ""}`}>
+                {langMode === "km" ? item.labelKm : item.labelEn}
+              </button>
+            ))}
+          </nav>
+        )}
 
-      {/* Top Right: Language Toggle */}
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          type="button"
-          onClick={() => setLangMode(langMode === "en" ? "km" : "en")}
-          className="font-mono-tag"
-          style={{
-            fontSize: 11,
-            color: "#C8C8C8",
-            border: "1px solid var(--border-subtle)",
-            padding: "4px 10px",
-            borderRadius: 2,
-            transition: "color 200ms ease, border-color 200ms ease",
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.color = "#C8C8C8"; e.currentTarget.style.borderColor = "var(--border-subtle)"; }}
-        >
+        {!isMobile && (
+          <span
+            className={langMode === "km" ? "khmer-serif" : ""}
+            style={{
+              position: "absolute", left: "50%", transform: "translateX(-50%)",
+              color: "var(--text-primary)", fontSize: langMode === "km" ? 17 : 18,
+              fontWeight: 500, letterSpacing: langMode === "km" ? "0" : "0.02em",
+              pointerEvents: "none", whiteSpace: "nowrap",
+              fontFamily: langMode === "km" ? "var(--font-khmer-serif)" : "var(--font-sans)",
+            }}
+          >{langMode === "km" ? "ពិធីមង្គលការខ្មែរបុរាណ" : collection.name}</span>
+        )}
+
+        <button type="button" onClick={() => setLangMode(langMode === "en" ? "km" : "en")} className="font-mono-tag" style={{ fontSize: 11, color: "#C8C8C8", border: "1px solid var(--border-subtle)", padding: isMobile ? "5px 10px" : "4px 10px", borderRadius: 2 }}>
           {langMode === "en" ? "KM" : "EN"}
         </button>
-      </div>
-    </header>
+      </header>
+
+      {isMobile && <MobileMenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} navItems={navItems} currentView={currentView} langMode={langMode} />}
+    </>
   );
 }

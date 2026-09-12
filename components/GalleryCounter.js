@@ -1,5 +1,6 @@
 // components/GalleryCounter.js
 "use client";
+import useIsMobile from "./useIsMobile.js";
 
 const KHMER_DIGITS = "០១២៣៤៥៦៧៨៩";
 const toKhmerNum = (n) => String(n).replace(/\d/g, (d) => KHMER_DIGITS[d]);
@@ -9,6 +10,7 @@ export default function GalleryCounter({ current, total, isHidden, langMode }) {
   const isKhmer = langMode === "km";
   const displayCurrent = isKhmer ? toKhmerNum(current) : current;
   const displayTotal = isKhmer ? toKhmerNum(total) : total;
+  const { isMobile } = useIsMobile();
 
   return (
     <footer
@@ -17,7 +19,7 @@ export default function GalleryCounter({ current, total, isHidden, langMode }) {
         bottom: 0,
         left: 0,
         right: 0,
-        padding: "24px 36px",
+        padding: isMobile ? "16px 20px" : "24px 36px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -32,7 +34,7 @@ export default function GalleryCounter({ current, total, isHidden, langMode }) {
         <span
           className={`${isKhmer ? "khmer-sans" : ""} lang-text`.trim()}
           style={{
-            fontSize: 13,
+            fontSize: isMobile ? 12 : 13,
             fontFamily: isKhmer ? "var(--font-khmer-sans)" : "var(--font-mono)",
             color: isComplete ? "var(--accent-gold)" : "var(--text-primary)",
             textShadow: isComplete ? "0 0 12px rgba(197, 160, 89, 0.45)" : "none",
@@ -47,4 +49,3 @@ export default function GalleryCounter({ current, total, isHidden, langMode }) {
     </footer>
   );
 }
-

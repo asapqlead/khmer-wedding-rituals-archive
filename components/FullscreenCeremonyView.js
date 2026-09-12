@@ -1,10 +1,12 @@
 // components/FullscreenCeremonyView.js
 "use client";
 import { useEffect, useState, useRef } from "react";
-import WheelText from "./WheelText.js";
+import CeremonyInfoContent from "./CeremonyInfoContent.js";
+import useIsMobile from "./useIsMobile.js";
 
 export default function FullscreenCeremonyView({ ceremonies, currentIndex, onSelectIndex, initialRect, onClose, onOpenDetails, langMode, isInfoOpen }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { isMobile } = useIsMobile();
 
   const [dir, setDir] = useState(1);
   const [isRevealingFromBlack, setIsRevealingFromBlack] = useState(false);
@@ -47,8 +49,16 @@ export default function FullscreenCeremonyView({ ceremonies, currentIndex, onSel
 
     const onWheel = (e) => {
       if (!canScrollClose || isInfoOpenRef.current) return;
-      if (e.deltaY > 30) {
-        handleClose();
+      
+      const scrollable = e.target.closest(".custom-scrollbar");
+      if (scrollable) {
+        const atBottom = scrollable.scrollHeight - scrollable.scrollTop <= scrollable.clientHeight + 1;
+        if (e.deltaY > 0 && !atBottom) return;
+        if (e.deltaY < 0 && scrollable.scrollTop > 0) return;
+      }
+
+      if (e.deltaY > 20) {
+        handleScrollClose();
       }
     };
 
@@ -58,8 +68,18 @@ export default function FullscreenCeremonyView({ ceremonies, currentIndex, onSel
     };
     const onTouchMove = (e) => {
       if (!canScrollClose || isInfoOpenRef.current) return;
-      if (touchStartY - e.touches[0].clientY > 50) {
-        handleClose();
+      
+      const deltaY = touchStartY - e.touches[0].clientY;
+      const scrollable = e.target.closest(".custom-scrollbar");
+      
+      if (scrollable) {
+        const atBottom = scrollable.scrollHeight - scrollable.scrollTop <= scrollable.clientHeight + 1;
+        if (deltaY > 0 && !atBottom) return;
+        if (deltaY < 0 && scrollable.scrollTop > 0) return;
+      }
+
+      if (deltaY > 50) {
+        handleScrollClose();
       }
     };
 
@@ -89,11 +109,17 @@ export default function FullscreenCeremonyView({ ceremonies, currentIndex, onSel
     setTimeout(() => { isNav.current = false; }, 500);
   };
 
-  const handleClose = () => {
+  const handleScrollClose = () => {
     if (isClosing.current) return;
     isClosing.current = true;
     setIsExpanded(false);
-    setTimeout(() => onClose(), 750);
+    setTimeout(() => onClose({ fade: false }), 720);
+  };
+
+  const handleClose = () => {
+    if (isClosing.current) return;
+    isClosing.current = true;
+    onClose({ fade: true });
   };
 
   const r = initialRect || { top: 0, left: 0, width: "100vw", height: "100vh" };
@@ -115,36 +141,95 @@ export default function FullscreenCeremonyView({ ceremonies, currentIndex, onSel
         ))}
       </div>
 
-      <div style={{ position: "absolute", inset: 0, backgroundColor: isExpanded ? (isInfoOpen ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.35)") : "rgba(0,0,0,0)", transition: `background-color 600ms ${easing}`, pointerEvents: "none" }} />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: isMobile
+            ? "linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0%, rgba(10, 10, 10, 0.7) 40%, rgba(14, 14, 14, 0.95) 70%, rgba(14, 14, 14, 0.99) 100%)"
+            : "linear-gradient(to right, rgba(0, 0, 0, 0.3) 0%, rgba(10, 10, 10, 0.65) 45%, rgba(14, 14, 14, 0.92) 80%, rgba(14, 14, 14, 0.98) 100%)",
+          transition: `opacity 600ms ${easing}`,
+          opacity: isExpanded ? 1 : 0,
+          pointerEvents: "none",
+        }}
+      />
 
+      <button
+        type="button"
+        onClick={() => handleNav(-1)}
+        aria-label="Previous ritual"
+        style={{
+          position: "fixed",
+          left: isMobile ? "clamp(16px, 3vw, 24px)" : "clamp(28px, 4vw, 56px)",
+          bottom: isMobile ? "clamp(16px, 3vh, 28px)" : "clamp(24px, 4vh, 48px)",
+          color: "#FFFFFF",
+          fontSize: isMobile ? 22 : 26,
+          opacity: isExpanded && currentIndex > 0 ? 0.9 : 0,
+          pointerEvents: currentIndex > 0 ? "auto" : "none",
+          transition: "opacity 500ms ease, transform 200ms ease",
+          zIndex: 50,
+          minWidth: 44,
+          minHeight: 44,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateX(-3px)"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.9"; e.currentTarget.style.transform = "translateX(0)"; }}
+      >
+        ←
+      </button>
+      <button
+        type="button"
+        onClick={() => handleNav(1)}
+        aria-label="Next ritual"
+        style={{
+          position: "fixed",
+          right: isMobile ? "clamp(16px, 3vw, 24px)" : "clamp(28px, 4vw, 56px)",
+          bottom: isMobile ? "clamp(16px, 3vh, 28px)" : "clamp(24px, 4vh, 48px)",
+          color: "#FFFFFF",
+          fontSize: isMobile ? 22 : 26,
+          opacity: isExpanded && currentIndex < ceremonies.length - 1 ? 0.9 : 0,
+          pointerEvents: currentIndex < ceremonies.length - 1 ? "auto" : "none",
+          transition: "opacity 500ms ease, transform 200ms ease",
+          zIndex: 50,
+          minWidth: 44,
+          minHeight: 44,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateX(3px)"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.9"; e.currentTarget.style.transform = "translateX(0)"; }}
+      >
+        →
+      </button>
 
-      <button type="button" onClick={() => handleNav(-1)} aria-label="Previous ritual" style={{ position: "absolute", left: "clamp(20px, 4vw, 48px)", top: "50%", transform: "translateY(-50%)", color: "#FFFFFF", fontSize: 28, opacity: isExpanded && !isInfoOpen && currentIndex > 0 ? 0.9 : 0, pointerEvents: !isInfoOpen && currentIndex > 0 ? "auto" : "none", transition: "opacity 500ms ease, transform 200ms ease", zIndex: 10 }}>←</button>
-      <button type="button" onClick={() => handleNav(1)} aria-label="Next ritual" style={{ position: "absolute", right: "clamp(20px, 4vw, 48px)", top: "50%", transform: "translateY(-50%)", color: "#FFFFFF", fontSize: 28, opacity: isExpanded && !isInfoOpen && currentIndex < ceremonies.length - 1 ? 0.9 : 0, pointerEvents: !isInfoOpen && currentIndex < ceremonies.length - 1 ? "auto" : "none", transition: "opacity 500ms ease, transform 200ms ease", zIndex: 10 }}>→</button>
-
-      <div style={{ position: "relative", zIndex: 5, textAlign: "center", padding: "0 40px", maxWidth: 960, opacity: isExpanded && !isInfoOpen ? 1 : 0, transform: isInfoOpen ? "translateY(-30px)" : "translateY(0)", transition: "opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1)", pointerEvents: isInfoOpen ? "none" : "auto" }}>
-        <div
-          onClick={onOpenDetails}
-          role="button"
-          tabIndex={0}
-          aria-label="Click to view ritual details"
-          style={{
-            minHeight: "clamp(52px, 6vw, 76px)",
-            width: "min(90vw, 840px)",
-            margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-          }}
-        >
-          <WheelText
-            text={langMode === "km" ? ceremonies[currentIndex].titleKhmer : ceremonies[currentIndex].titleEn}
-            direction={dir}
-            className={langMode === "km" ? "khmer-serif" : ""}
-            style={{ fontSize: "clamp(32px, 4vw, 46px)", fontWeight: 400, color: "#FFFFFF", letterSpacing: "-0.015em" }}
-            as="h1"
-          />
-        </div>
+      <div
+        className="custom-scrollbar"
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 10,
+          display: "flex",
+          justifyContent: isMobile ? "center" : "flex-end",
+          alignItems: "flex-start",
+          overflowY: "auto",
+          overflowX: "hidden",
+          padding: isMobile
+            ? "clamp(70px, 10vh, 100px) clamp(16px, 4vw, 28px) clamp(40px, 6vh, 60px)"
+            : "clamp(80px, 12vh, 120px) clamp(28px, 5vw, 72px) clamp(60px, 8vh, 90px)",
+        }}
+      >
+        <CeremonyInfoContent
+          key={ceremonies[currentIndex].id}
+          ceremony={ceremonies[currentIndex]}
+          langMode={langMode}
+          isVisible={isExpanded}
+          isMobile={isMobile}
+        />
       </div>
 
       {/* Slow and smooth black curtain revealing the full screen page */}

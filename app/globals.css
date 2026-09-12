@@ -111,9 +111,70 @@ body {
   cursor: pointer;
 }
 
-.nav-item:hover,
+/* Gate hover animations behind pointer capability (Emil Kowalski a11y) */
+@media (hover: hover) and (pointer: fine) {
+  .nav-item:hover {
+    color: var(--text-primary);
+  }
+}
+
 .nav-item.is-active {
   color: var(--text-primary);
+}
+
+/* ============================================================
+   Mobile Hamburger Menu
+   ============================================================ */
+.mobile-menu-btn {
+  display: none;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-nav-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(18, 18, 18, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 80px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 590;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.mobile-nav-overlay.is-open {
+  transform: translateY(0%);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-nav-overlay .nav-item {
+  font-size: 18px;
+  padding: 12px 0;
+  text-align: left;
+  border: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: flex;
+  }
 }
 
 /* Page-to-page Cinematic Transitions */
@@ -299,10 +360,79 @@ a {
   [data-lang-phase="in"] blockquote,
   [data-lang-phase="in"] .nav-item,
   [data-lang-phase="in"] .font-mono-tag,
-  [data-lang-phase="in"] .lang-text {
+  [data-lang-phase="in"] .lang-text,
+  .baseline-rise {
     transform: none !important;
     filter: none !important;
     animation: none !important;
     opacity: 1 !important;
+  }
+}
+
+/* ============================================================
+   Baseline Rising Entry Animation (Editorial Typography Reveal)
+   ============================================================ */
+@keyframes baselineRise {
+  0% {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.baseline-rise {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 300ms ease, transform 300ms ease;
+  will-change: transform, opacity;
+}
+
+.baseline-rise.is-visible {
+  animation: baselineRise 750ms var(--ease-out-expo) forwards;
+}
+
+.baseline-rise.delay-1 { animation-delay: 80ms; }
+.baseline-rise.delay-2 { animation-delay: 160ms; }
+.baseline-rise.delay-3 { animation-delay: 240ms; }
+.baseline-rise.delay-4 { animation-delay: 320ms; }
+.baseline-rise.delay-5 { animation-delay: 400ms; }
+
+/* ============================================================
+   Responsive Breakpoints
+   ============================================================ */
+
+/* Tablet: 769–1024px */
+@media (max-width: 1024px) {
+  .gallery-track {
+    padding: 0 max(32px, calc((100vw - 300px) / 2)) 0 clamp(36px, 5vw, 80px);
+    gap: clamp(16px, 2.5vw, 32px);
+  }
+}
+
+/* Mobile: ≤ 768px */
+@media (max-width: 768px) {
+  .gallery-track {
+    padding: 0 max(24px, calc((100vw - 240px) / 2)) 0 clamp(20px, 4vw, 48px);
+    gap: clamp(12px, 3vw, 24px);
+  }
+
+  .nav-item {
+    font-size: 14px;
+    padding: 12px 6px;
+  }
+
+  .font-mono-tag {
+    font-size: 10px;
+  }
+}
+
+/* Small phone: ≤ 480px */
+@media (max-width: 480px) {
+  .gallery-track {
+    padding: 0 max(20px, calc((100vw - 200px) / 2)) 0 clamp(16px, 3vw, 32px);
+    gap: 12px;
   }
 }
