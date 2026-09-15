@@ -1,6 +1,7 @@
 // components/GalleryHeader.js
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "../utils/supabase/client.js";
 import collection from "../collection.config.js";
 import useIsMobile from "./useIsMobile.js";
 import MobileMenuOverlay from "./MobileMenuOverlay.js";
@@ -9,6 +10,26 @@ import Link from "next/link";
 export default function GalleryHeader({ currentView, setCurrentView, isFullscreen, onCloseFullscreen, langMode, setLangMode, isHidden, isScrolled }) {
   const { isMobile } = useIsMobile();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [supabase] = useState(() => createClient());
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      authListener?.subscription?.unsubscribe();
+    };
+  }, [supabase]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   const handleCeremony = () => {
     if (isFullscreen) onCloseFullscreen?.();
@@ -65,9 +86,25 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
 
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           {!isMobile && (
-            <Link href="/login" style={{ color: "var(--text-secondary)", fontSize: "14px", textDecoration: "none", fontFamily: "var(--font-sans)", transition: "color 0.2s ease" }}>
-              {langMode === "km" ? "ចូលគណនី" : "Login"}
-            </Link>
+            user ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span style={{ color: "var(--text-secondary)", fontSize: "14px", fontFamily: "var(--font-sans)" }}>
+                  {user.email}
+                </span>
+                <button type="button" onClick={handleLogout} style={{ color: "var(--text-secondary)", fontSize: "14px", fontFamily: "var(--font-sans)", cursor: "pointer", background: "none", border: "none", padding: 0 }}>
+                  {langMode === "km" ? "ចាកចេញ" : "Logout"}
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <Link href="/login" style={{ color: "var(--text-secondary)", fontSize: "14px", textDecoration: "none", fontFamily: "var(--font-sans)", transition: "color 0.2s ease" }}>
+                  {langMode === "km" ? "ចូលគណនី" : "Login"}
+                </Link>
+                <Link href="/signup" style={{ color: "var(--text-secondary)", fontSize: "14px", textDecoration: "none", fontFamily: "var(--font-sans)", transition: "color 0.2s ease" }}>
+                  {langMode === "km" ? "ចុះឈ្មោះ" : "Sign Up"}
+                </Link>
+              </div>
+            )
           )}
           <button type="button" onClick={() => setLangMode(langMode === "en" ? "km" : "en")} className="font-mono-tag" style={{ fontSize: 11, color: "#C8C8C8", border: "1px solid var(--border-subtle)", padding: isMobile ? "5px 10px" : "4px 10px", borderRadius: 2 }}>
             {langMode === "en" ? "KM" : "EN"}
@@ -75,7 +112,7 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
         </div>
       </header>
 
-      {isMobile && <MobileMenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} navItems={navItems} currentView={currentView} langMode={langMode} />}
+      {isMobile && <MobileMenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} navItems={navItems} currentView={currentView} langMode={langMode} user={user} onLogout={handleLogout} />}
     </>
   );
 }
