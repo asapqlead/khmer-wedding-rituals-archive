@@ -4,6 +4,7 @@ import { useState } from "react";
 import collection from "../collection.config.js";
 import useIsMobile from "./useIsMobile.js";
 import MobileMenuOverlay from "./MobileMenuOverlay.js";
+import Link from "next/link";
 
 export default function GalleryHeader({ currentView, setCurrentView, isFullscreen, onCloseFullscreen, langMode, setLangMode, isHidden, isScrolled }) {
   const { isMobile } = useIsMobile();
@@ -62,9 +63,16 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
           >{langMode === "km" ? "ពិធីមង្គលការខ្មែរបុរាណ" : collection.name}</span>
         )}
 
-        <button type="button" onClick={() => setLangMode(langMode === "en" ? "km" : "en")} className="font-mono-tag" style={{ fontSize: 11, color: "#C8C8C8", border: "1px solid var(--border-subtle)", padding: isMobile ? "5px 10px" : "4px 10px", borderRadius: 2 }}>
-          {langMode === "en" ? "KM" : "EN"}
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          {!isMobile && (
+            <Link href="/login" style={{ color: "var(--text-secondary)", fontSize: "14px", textDecoration: "none", fontFamily: "var(--font-sans)", transition: "color 0.2s ease" }}>
+              {langMode === "km" ? "ចូលគណនី" : "Login"}
+            </Link>
+          )}
+          <button type="button" onClick={() => setLangMode(langMode === "en" ? "km" : "en")} className="font-mono-tag" style={{ fontSize: 11, color: "#C8C8C8", border: "1px solid var(--border-subtle)", padding: isMobile ? "5px 10px" : "4px 10px", borderRadius: 2 }}>
+            {langMode === "en" ? "KM" : "EN"}
+          </button>
+        </div>
       </header>
 
       {isMobile && <MobileMenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} navItems={navItems} currentView={currentView} langMode={langMode} />}

@@ -1,5 +1,6 @@
 // components/MobileMenuOverlay.js
 "use client";
+import Link from "next/link";
 
 export default function MobileMenuOverlay({ isOpen, onClose, navItems, currentView, langMode }) {
   if (!isOpen) return null;
@@ -48,6 +49,22 @@ export default function MobileMenuOverlay({ isOpen, onClose, navItems, currentVi
             {langMode === "km" ? item.labelKm : item.labelEn}
           </button>
         ))}
+
+        <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.08)", margin: "8px 0" }} />
+        
+        <Link
+          href="/login"
+          style={{
+            textAlign: "left",
+            fontSize: 17,
+            padding: "6px 0",
+            color: "#FFFFFF",
+            textDecoration: "none",
+          }}
+          onClick={onClose}
+        >
+          {langMode === "km" ? "ចូលគណនី" : "Login"}
+        </Link>
       </div>
     </>
   );
