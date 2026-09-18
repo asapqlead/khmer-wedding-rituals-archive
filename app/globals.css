@@ -123,6 +123,66 @@ body {
 }
 
 /* ============================================================
+   Interaction Utilities (Apple & Emil Kowalski Design)
+   ============================================================ */
+
+.pressable {
+  transition: transform 160ms var(--ease-out-expo), opacity 200ms ease, filter 200ms ease;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.pressable:active {
+  transform: scale(0.96);
+}
+
+.glass-panel {
+  background: rgba(18, 18, 18, 0.65);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Header Action Buttons */
+.btn-ghost {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 99px;
+  background: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.btn-primary {
+  color: var(--bg-primary);
+  background: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 99px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover {
+    background: #EBEBEB;
+  }
+}
+
+/* Reduced motion interaction overrides */
+@media (prefers-reduced-motion: reduce) {
+  .pressable:active {
+    transform: none;
+    opacity: 0.7;
+  }
+}
+
+/* ============================================================
    Mobile Hamburger Menu
    ============================================================ */
 .mobile-menu-btn {

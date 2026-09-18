@@ -153,6 +153,7 @@ export default function Home() {
             total={ceremonies.length}
             isHidden={currentView !== "work" || showDetails}
             langMode={langMode}
+            activeCeremony={ceremonies[selectedCeremony !== null ? selectedIdx : activeIndex]}
           />
         </>
       )}

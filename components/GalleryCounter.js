@@ -5,7 +5,7 @@ import useIsMobile from "./useIsMobile.js";
 const KHMER_DIGITS = "០១២៣៤៥៦៧៨៩";
 const toKhmerNum = (n) => String(n).replace(/\d/g, (d) => KHMER_DIGITS[d]);
 
-export default function GalleryCounter({ current, total, isHidden, langMode }) {
+export default function GalleryCounter({ current, total, isHidden, langMode, activeCeremony }) {
   const isComplete = current === total;
   const isKhmer = langMode === "km";
   const displayCurrent = isKhmer ? toKhmerNum(current) : current;
@@ -30,6 +30,23 @@ export default function GalleryCounter({ current, total, isHidden, langMode }) {
         transition: "opacity 350ms ease, transform 350ms ease",
       }}
     >
+      {activeCeremony && (
+        <div style={{ marginBottom: 12, display: "flex", justifyContent: "center" }}>
+          <h3
+            className={`${isKhmer ? "khmer-sans" : ""} lang-text`.trim()}
+            style={{
+              margin: 0,
+              fontSize: isMobile ? "14px" : "16px",
+              fontWeight: 500,
+              letterSpacing: isKhmer ? "0" : "0.02em",
+              fontFamily: isKhmer ? "var(--font-khmer-sans)" : "var(--font-sans)",
+              color: "#ffffff"
+            }}
+          >
+            {isKhmer ? activeCeremony.titleKhmer : activeCeremony.titleEn}
+          </h3>
+        </div>
+      )}
       <div style={{ height: 22, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 4 }}>
         <span
           className={`${isKhmer ? "khmer-sans" : ""} lang-text`.trim()}

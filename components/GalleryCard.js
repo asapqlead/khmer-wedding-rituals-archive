@@ -36,26 +36,30 @@ export default function GalleryCard({ ceremony, isActive, onClick, langMode }) {
         flexShrink: 0,
         backgroundColor: "#161616",
         cursor: "pointer",
-        overflow: "hidden",
-        opacity: isActive ? 1 : 0.85,
-        transition: "opacity 300ms ease, transform 300ms cubic-bezier(0.16, 1, 0.3, 1)",
+        overflow: "visible",
+        opacity: isActive ? 1 : 0.6,
+        transform: isActive ? "scale(1)" : "scale(0.95)",
+        filter: isActive ? "blur(0px)" : "blur(1.5px)",
+        transition: "opacity 500ms ease, transform 600ms cubic-bezier(0.16, 1, 0.3, 1), filter 600ms cubic-bezier(0.16, 1, 0.3, 1)",
       }}
     >
-      <img
-        src={imageSrc}
-        alt={ceremony.titleEn}
-        draggable={false}
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          pointerEvents: "none",
-          filter: isActive ? "grayscale(0%)" : "grayscale(20%) contrast(105%)",
-          transition: "transform 600ms cubic-bezier(0.16, 1, 0.3, 1), filter 300ms ease",
-        }}
-        onMouseEnter={canHover ? (e) => { e.currentTarget.style.transform = "scale(1.04)"; } : undefined}
-        onMouseLeave={canHover ? (e) => { e.currentTarget.style.transform = "scale(1)"; } : undefined}
-      />
+      <div style={{ width: "100%", height: "100%", overflow: "hidden" }}>
+        <img
+          src={imageSrc}
+          alt={ceremony.titleEn}
+          draggable={false}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            pointerEvents: "none",
+            filter: isActive ? "grayscale(0%)" : "grayscale(20%) contrast(105%)",
+            transition: "transform 600ms cubic-bezier(0.16, 1, 0.3, 1), filter 300ms ease",
+          }}
+          onMouseEnter={canHover ? (e) => { e.currentTarget.style.transform = "scale(1.04)"; } : undefined}
+          onMouseLeave={canHover ? (e) => { e.currentTarget.style.transform = "scale(1)"; } : undefined}
+        />
+      </div>
     </div>
   );
 }
