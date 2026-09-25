@@ -496,3 +496,9 @@ a {
     gap: 12px;
   }
 }
+
+/* Loading animation for Supabase data fetch */
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}

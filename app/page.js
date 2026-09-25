@@ -12,9 +12,10 @@ import NoiseOverlay from "../components/NoiseOverlay.js";
 import ScrollProgress from "../components/ScrollProgress.js";
 import useIsMobile from "../components/useIsMobile.js";
 import MobileMainView from "../components/MobileMainView.js";
-import { entries as ceremonies } from "../data/entries.js";
+import useEntries from "../components/useEntries.js";
 
 export default function Home() {
+  const { ceremonies, isLoading } = useEntries();
   const [currentView, setCurrentView] = useState("work");
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedIdx, setSelectedIdx] = useState(null);
@@ -119,6 +120,22 @@ export default function Home() {
     >
       <NoiseOverlay />
       <ScrollProgress />
+
+      {/* Loading state */}
+      {isLoading && (
+        <div style={{ position: "fixed", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
+          <span className="font-mono-tag" style={{ color: "var(--accent-gold)", fontSize: 13, letterSpacing: "0.12em", opacity: 0.8, animation: "pulse 1.6s ease-in-out infinite" }}>LOADING ARCHIVE…</span>
+        </div>
+      )}
+
+      {/* Empty state — loaded but no entries */}
+      {!isLoading && ceremonies.length === 0 && currentView === "work" && (
+        <div style={{ position: "fixed", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12, zIndex: 100, padding: 24, textAlign: "center" }}>
+          <span style={{ fontSize: 32 }}>📜</span>
+          <span className="font-mono-tag" style={{ color: "var(--text-muted)", fontSize: 13, letterSpacing: "0.1em" }}>NO ENTRIES YET</span>
+          <span style={{ color: "var(--text-muted)", fontSize: 14, fontFamily: "var(--font-sans)", maxWidth: 320 }}>Entries will appear here once they are published to the archive.</span>
+        </div>
+      )}
       <GalleryHeader
         currentView={currentView}
         setCurrentView={handleViewChange}
