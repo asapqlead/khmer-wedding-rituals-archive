@@ -375,7 +375,7 @@ export const entries = [
     }
   },
   {
-    id: "sompeas-ptem",
+    id: "preah-thong-torng-sbai-neang-neak",
     order: 7,
     titleKhmer: "កិច្ចព្រះថោងតោងស្បៃនាងនាគ",
     titleEn: "Preah Thong Torng Sbai Neang Neak",
@@ -431,7 +431,7 @@ export const entries = [
       titleEn: "Archival Photo: Preah Thong Holding the Sabai Scarf",
       descriptionEn: "Historic family photograph capturing the bride in embroidered silk sabai leading the groom holding her trailing sash into the family home.",
       recommendedRatio: "4:3",
-      image: "/images/sompeas-ptem/ceremony.jpg"
+      image: "/images/preah-thong-torng-sbai-neang-neak/ceremony.jpg"
     }
   }
 ];
