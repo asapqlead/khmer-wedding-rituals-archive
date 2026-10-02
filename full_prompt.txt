@@ -1,0 +1,152 @@
+<USER_REQUEST>
+below is the instruction i need to finish the lab. look at it carefully and tell me what to do with the current state of my project.
+
+ICT 340, week 7. Until today, you were the only person who could put anything into your archive. By the end of this lab, anyone with an account can add an entry with a photo, edit their own entries and delete their own entries. Nobody can touch anyone else's. You'll prove that last part by letting a classmate try.
+
+Bring Tuesday's rules. Part 1 starts from them, and a form without rules is a form that takes anything.
+
+Part 0: before Friday (10 minutes, at home)
+Do this before class. It's three small things, and each one costs ten minutes of lab time if you leave it for Friday.
+
+Open your Supabase dashboard. If the project offers a Restore button, click it.
+git status is clean and npm run dev runs. Your week 6 cutover is pushed.
+SQL Editor, paste this whole block, run it:
+-- a public bucket for entry photos: images only, 5 MB max
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('photos', 'photos', true, 5242880, array['image/jpeg', 'image/png', 'image/webp'])
+on conflict (id) do update
+  set public = true,
+      file_size_limit = 5242880,
+      allowed_mime_types = array['image/jpeg', 'image/png', 'image/webp'];
+
+-- logged-in contributors can upload, but only into a folder named after their own id
+create policy "contributors upload into their own folder"
+  on storage.objects for insert to authenticated
+  with check (bucket_id = 'photos' and (storage.foldername(name))[1] = (select auth.uid()::text));
+
+-- and delete only what's in their own folder
+create policy "contributors delete their own photos"
+  on storage.objects for delete to authenticated
+  using (bucket_id = 'photos' and (storage.foldername(name))[1] = (select auth.uid()::text));
+Green means done. Check Storage in the sidebar: a bucket called photos, marked public.
+
+Read the block before you run it, same as week 6. The bucket line is Tuesday's third layer: the database refuses a PDF or a 12 MB photo no matter what your form says. The two policies are the second layer: they decide whose folder you can write into. Public means anyone can look at a photo if they have its link, which is what an archive is for. It doesn't mean anyone can upload.
+
+If your week 6 didn't finish: stop here and finish Lab 6 Parts 1-3 first. Everything today writes to the entries table, so the table has to exist and your site has to read from it. Tell me Friday morning and I'll start with you.
+
+Part 1: the contribution form, with a photo (30 minutes)
+New Cline task. Paste your rules from Tuesday where it says so:
+Build a page at /contribute with a form for adding an entry to my entries table. Only logged-in users can see the form; logged-out visitors get a link to log in. Fields: [list your columns a contributor fills in]. Validate these rules in the form before submit, and show a short message next to the field the user needs to fix: [paste your rules from Tuesday]. Trim every text field. Set owner from the logged-in session, never from the form, and insert only the columns listed above. The photo is required: upload it to the Supabase Storage bucket called photos at the path <user id>/<random uuid>.<extension>, then save its public URL in my [photo column]. Disable the submit button while the upload runs. If anything fails, show the user a short message they can act on, and log the real error with console.error; never show error.message to the user. Follow current OWASP guidance for file uploads. Do not use dangerouslySetInnerHTML. Do not add any package. After a successful save, go to the new entry.
+
+Read the diff before you accept anything. Tuesday's four holes, one at a time:
+
+Owner: does it come from the session (something like user.id from supabase.auth.getUser()), or from a form field?
+The insert: does it name its columns, or spread the whole form (...data) into the table?
+Errors: is there any error.message headed for the screen?
+The upload: is the path your id plus a random name, or the name the file arrived with?
+And grep for dangerouslySetInnerHTML. Zero hits.
+
+Your old entries' photos live in your repo (/photos/x.jpg). New ones live in Supabase (https://....supabase.co/storage/...). Open an old entry and a new one side by side. Both photos showing? If the page builds image paths by gluing strings together, one of them breaks. That's the p. 157 problem from Tuesday: two halves that each work, disagreeing about what a photo path looks like.
+
+Test it for real: add one real entry with real Khmer text and a real photo. Not "test," not "asdf." It's going into your archive, so it should belong there.
+
+Commit: sprint 2: contribution form with photo upload (AI-assisted).
+
+Part 2: edit and delete, your own only (20 minutes)
+New Cline task:
+On each entry's page, show Edit and Delete buttons only when the logged-in user is the entry's owner. Edit goes to a page with the same form as /contribute, pre-filled, using the same validation rules; saving updates the entry through supabase-js. Changing the photo is optional; if the user doesn't pick a new one, keep the old one. Delete asks for confirmation first, then deletes through supabase-js. After every update or delete, call .select() and check that a row actually came back; if none did, tell the user "That change wasn't saved" and log it with console.error. Do not add any package.
+
+That last instruction matters more than it looks. When your row-level security policy refuses an update or a delete, Supabase doesn't throw an error. It quietly changes zero rows and says success. Code that doesn't check will tell the user "Saved!" about a change that never happened. Checking for the returned row is how your app finds out the database said no.
+
+Read the diff. The buttons are politeness, and hiding them is fine. Look for anything that looks like enforcement in the interface: "if not the owner, return early" in the page code is nice manners and nothing more. The actual refusal is your week 6 policies, and Part 4 tests them.
+
+Try it: edit your Part 1 entry, fix something real in it. Then add a throwaway entry and delete it.
+
+Commit: sprint 2: edit and delete own entries (AI-assisted).
+
+Deleting an entry leaves its photo sitting in storage. Cleaning that up too is a nice touch, not a requirement. If you skip it, you have an honest answer ready for Sprint 2's third reflection question.
+
+Part 3: the checklist, top to bottom (10 minutes)
+Open the Lab 7 Validation Checklist page on Canvas and go down it on your own form, on localhost:
+
+☐ Submit the form empty. Every required field complains, before anything is sent.
+☐ Paste a 5,000-character title. The form stops it.
+☐ Try to upload a PDF, and a photo over 5 MB. The form says no. (The bucket would say no too; that's Part 4.)
+☐ Real Khmer in every text field, including a long title. It saves and displays correctly.
+☐ A title of <script>alert(1)</script>. It shows up as text. No pop-up.
+☐ Break something on purpose and read the message the user sees. It helps them and tells an attacker nothing.
+Then the part that makes your rules real. New Cline task:
+
+Write Postgres check constraints for my entries table that enforce these rules, so the database refuses bad data even from requests that never touch the form: [paste your rules]. Use char_length(trim(column)) for text lengths. Output SQL only. Do not modify any file.
+
+Read it, then run it in the SQL Editor. If it fails with a complaint about an existing row, one of your own entries already breaks your new rule. Good catch. Fix the row (or rethink the rule), then run it again.
+
+Part 4: attack a classmate's archive (15 minutes)
+Swap live URLs with your neighbor. You're the attacker on theirs; they're the attacker on yours. Write down what happens. You'll need it for the discussion.
+
+On their live site, sign up as yourself with your real email. You're a stranger now, with a real account.
+Through the interface: open one of their entries. No Edit or Delete buttons should show. Add one entry of your own through their form, with the title <script>alert(1)</script> and any real photo. It should display as plain text.
+Through the console. Ask the owner for their project URL and publishable key (both are public by design, which is the point of this test). On their live site, open the browser console and run these one at a time:
+const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+const sb = createClient('THEIR-PROJECT-URL', 'THEIR-PUBLISHABLE-KEY');
+await sb.auth.signInWithPassword({ email: 'YOUR-EMAIL', password: 'YOUR-PASSWORD' });
+
+// find one of THEIR entries
+await sb.from('entries').select('id, title, owner').limit(5);
+
+// try to change it (use one of their ids)
+await sb.from('entries').update({ title: 'edited by a stranger' }).eq('id', 'THEIR-ENTRY-ID').select();
+
+// try to delete it
+await sb.from('entries').delete().eq('id', 'THEIR-ENTRY-ID').select();
+
+// try to upload something that isn't a photo
+const me = (await sb.auth.getUser()).data.user.id;
+await sb.storage.from('photos').upload(`${me}/test.txt`, new Blob(['hi'], { type: 'text/plain' }));
+What passing looks like:
+
+Attack	Pass
+update someone else's entry	data: [] (nothing changed)
+delete someone else's entry	data: [] (nothing deleted)
+upload a .txt	an error about the file type
+refresh their site	their entry is exactly as it was
+An empty array is the database refusing. If an update or delete comes back with a row in it, stop and tell the owner right away: their policies aren't doing their job, and that's the one criterion I'll test personally on every Sprint 2 submission. A warning in the console about "multiple GoTrueClient instances" is harmless; ignore it.
+
+Clean up after yourself: through their interface, delete the entry you added. You should be able to, because it's yours. That's the property from Tuesday, tested from both sides: you can change your own, and you can't change theirs.
+This is Osmani's security test from p. 151 ("an unauthorized user gets 403 on the /deleteUser endpoint"), run by hand. And it's the counterweight from p. 154: confidence is what you felt when you wrote the code, and this is how you check it.
+
+Part 5: ship and write (10 minutes)
+Push. Watch Vercel build.
+On the live URL, not localhost: add an entry with a photo, edit it, delete it.
+Submit your live URL to the Lab 7 assignment, with two or three sentences: what your partner tried, and what your archive did about it.
+Week 7 discussion post (it's on Canvas).
+Journal entry: the prompt from Part 1, what came back, and one thing you changed before accepting it.
+Due Sunday Oct 4, 11:59 PM: Lab 7 URL, week 7 discussion post, week 7 process log.
+
+If you finish early: p. 155's drill. Turn off your wifi halfway through submitting an entry, or pause your Supabase project, and watch what your form tells the user. If the answer is a spinner that never stops, fix it. The book predicted that bug, and now you've found it yourself.
+
+Troubleshooting, in order of likelihood
+The upload fails with "new row violates row-level security policy." The storage policies from Part 0 aren't there, or the upload path doesn't start with your user id. Check Storage, then Policies. Then check the path in the code: it has to be <your user id>/<something>, not just a file name.
+
+The upload fails with a message about the mime type or the file size. That's the bucket doing its job. Your form should have caught it first; add the check to the form.
+
+Edit says it saved, but nothing changed. Row-level security refused it quietly. Either you're not logged in as the owner, or the code never checked for the returned row (Part 2, step 2). Log out, log in, and try again on an entry that's yours.
+
+Photos from Supabase don't show, but the old ones do. If you use Next.js's Image component, it refuses images from hosts it doesn't know. Ask Cline to add your Supabase project's host to images.remotePatterns in next.config, and nothing else.
+
+Part 0's SQL says a policy already exists. You've run it before. The bucket part is safe to re-run; the policies are already there. Move on.
+
+The check constraint won't apply. An existing row breaks the rule. The error names the constraint; find the row in Table Editor and fix it.
+
+Everything worked yesterday, nothing works now. Your Supabase project is asleep. Dashboard, Restore.
+
+Cline wants a new package (a form library, an upload library, a validation library). No. Two approved packages, and they do this job. Reject the diff, restate the task, point it at AGENTS.md.
+
+Something else. The week 7 discussion thread, with the error pasted in full. I'm in the room Friday. Use me.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-10-02T14:15:39+07:00.
+</ADDITIONAL_METADATA>
+<USER_SETTINGS_CHANGE>
+The user changed setting `Model Selection` from Claude Opus 4.6 (Thinking) to Gemini 3.7 Flash (High). No need to comment on this change if the user doesn't ask about it. If reporting what model you are, please use a human readable name instead of the exact string.
+</USER_SETTINGS_CHANGE>

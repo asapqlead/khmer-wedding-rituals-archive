@@ -20,16 +20,22 @@ export default function LoginPage() {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (authError) {
-      setError("Invalid email or password");
+      if (authError) {
+        setError(authError.message);
+        setLoading(false);
+      } else {
+        router.refresh();
+        router.push("/");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred");
       setLoading(false);
-    } else {
-      router.push("/");
     }
   };
 

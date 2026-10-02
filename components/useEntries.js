@@ -15,10 +15,12 @@ function toLocalShape(row) {
     titleKhmer: row.title_khmer,
     translationEn: row.translation_en || undefined,
     phonetic: row.phonetic || undefined,
-    summaryEn: row.summary,
+    // Combine summary + meaning into one flowing paragraph so the
+    // spiritual significance is always visible alongside the description.
+    summaryEn: row.meaning
+      ? `${row.summary} ${row.meaning}`
+      : row.summary,
     summaryKhmer: row.summary_khmer || undefined,
-    // The meaning column holds the spiritual purpose text
-    meaningEn: row.meaning,
     // JSONB columns arrive already parsed by the Supabase client
     participants: row.participants || undefined,
     sacredItems: row.sacred_items || undefined,
@@ -28,6 +30,11 @@ function toLocalShape(row) {
     mediaPlaceholder: row.photo_url ? { image: row.photo_url } : undefined,
     // Optional per-entry source credit
     source: row.source || undefined,
+    // Preserved fields for ownership, edit & delete checks
+    owner: row.owner,
+    rawSummary: row.summary,
+    rawMeaning: row.meaning,
+    photo_url: row.photo_url,
   };
 }
 

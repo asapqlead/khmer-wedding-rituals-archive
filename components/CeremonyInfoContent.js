@@ -1,5 +1,6 @@
 // components/CeremonyInfoContent.js
 "use client";
+import CeremonyOwnerActions from "./CeremonyOwnerActions.js";
 
 export default function CeremonyInfoContent({ ceremony, langMode, isVisible, isMobile }) {
   const isKhmer = langMode === "km";
@@ -39,10 +40,10 @@ export default function CeremonyInfoContent({ ceremony, langMode, isVisible, isM
           {isKhmer ? "អ្នកចូលរួម និងគ្រឿងសក្ការៈ" : "Participants & Sacred Items"}
         </h2>
         <p className={isKhmer ? "khmer-sans" : ""} style={{ fontSize: isMobile ? (isKhmer ? 13 : 12.5) : (isKhmer ? 14 : 13.5), color: "var(--text-muted)", lineHeight: isKhmer ? 1.75 : 1.6 }}>
-          {ceremony.participants?.map((p) => (isKhmer ? p.roleKhmer : p.roleEn)).join(" • ") || ""}
+          {ceremony.participants?.map((p) => (isKhmer ? p.roleKhmer : (p.roleEn || p.role))).join(" • ") || ""}
         </p>
         <p className={isKhmer ? "khmer-sans" : ""} style={{ fontSize: isMobile ? (isKhmer ? 12 : 11.5) : (isKhmer ? 13 : 12.5), color: "#9E9E9E", lineHeight: isKhmer ? 1.7 : 1.55, marginTop: 8 }}>
-          {ceremony.sacredItems?.map((i) => (isKhmer ? i.nameKhmer : i.nameEn)).join("  |  ") || ""}
+          {ceremony.sacredItems?.map((i) => (isKhmer ? i.nameKhmer : (i.nameEn || i.name))).join("  |  ") || ""}
         </p>
       </div>
 
@@ -57,6 +58,9 @@ export default function CeremonyInfoContent({ ceremony, langMode, isVisible, isM
           </p>
         </div>
       )}
+
+      {/* Owner actions (Edit / Delete) */}
+      <CeremonyOwnerActions ceremony={ceremony} langMode={langMode} />
     </div>
   );
 }

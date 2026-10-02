@@ -33,6 +33,13 @@ export default function HeaderAuth({ langMode, isMobile }) {
           <span className="lang-text" style={{ color: "rgba(255, 255, 255, 0.5)", fontSize: "13px", fontFamily: "var(--font-sans)", padding: "4px 8px" }}>
             {user.email}
           </span>
+          <Link
+            href="/contribute"
+            className="dropdown-item lang-text"
+            style={{ textAlign: "left", width: "100%", textDecoration: "none", color: "var(--accent-gold-light)" }}
+          >
+            {langMode === "km" ? "+ បញ្ចូលពិធីការ" : "+ Contribute"}
+          </Link>
           <button 
             type="button" 
             onClick={handleLogout} 

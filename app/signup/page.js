@@ -20,16 +20,22 @@ export default function SignupPage() {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    const { error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    try {
+      const { error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+      });
 
-    if (authError) {
-      setError(authError.message);
+      if (authError) {
+        setError(authError.message);
+        setLoading(false);
+      } else {
+        router.refresh();
+        router.push("/");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred");
       setLoading(false);
-    } else {
-      router.push("/");
     }
   };
 

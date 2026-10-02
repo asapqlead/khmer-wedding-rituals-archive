@@ -60,6 +60,19 @@ export default function MobileMenuOverlay({ isOpen, onClose, navItems, currentVi
             <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, padding: "6px 0" }}>
               {user.email}
             </span>
+            <Link
+              href="/contribute"
+              style={{
+                textAlign: "left",
+                fontSize: 17,
+                padding: "6px 0",
+                color: "var(--accent-gold-light)",
+                textDecoration: "none",
+              }}
+              onClick={onClose}
+            >
+              {langMode === "km" ? "+ បញ្ចូលពិធីការ" : "+ Contribute"}
+            </Link>
             <button
               type="button"
               onClick={() => { onLogout(); onClose(); }}
