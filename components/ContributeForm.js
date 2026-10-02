@@ -244,9 +244,9 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)" }}>
-            Summary (English, 100–200 words) <span style={{ color: "var(--accent-gold)" }}>*</span>
+            Summary (English, 10–500 words) <span style={{ color: "var(--accent-gold)" }}>*</span>
           </label>
-          <span style={{ fontSize: 12, color: summaryCount >= 100 && summaryCount <= 200 ? "var(--accent-gold-light)" : "rgba(255,255,255,0.4)" }}>
+          <span style={{ fontSize: 12, color: summaryCount >= 10 && summaryCount <= 500 ? "var(--accent-gold-light)" : "rgba(255,255,255,0.4)" }}>
             {summaryCount} words
           </span>
         </div>
@@ -254,7 +254,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
           rows={4}
           value={formData.summary}
           onChange={(e) => handleChange("summary", e.target.value)}
-          placeholder="Describe the ceremony procedure in English (100–200 words)..."
+          placeholder="Describe the ceremony procedure in English (10–500 words)..."
           className="glass-input"
           style={{ resize: "vertical" }}
         />
@@ -265,9 +265,9 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)" }}>
-            Spiritual Meaning (English, 100–200 words) <span style={{ color: "var(--accent-gold)" }}>*</span>
+            Spiritual Meaning (English, 10–500 words) <span style={{ color: "var(--accent-gold)" }}>*</span>
           </label>
-          <span style={{ fontSize: 12, color: meaningCount >= 100 && meaningCount <= 200 ? "var(--accent-gold-light)" : "rgba(255,255,255,0.4)" }}>
+          <span style={{ fontSize: 12, color: meaningCount >= 10 && meaningCount <= 500 ? "var(--accent-gold-light)" : "rgba(255,255,255,0.4)" }}>
             {meaningCount} words
           </span>
         </div>
@@ -275,7 +275,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
           rows={4}
           value={formData.meaning}
           onChange={(e) => handleChange("meaning", e.target.value)}
-          placeholder="Explain cultural and spiritual significance in English (100–200 words, distinct from summary)..."
+          placeholder="Explain cultural and spiritual significance in English (10–500 words, distinct from summary)..."
           className="glass-input"
           style={{ resize: "vertical" }}
         />
@@ -286,9 +286,9 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)" }}>
-            Summary in Khmer (300–2000 characters) <span style={{ color: "var(--accent-gold)" }}>*</span>
+            Summary in Khmer (10–2000 characters) <span style={{ color: "var(--accent-gold)" }}>*</span>
           </label>
-          <span style={{ fontSize: 12, color: formData.summary_khmer.length >= 300 && formData.summary_khmer.length <= 2000 ? "var(--accent-gold-light)" : "rgba(255,255,255,0.4)" }}>
+          <span style={{ fontSize: 12, color: formData.summary_khmer.length >= 10 && formData.summary_khmer.length <= 2000 ? "var(--accent-gold-light)" : "rgba(255,255,255,0.4)" }}>
             {formData.summary_khmer.length} chars
           </span>
         </div>
@@ -296,7 +296,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
           rows={4}
           value={formData.summary_khmer}
           onChange={(e) => handleChange("summary_khmer", e.target.value)}
-          placeholder="សង្ខេបខ្លឹមសារពិធីជាភាសាខ្មែរ (៣០០ ដល់ ២០០០ តួអក្សរ)..."
+          placeholder="សង្ខេបខ្លឹមសារពិធីជាភាសាខ្មែរ (១០ ដល់ ២០០០ តួអក្សរ)..."
           className="glass-input"
           style={{ resize: "vertical" }}
         />
