@@ -157,7 +157,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
         }
       }
 
-      router.push("/");
+      router.push("/#" + (initialData?.id || data[0]?.id || ""));
       router.refresh();
     } catch (err) {
       console.error("Form submission exception:", err);
