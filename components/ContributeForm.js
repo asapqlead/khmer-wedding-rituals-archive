@@ -130,6 +130,8 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
         owner: user.id,
       };
 
+      let savedId = initialData?.id || "";
+
       if (isEdit && initialData?.id) {
         const { data, error } = await supabase
           .from("entries")
@@ -143,6 +145,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
           setSubmitting(false);
           return;
         }
+        savedId = data[0]?.id || savedId;
       } else {
         const { data, error } = await supabase
           .from("entries")
@@ -155,9 +158,10 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
           setSubmitting(false);
           return;
         }
+        savedId = data[0]?.id || savedId;
       }
 
-      router.push("/#" + (initialData?.id || data[0]?.id || ""));
+      router.push("/#" + savedId);
       router.refresh();
     } catch (err) {
       console.error("Form submission exception:", err);
