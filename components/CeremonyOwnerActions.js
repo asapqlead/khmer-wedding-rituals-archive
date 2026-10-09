@@ -10,6 +10,9 @@ export default function CeremonyOwnerActions({ ceremony, langMode }) {
   const [supabase] = useState(() => createClient());
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [isClosingConfirm, setIsClosingConfirm] = useState(false);
+  const isKm = langMode === "km";
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user: u } }) => {
@@ -31,14 +34,20 @@ export default function CeremonyOwnerActions({ ceremony, langMode }) {
     router.push(`/contribute?edit=${ceremony.id}`);
   };
 
-  const handleDelete = async () => {
-    const isKm = langMode === "km";
-    const confirmMsg = isKm
-      ? "តើអ្នកពិតជាចង់លុបពិធីនេះមែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។"
-      : "Are you sure you want to delete this ritual entry? This action cannot be undone.";
+  const handleDeleteClick = () => {
+    setIsClosingConfirm(false);
+    setShowConfirm(true);
+  };
 
-    if (!window.confirm(confirmMsg)) return;
+  const closeConfirm = () => {
+    setIsClosingConfirm(true);
+    setTimeout(() => {
+      setShowConfirm(false);
+      setIsClosingConfirm(false);
+    }, 150); // fast exit (150ms)
+  };
 
+  const confirmDelete = async () => {
     setDeleting(true);
     setDeleteError("");
 
@@ -54,6 +63,7 @@ export default function CeremonyOwnerActions({ ceremony, langMode }) {
         console.error("Delete operation rejected by policy or failed:", error || "No row returned");
         setDeleteError(isKm ? "ការផ្លាស់ប្តូរមិនត្រូវបានរក្សាទុកទេ" : "That change wasn't saved.");
         setDeleting(false);
+        setShowConfirm(false);
         return;
       }
 
@@ -62,6 +72,7 @@ export default function CeremonyOwnerActions({ ceremony, langMode }) {
       console.error("Unexpected error during delete:", err);
       setDeleteError("That change wasn't saved.");
       setDeleting(false);
+      setShowConfirm(false);
     }
   };
 
@@ -87,7 +98,7 @@ export default function CeremonyOwnerActions({ ceremony, langMode }) {
         </button>
         <button
           type="button"
-          onClick={handleDelete}
+          onClick={handleDeleteClick}
           disabled={deleting}
           style={{
             background: "rgba(255, 107, 107, 0.15)",
@@ -100,9 +111,144 @@ export default function CeremonyOwnerActions({ ceremony, langMode }) {
             fontWeight: 500,
           }}
         >
-          {deleting ? (langMode === "km" ? "កំពុងលុប..." : "Deleting...") : (langMode === "km" ? "លុបពិធី" : "Delete Entry")}
+          {deleting ? (isKm ? "កំពុងលុប..." : "Deleting...") : (isKm ? "លុបពិធី" : "Delete Entry")}
         </button>
       </div>
+
+      {showConfirm && (
+        <div 
+          className={`modal-overlay ${isClosingConfirm ? 'closing' : ''}`}
+          onClick={closeConfirm}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.85)", // Darkened background
+            backdropFilter: "blur(4px)",
+            padding: 20
+          }}
+        >
+          <style>{`
+            .confirm-btn {
+              padding: 8px 16px;
+              min-height: 36px; /* Adjusted for desktop-first minimal design */
+              border-radius: 6px;
+              font-weight: 500;
+              font-size: 14px;
+              transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background-color 160ms cubic-bezier(0.23, 1, 0.32, 1), opacity 160ms ease, box-shadow 160ms ease;
+            }
+            .confirm-btn:active:not(:disabled) {
+              transform: scale(0.97);
+            }
+            .confirm-btn:focus-visible {
+              outline: none;
+              box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+            }
+            
+            .confirm-btn-cancel {
+              background-color: transparent;
+              color: #ffffff;
+              border: 1px solid rgba(255, 255, 255, 0.15);
+            }
+            .confirm-btn-cancel:hover:not(:disabled) {
+              background-color: rgba(255, 255, 255, 0.05);
+            }
+
+            .confirm-btn-delete {
+              background-color: #ef4444; /* matching screenshot red */
+              color: #ffffff;
+              border: none;
+            }
+            .confirm-btn-delete:hover:not(:disabled) {
+              background-color: #dc2626;
+            }
+            .confirm-btn-delete:focus-visible {
+              box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.4);
+            }
+
+            .modal-overlay {
+              opacity: 1;
+              transition: opacity 250ms cubic-bezier(0.32, 0.72, 0, 1);
+            }
+            .modal-overlay.closing {
+              opacity: 0;
+              transition-duration: 150ms;
+              transition-timing-function: ease;
+            }
+
+            .modal-content {
+              opacity: 1;
+              transform: scale(1);
+              transition: opacity 250ms cubic-bezier(0.32, 0.72, 0, 1), transform 250ms cubic-bezier(0.32, 0.72, 0, 1);
+            }
+            .modal-content.closing {
+              opacity: 0;
+              transform: scale(0.97);
+              transition: opacity 150ms ease, transform 150ms ease;
+            }
+
+            @starting-style {
+              .modal-overlay { opacity: 0; }
+              .modal-content { opacity: 0; transform: scale(0.97); }
+            }
+          `}</style>
+          <div 
+            className={`modal-content ${isClosingConfirm ? 'closing' : ''}`}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "100%",
+              maxWidth: "480px",
+              backgroundColor: "transparent",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              borderRadius: "8px",
+              padding: "24px",
+              boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 20,
+              fontFamily: isKm ? "var(--font-khmer-sans)" : "var(--font-sans)"
+            }}
+          >
+            <div style={{ textAlign: "left" }}>
+              <h2 style={{ fontSize: "18px", margin: "0 0 8px 0", fontWeight: "600", color: "#ffffff" }}>
+                {isKm ? "លុបពិធីនេះ?" : "Delete this entry?"}
+              </h2>
+              <p style={{ margin: 0, color: "#888888", fontSize: "14px", lineHeight: 1.5 }}>
+                {isKm
+                  ? "តើអ្នកពិតជាចង់លុបពិធីនេះមែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។"
+                  : "Are you sure you want to delete this ritual entry? This action cannot be undone."}
+              </p>
+            </div>
+            
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, marginTop: 8 }}>
+              <button
+                type="button"
+                className="confirm-btn confirm-btn-cancel"
+                onClick={closeConfirm}
+                disabled={deleting}
+                style={{ cursor: deleting ? "not-allowed" : "pointer" }}
+              >
+                {isKm ? "បោះបង់" : "Cancel"}
+              </button>
+              <button
+                type="button"
+                className="confirm-btn confirm-btn-delete"
+                onClick={confirmDelete}
+                disabled={deleting}
+                style={{
+                  cursor: deleting ? "not-allowed" : "pointer",
+                  opacity: deleting ? 0.7 : 1,
+                }}
+              >
+                {deleting ? (isKm ? "កំពុងលុប..." : "Deleting...") : (isKm ? "លុប" : "Delete")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
