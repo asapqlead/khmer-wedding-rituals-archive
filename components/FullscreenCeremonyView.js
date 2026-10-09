@@ -15,6 +15,11 @@ export default function FullscreenCeremonyView({ ceremonies, currentIndex, onSel
   const isClosing = useRef(false);
   const isInfoOpenRef = useRef(isInfoOpen);
   const prevInfoOpen = useRef(isInfoOpen);
+  const latestProps = useRef({ currentIndex, ceremonies, onSelectIndex, onClose });
+
+  useEffect(() => {
+    latestProps.current = { currentIndex, ceremonies, onSelectIndex, onClose };
+  });
 
   useEffect(() => {
     isInfoOpenRef.current = isInfoOpen;
@@ -50,35 +55,49 @@ export default function FullscreenCeremonyView({ ceremonies, currentIndex, onSel
     const onWheel = (e) => {
       if (!canScrollClose || isInfoOpenRef.current) return;
       
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 5) {
+        if (e.deltaX > 30) handleNav(1);
+        else if (e.deltaX < -30) handleNav(-1);
+        return;
+      }
+
       const scrollable = e.target.closest(".custom-scrollbar");
       if (scrollable) {
-        const atBottom = scrollable.scrollHeight - scrollable.scrollTop <= scrollable.clientHeight + 1;
-        if (e.deltaY > 0 && !atBottom) return;
+        if (e.deltaY > 0) return; // Never close on scroll down
         if (e.deltaY < 0 && scrollable.scrollTop > 0) return;
       }
 
-      if (e.deltaY > 20) {
+      if (e.deltaY < -20) {
         handleScrollClose();
       }
     };
 
+    let touchStartX = 0;
     let touchStartY = 0;
     const onTouchStart = (e) => {
+      touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
     };
     const onTouchMove = (e) => {
       if (!canScrollClose || isInfoOpenRef.current) return;
       
+      const deltaX = touchStartX - e.touches[0].clientX;
       const deltaY = touchStartY - e.touches[0].clientY;
+      
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 20) {
+        if (deltaX > 40) handleNav(1);
+        else if (deltaX < -40) handleNav(-1);
+        return;
+      }
+
       const scrollable = e.target.closest(".custom-scrollbar");
       
       if (scrollable) {
-        const atBottom = scrollable.scrollHeight - scrollable.scrollTop <= scrollable.clientHeight + 1;
-        if (deltaY > 0 && !atBottom) return;
+        if (deltaY > 0) return; // Never close on swipe up
         if (deltaY < 0 && scrollable.scrollTop > 0) return;
       }
 
-      if (deltaY > 50) {
+      if (deltaY < -50) {
         handleScrollClose();
       }
     };
@@ -100,12 +119,13 @@ export default function FullscreenCeremonyView({ ceremonies, currentIndex, onSel
 
   const handleNav = (direction) => {
     if (isNav.current || isClosing.current) return;
-    const nextIdx = currentIndex + direction;
-    if (nextIdx < 0 || nextIdx >= ceremonies.length) return;
+    const { currentIndex: cIdx, ceremonies: cList, onSelectIndex: onSelect } = latestProps.current;
+    const nextIdx = cIdx + direction;
+    if (nextIdx < 0 || nextIdx >= cList.length) return;
     
     isNav.current = true;
     setDir(direction);
-    onSelectIndex(nextIdx);
+    onSelect(nextIdx);
     setTimeout(() => { isNav.current = false; }, 500);
   };
 
@@ -113,13 +133,13 @@ export default function FullscreenCeremonyView({ ceremonies, currentIndex, onSel
     if (isClosing.current) return;
     isClosing.current = true;
     setIsExpanded(false);
-    setTimeout(() => onClose({ fade: false }), 720);
+    setTimeout(() => latestProps.current.onClose({ fade: false }), 720);
   };
 
   const handleClose = () => {
     if (isClosing.current) return;
     isClosing.current = true;
-    onClose({ fade: true });
+    latestProps.current.onClose({ fade: true });
   };
 
   const r = initialRect || { top: 0, left: 0, width: "100vw", height: "100vh" };

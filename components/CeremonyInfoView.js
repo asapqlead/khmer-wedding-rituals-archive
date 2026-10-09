@@ -5,12 +5,18 @@ import CeremonyInfoContent from "./CeremonyInfoContent.js";
 import ScrollProgress from "./ScrollProgress.js";
 import useIsMobile from "./useIsMobile.js";
 
-export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }) {
+export default function CeremonyInfoView({ ceremony, onClose, onNext, onPrev, langMode }) {
   const [isSlidUp, setIsSlidUp] = useState(false);
   const [isTextVisible, setIsTextVisible] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
   const containerRef = useRef(null);
+  const isNavigating = useRef(false);
+  const latestProps = useRef({ onNext, onPrev, onClose });
   const { isMobile } = useIsMobile();
+
+  useEffect(() => {
+    latestProps.current = { onNext, onPrev, onClose };
+  });
 
   useEffect(() => {
     let canScrollClose = false;
@@ -20,23 +26,83 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
       setIsTextVisible(true);
     }, 850);
 
+    const handleNext = () => {
+      const { onNext: currentOnNext } = latestProps.current;
+      if (isNavigating.current || !currentOnNext) return;
+      isNavigating.current = true;
+      currentOnNext();
+      setTimeout(() => { isNavigating.current = false; }, 500);
+    };
+
+    const handlePrev = () => {
+      const { onPrev: currentOnPrev } = latestProps.current;
+      if (isNavigating.current || !currentOnPrev) return;
+      isNavigating.current = true;
+      currentOnPrev();
+      setTimeout(() => { isNavigating.current = false; }, 500);
+    };
+
     const onKey = (e) => {
       if (e.key === "Escape" || e.key === "Backspace") handleBack();
+      if (e.key === "ArrowLeft") handlePrev();
+      if (e.key === "ArrowRight") handleNext();
     };
 
     const onWheel = (e) => {
       if (!canScrollClose) return;
-      if (e.deltaY > 20) handleBack();
+
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 5) {
+        if (e.deltaX > 30) handleNext();
+        else if (e.deltaX < -30) handlePrev();
+        return;
+      }
+
+      const scrollable = containerRef.current;
+      if (scrollable) {
+        if (e.deltaY > 0) return; // Never close on scroll down
+        if (e.deltaY < 0 && scrollable.scrollTop > 0) return;
+      }
+      if (e.deltaY < -20) handleBack();
+    };
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+    const onTouchStart = (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    };
+    const onTouchMove = (e) => {
+      if (!canScrollClose) return;
+
+      const deltaX = touchStartX - e.touches[0].clientX;
+      const deltaY = touchStartY - e.touches[0].clientY;
+
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 20) {
+        if (deltaX > 40) handleNext();
+        else if (deltaX < -40) handlePrev();
+        return;
+      }
+
+      const scrollable = containerRef.current;
+      if (scrollable) {
+        if (deltaY > 0) return; // Never close on swipe up
+        if (deltaY < 0 && scrollable.scrollTop > 0) return;
+      }
+      if (deltaY < -50) handleBack();
     };
 
     window.addEventListener("keydown", onKey);
     window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
     return () => {
       clearTimeout(cooldown);
       clearTimeout(textTimer);
       cancelAnimationFrame(raf);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
     };
   }, []);
 
@@ -44,7 +110,7 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
     if (isFadingOut) return;
     setIsFadingOut(true);
     setTimeout(() => {
-      onClose();
+      latestProps.current.onClose();
     }, 480);
   };
 
@@ -57,10 +123,6 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
       role="dialog"
       aria-modal="true"
       className="custom-scrollbar"
-      onWheel={(e) => {
-        if (e.deltaY > 20) handleBack();
-      }}
-      onTouchMove={(e) => e.stopPropagation()}
       style={{
         position: "fixed",
         inset: 0,
@@ -131,10 +193,58 @@ export default function CeremonyInfoView({ ceremony, onClose, onNext, langMode }
         {langMode === "km" ? "← ត្រឡប់ក្រោយ" : "← Back"}
       </button>
 
+      {onPrev && (
+        <button
+          type="button"
+          onClick={() => {
+            if (isNavigating.current) return;
+            isNavigating.current = true;
+            onPrev();
+            setTimeout(() => { isNavigating.current = false; }, 500);
+          }}
+          className="lang-text"
+          style={{
+            position: "fixed",
+            bottom: isMobile ? "clamp(16px, 3vh, 32px)" : "clamp(24px, 4vh, 48px)",
+            left: isMobile ? "clamp(16px, 3vw, 28px)" : "clamp(28px, 4vw, 56px)",
+            zIndex: 50,
+            color: "#FFFFFF",
+            fontSize: isMobile ? 13.5 : 15,
+            fontWeight: 400,
+            fontFamily: langMode === "km" ? "var(--font-khmer-sans)" : "var(--font-sans)",
+            opacity: isTextVisible && !isFadingOut ? 0.95 : 0,
+            pointerEvents: isTextVisible && !isFadingOut ? "auto" : "none",
+            letterSpacing: "0.02em",
+            transition: "opacity 700ms ease, transform 200ms ease",
+            cursor: "pointer",
+            minWidth: 44,
+            minHeight: 44,
+            padding: isMobile ? "6px 14px" : "0",
+            backgroundColor: isMobile ? "rgba(18, 18, 18, 0.75)" : "transparent",
+            borderRadius: 999,
+            border: isMobile ? "1px solid rgba(255, 255, 255, 0.18)" : "none",
+            backdropFilter: isMobile ? "blur(12px)" : "none",
+            WebkitBackdropFilter: isMobile ? "blur(12px)" : "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateX(-3px)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.95"; e.currentTarget.style.transform = "translateX(0)"; }}
+        >
+          {langMode === "km" ? "← មុន" : "← Prev"}
+        </button>
+      )}
+
       {onNext && (
         <button
           type="button"
-          onClick={onNext}
+          onClick={() => {
+            if (isNavigating.current) return;
+            isNavigating.current = true;
+            onNext();
+            setTimeout(() => { isNavigating.current = false; }, 500);
+          }}
           className="lang-text"
           style={{
             position: "fixed",

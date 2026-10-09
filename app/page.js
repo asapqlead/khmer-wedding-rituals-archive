@@ -193,6 +193,7 @@ export default function Home() {
           onClose={() => setShowDetails(false)}
           langMode={langMode}
           onNext={() => setSelectedIdx((prev) => (prev + 1) % ceremonies.length)}
+          onPrev={() => setSelectedIdx((prev) => (prev - 1 + ceremonies.length) % ceremonies.length)}
         />
       )}
       {currentView === "about" && (
