@@ -39,6 +39,7 @@ export async function validatePhotoFile(file) {
   return null;
 }
 
+// SEE IF HE'S LYING
 export function validateEntry(values, { isEdit = false } = {}) {
   const errors = {};
 
