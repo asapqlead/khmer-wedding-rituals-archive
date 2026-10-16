@@ -49,6 +49,7 @@ export default function LoginPage() {
           color: #ffffff;
           border-radius: 10px;
           font-size: 15px;
+          font-family: var(--font-khmer-sans), var(--font-sans);
           outline: none;
           box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
           transition: border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
@@ -69,6 +70,7 @@ export default function LoginPage() {
           border-radius: 10px;
           font-weight: 600;
           font-size: 15px;
+          font-family: var(--font-khmer-sans), var(--font-sans);
           cursor: pointer;
           transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1), background-color 150ms ease, opacity 150ms ease;
           width: 100%;
@@ -98,7 +100,6 @@ export default function LoginPage() {
         style={{
           position: "relative",
           width: "100%",
-          height: "100vh",
           minHeight: "100vh",
           backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('/login-bg.jpg')",
           backgroundSize: "cover",
@@ -107,31 +108,49 @@ export default function LoginPage() {
           alignItems: "center",
           justifyContent: "center",
           color: "#ededed",
-          fontFamily: "var(--font-sans)",
+          fontFamily: "var(--font-khmer-sans), var(--font-sans)",
           padding: "20px",
         }}
       >
         <div
           style={{
             width: "100%",
-            maxWidth: "400px",
-            backgroundColor: "rgba(18, 18, 18, 0.55)",
+            maxWidth: "420px",
+            backgroundColor: "rgba(18, 18, 18, 0.65)",
             backdropFilter: "blur(24px) saturate(180%)",
             WebkitBackdropFilter: "blur(24px) saturate(180%)",
             border: "1px solid rgba(255, 255, 255, 0.08)",
             borderTop: "1px solid rgba(255, 255, 255, 0.16)",
             borderRadius: "20px",
-            padding: "40px 32px",
+            padding: "36px 32px",
             boxShadow: "0 24px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0,0,0,0.2)",
           }}
         >
-          <div style={{ marginBottom: "32px", textAlign: "center" }}>
-            <h1 style={{ fontSize: "28px", margin: "0 0 8px 0", fontWeight: "600", color: "#ffffff", letterSpacing: "-0.03em" }}>
-              Welcome back
+          <div style={{ marginBottom: "20px" }}>
+            <Link
+              href="/"
+              className="link-text"
+              style={{
+                fontSize: 20,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 500,
+                lineHeight: 1,
+              }}
+              aria-label="Back to Archive"
+            >
+              ←
+            </Link>
+          </div>
+
+          <div style={{ marginBottom: "28px", textAlign: "center" }}>
+            <h1 style={{ fontSize: "24px", margin: 0, fontWeight: "600", color: "#ffffff", lineHeight: 1.35 }}>
+              ចូលប្រើប្រាស់គណនី
+              <span style={{ display: "block", fontSize: "16px", fontWeight: "400", color: "rgba(255, 255, 255, 0.7)", marginTop: 4 }}>
+                Welcome Back
+              </span>
             </h1>
-            <p style={{ margin: 0, color: "rgba(255, 255, 255, 0.7)", fontSize: "15px", letterSpacing: "0.01em" }}>
-              Enter your credentials to access your account.
-            </p>
           </div>
 
           <form
@@ -143,14 +162,14 @@ export default function LoginPage() {
             }}
           >
             {error && (
-              <div style={{ color: "#ff6b6b", fontSize: "14px", fontWeight: "500", textAlign: "center" }}>
+              <div style={{ color: "#ff6b6b", fontSize: "13px", fontWeight: "500", textAlign: "center", lineHeight: 1.5, backgroundColor: "rgba(255, 107, 107, 0.1)", padding: "8px 12px", borderRadius: 8 }}>
                 {error}
               </div>
             )}
 
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              <label htmlFor="email" style={{ fontSize: "14px", fontWeight: "500", color: "rgba(255, 255, 255, 0.9)" }}>
-                Email
+              <label htmlFor="email" style={{ fontSize: "13px", fontWeight: 500, color: "rgba(255, 255, 255, 0.9)" }}>
+                អ៊ីមែល / Email
               </label>
               <input
                 id="email"
@@ -164,11 +183,11 @@ export default function LoginPage() {
 
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <label htmlFor="password" style={{ fontSize: "14px", fontWeight: "500", color: "rgba(255, 255, 255, 0.9)" }}>
-                  Password
+                <label htmlFor="password" style={{ fontSize: "13px", fontWeight: 500, color: "rgba(255, 255, 255, 0.9)" }}>
+                  ពាក្យសម្ងាត់ / Password
                 </label>
-                <a href="#" className="link-text" style={{ fontSize: "13px" }}>
-                  Forgot?
+                <a href="#" className="link-text" style={{ fontSize: "12px" }}>
+                  ភ្លេចពាក្យសម្ងាត់? / Forgot?
                 </a>
               </div>
               <input
@@ -181,12 +200,15 @@ export default function LoginPage() {
             </div>
 
             <button type="submit" disabled={loading} className="glass-btn">
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? "កំពុងចូលគណនី... / Signing in..." : "ចូលគណនី / Sign In"}
             </button>
           </form>
 
-          <div style={{ marginTop: "28px", fontSize: "14px", color: "rgba(255, 255, 255, 0.7)", textAlign: "center" }}>
-            Don't have an account? <Link href="/signup" className="link-text" style={{ fontWeight: "600", color: "#ffffff" }}>Sign up</Link>
+          <div style={{ marginTop: "24px", fontSize: "13px", color: "rgba(255, 255, 255, 0.7)", textAlign: "center", lineHeight: 1.6, display: "flex", flexDirection: "column", gap: "6px", alignItems: "center" }}>
+            <span>មិនទាន់មានគណនីមែនទេ? / Don&apos;t have an account?</span>
+            <Link href="/signup" className="link-text" style={{ fontWeight: "600", color: "#ffffff", textDecoration: "underline" }}>
+              ចុះឈ្មោះ / Sign Up
+            </Link>
           </div>
         </div>
       </main>

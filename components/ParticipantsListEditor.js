@@ -18,15 +18,15 @@ export default function ParticipantsListEditor({ items, onChange, error }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255, 255, 255, 0.9)" }}>
-        Participants <span style={{ color: "var(--accent-gold)" }}>*</span>
+      <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255, 255, 255, 0.9)", lineHeight: 1.4 }}>
+        អ្នកចូលរួមពិធី / Participants <span style={{ color: "var(--accent-gold)" }}>*</span>
       </label>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {items.map((item, idx) => (
           <div key={idx} style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <input
               type="text"
-              placeholder="Role in English (e.g. Achar)"
+              placeholder="តួនាទី (អង់គ្លេស) ឧ. Achar"
               value={item.roleEn || item.role || ""}
               onChange={(e) => {
                 const val = e.target.value;
@@ -38,7 +38,7 @@ export default function ParticipantsListEditor({ items, onChange, error }) {
             />
             <input
               type="text"
-              placeholder="Role in Khmer (e.g. លោកអាចារ្យ)"
+              placeholder="តួនាទី (ខ្មែរ) ឧ. លោកអាចារ្យ"
               value={item.roleKhmer || ""}
               onChange={(e) => handleItemChange(idx, "roleKhmer", e.target.value)}
               className="glass-input"
@@ -49,7 +49,7 @@ export default function ParticipantsListEditor({ items, onChange, error }) {
                 type="button"
                 onClick={() => handleRemove(idx)}
                 style={{ background: "transparent", border: "none", color: "#ff6b6b", cursor: "pointer", fontSize: 18, padding: "4px 8px" }}
-                aria-label="Remove participant"
+                aria-label="Remove participant / លុបអ្នកចូលរួម"
               >
                 ✕
               </button>
@@ -62,7 +62,7 @@ export default function ParticipantsListEditor({ items, onChange, error }) {
         onClick={handleAdd}
         style={{ alignSelf: "flex-start", background: "transparent", border: "1px dashed rgba(255,255,255,0.2)", borderRadius: 8, color: "var(--accent-gold-light)", padding: "6px 14px", fontSize: 13, cursor: "pointer", marginTop: 4 }}
       >
-        + Add Participant
+        + បន្ថែមអ្នកចូលរួម / + Add Participant
       </button>
       {error && <span style={{ color: "#ff6b6b", fontSize: 12 }}>{error}</span>}
     </div>

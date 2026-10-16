@@ -459,6 +459,8 @@ a {
 .baseline-rise.delay-3 { animation-delay: 240ms; }
 .baseline-rise.delay-4 { animation-delay: 320ms; }
 .baseline-rise.delay-5 { animation-delay: 400ms; }
+.baseline-rise.delay-6 { animation-delay: 480ms; }
+.baseline-rise.delay-7 { animation-delay: 560ms; }
 
 /* ============================================================
    Responsive Breakpoints

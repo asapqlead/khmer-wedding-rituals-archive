@@ -18,15 +18,15 @@ export default function SacredItemsListEditor({ items, onChange, error }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255, 255, 255, 0.9)" }}>
-        Sacred Items <span style={{ color: "var(--accent-gold)" }}>*</span>
+      <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255, 255, 255, 0.9)", lineHeight: 1.4 }}>
+        គ្រឿងសក្ការៈ និងវត្ថុពិសិដ្ឋ / Sacred Items <span style={{ color: "var(--accent-gold)" }}>*</span>
       </label>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {items.map((item, idx) => (
           <div key={idx} style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <input
               type="text"
-              placeholder="Item in English (e.g. Popil Candle)"
+              placeholder="ឈ្មោះសម្ភារៈ (អង់គ្លេស) ឧ. Popil Candle"
               value={item.nameEn || item.name || ""}
               onChange={(e) => {
                 const val = e.target.value;
@@ -38,7 +38,7 @@ export default function SacredItemsListEditor({ items, onChange, error }) {
             />
             <input
               type="text"
-              placeholder="Item in Khmer (e.g. ពពិលប្រាក់)"
+              placeholder="ឈ្មោះសម្ភារៈ (ខ្មែរ) ឧ. ពពិលប្រាក់"
               value={item.nameKhmer || ""}
               onChange={(e) => handleItemChange(idx, "nameKhmer", e.target.value)}
               className="glass-input"
@@ -49,7 +49,7 @@ export default function SacredItemsListEditor({ items, onChange, error }) {
                 type="button"
                 onClick={() => handleRemove(idx)}
                 style={{ background: "transparent", border: "none", color: "#ff6b6b", cursor: "pointer", fontSize: 18, padding: "4px 8px" }}
-                aria-label="Remove sacred item"
+                aria-label="Remove sacred item / លុបគ្រឿងសក្ការៈ"
               >
                 ✕
               </button>
@@ -62,7 +62,7 @@ export default function SacredItemsListEditor({ items, onChange, error }) {
         onClick={handleAdd}
         style={{ alignSelf: "flex-start", background: "transparent", border: "1px dashed rgba(255,255,255,0.2)", borderRadius: 8, color: "var(--accent-gold-light)", padding: "6px 14px", fontSize: 13, cursor: "pointer", marginTop: 4 }}
       >
-        + Add Sacred Item
+        + បន្ថែមគ្រឿងសក្ការៈ / + Add Sacred Item
       </button>
       {error && <span style={{ color: "#ff6b6b", fontSize: 12 }}>{error}</span>}
     </div>

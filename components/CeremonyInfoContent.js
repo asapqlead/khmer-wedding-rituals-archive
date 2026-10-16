@@ -1,6 +1,7 @@
 // components/CeremonyInfoContent.js
 "use client";
 import CeremonyOwnerActions from "./CeremonyOwnerActions.js";
+import CeremonyContributorBadge from "./CeremonyContributorBadge.js";
 
 export default function CeremonyInfoContent({ ceremony, langMode, isVisible, isMobile }) {
   const isKhmer = langMode === "km";
@@ -58,6 +59,14 @@ export default function CeremonyInfoContent({ ceremony, langMode, isVisible, isM
           </p>
         </div>
       )}
+
+      {/* Contributor Attribution & Source Credit */}
+      <div
+        className={rise(ceremony.regionalNotesEn ? "delay-6" : "delay-5")}
+        style={{ borderTop: "1px solid rgba(255, 255, 255, 0.12)", paddingTop: 16 }}
+      >
+        <CeremonyContributorBadge ceremony={ceremony} langMode={langMode} isMobile={isMobile} />
+      </div>
 
       {/* Owner actions (Edit / Delete) */}
       <CeremonyOwnerActions ceremony={ceremony} langMode={langMode} />

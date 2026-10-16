@@ -146,7 +146,7 @@ function ContributeContent() {
           className="font-mono-tag"
           style={{ color: "var(--accent-gold)", fontSize: 13, letterSpacing: "0.12em" }}
         >
-          CHECKING ACCESS…
+          កំពុងពិនិត្យសិទ្ធិចូលប្រើ… / CHECKING ACCESS…
         </span>
       </div>
     );
@@ -159,26 +159,30 @@ function ContributeContent() {
         <div style={{ marginBottom: "28px" }}>
           <h1
             style={{
-              fontSize: "28px",
-              margin: "0 0 8px 0",
+              fontSize: "22px",
+              margin: "0 0 10px 0",
               fontWeight: "600",
               color: "#ffffff",
-              letterSpacing: "-0.03em",
+              lineHeight: 1.35,
             }}
           >
-            Contributor Access Required
+            ទាមទារសិទ្ធិជាអ្នកចូលរួមចំណែក
+            <span style={{ display: "block", fontSize: "15px", fontWeight: "400", color: "rgba(255, 255, 255, 0.7)", marginTop: 4 }}>
+              Contributor Access Required
+            </span>
           </h1>
           <p
             style={{
               margin: 0,
               color: "rgba(255, 255, 255, 0.7)",
-              fontSize: "15px",
-              letterSpacing: "0.01em",
+              fontSize: "14px",
               lineHeight: 1.6,
             }}
           >
-            You must be logged in to contribute ceremony entries to the Khmer
-            Wedding Rituals Archive.
+            អ្នកត្រូវតែចូលគណនីដើម្បីចូលរួមចំណែកបញ្ចូលពិធីការទៅក្នុងបណ្ណសារពិធីមង្គលការខ្មែរ។
+            <span style={{ display: "block", fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", marginTop: 4 }}>
+              You must be logged in to contribute ceremony entries to the Khmer Wedding Rituals Archive.
+            </span>
           </p>
         </div>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -193,7 +197,7 @@ function ContributeContent() {
               textAlign: "center",
             }}
           >
-            Log In
+            ចូលគណនី / Log In
           </Link>
           <Link
             href="/"
@@ -206,7 +210,7 @@ function ContributeContent() {
               fontWeight: 500,
             }}
           >
-            ← Back to Archive
+            ← ត្រឡប់ទៅបណ្ណសារ / Back to Archive
           </Link>
         </div>
       </div>
@@ -220,25 +224,30 @@ function ContributeContent() {
         <div style={{ marginBottom: "28px" }}>
           <h1
             style={{
-              fontSize: "28px",
-              margin: "0 0 8px 0",
+              fontSize: "22px",
+              margin: "0 0 10px 0",
               fontWeight: "600",
               color: "#ff6b6b",
-              letterSpacing: "-0.03em",
+              lineHeight: 1.35,
             }}
           >
-            Access Denied
+            ការចូលប្រើត្រូវបានបដិសេធ
+            <span style={{ display: "block", fontSize: "15px", fontWeight: "400", color: "#ff8787", marginTop: 4 }}>
+              Access Denied
+            </span>
           </h1>
           <p
             style={{
               margin: 0,
               color: "rgba(255, 255, 255, 0.7)",
-              fontSize: "15px",
+              fontSize: "14px",
               lineHeight: 1.6,
             }}
           >
-            You do not have permission to edit this entry. You can only edit your
-            own entries.
+            អ្នកមិនមានសិទ្ធិកែសម្រួលពិធីការនេះទេ។ អ្នកអាចកែសម្រួលបានតែពិធីការផ្ទាល់ខ្លួនរបស់អ្នកប៉ុណ្ណោះ។
+            <span style={{ display: "block", fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", marginTop: 4 }}>
+              You do not have permission to edit this entry. You can only edit your own entries.
+            </span>
           </p>
         </div>
         <Link
@@ -246,7 +255,7 @@ function ContributeContent() {
           className="link-text"
           style={{ fontWeight: 600, color: "#ffffff", fontSize: 14 }}
         >
-          ← Return to Archive
+          ← ត្រឡប់ទៅបណ្ណសារ / Return to Archive
         </Link>
       </div>
     );
@@ -262,35 +271,45 @@ function ContributeContent() {
           className="link-text"
           style={{
             fontSize: 13,
-            display: "inline-block",
-            marginBottom: 12,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            marginBottom: 14,
             fontWeight: 500,
           }}
         >
-          ← Back to Archive
+          ← ត្រឡប់ទៅបណ្ណសារ / Back to Archive
         </Link>
         <h1
           style={{
-            fontSize: "clamp(24px, 4vw, 28px)",
+            fontSize: "clamp(22px, 3.5vw, 26px)",
             fontWeight: 600,
             color: "#FFFFFF",
             margin: 0,
-            letterSpacing: "-0.03em",
+            lineHeight: 1.35,
           }}
         >
-          {editEntry ? "Edit Ritual Ceremony" : "Contribute New Ritual"}
+          {editEntry ? "កែសម្រួលពិធីការអាពាហ៍ពិពាហ៍" : "ចូលរួមចំណែកពិធីការថ្មី"}
+          <span style={{ display: "block", fontSize: "15px", fontWeight: "400", color: "rgba(255, 255, 255, 0.7)", marginTop: 4 }}>
+            {editEntry ? "Edit Ritual Ceremony" : "Contribute New Ritual"}
+          </span>
         </h1>
         <p
           style={{
             color: "rgba(255, 255, 255, 0.7)",
-            fontSize: 15,
-            marginTop: 6,
-            letterSpacing: "0.01em",
+            fontSize: 14,
+            marginTop: 8,
+            lineHeight: 1.6,
           }}
         >
           {editEntry
-            ? "Update your archival entry details below."
-            : "Document a traditional Khmer wedding ceremony step for the living archive."}
+            ? "ធ្វើបច្ចុប្បន្នភាពព័ត៌មានលម្អិតនៃពិធីការបណ្ណសាររបស់អ្នកនៅខាងក្រោម។"
+            : "កត់ត្រាជំហាននៃពិធីការអាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរសម្រាប់បណ្ណសាររស់រវើក។"}
+          <span style={{ display: "block", fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", marginTop: 2 }}>
+            {editEntry
+              ? "Update your archival entry details below."
+              : "Document a traditional Khmer wedding ceremony step for the living archive."}
+          </span>
         </p>
       </div>
 
@@ -320,7 +339,7 @@ export default function ContributePage() {
                 className="font-mono-tag"
                 style={{ color: "var(--accent-gold)", fontSize: 13, letterSpacing: "0.12em" }}
               >
-                Loading…
+                កំពុងដំណើរការ… / Loading…
               </span>
             </div>
           }

@@ -4,3 +4,5 @@ out
 .env*
 .DS_Store
 .agents/ 
+full_prompt.txt
+AUDIT_REPORT.md
