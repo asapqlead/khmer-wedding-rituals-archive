@@ -31,6 +31,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [generalError, setGeneralError] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -133,6 +134,12 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
       let savedId = initialData?.id || "";
 
       if (isEdit && initialData?.id) {
+        // Check if user is a reviewer — reviewers keep the current status
+        const { data: isReviewer } = await supabase.rpc("is_reviewer");
+        if (!isReviewer) {
+          payload.status = "pending";
+        }
+
         const { data, error } = await supabase
           .from("entries")
           .update(payload)
@@ -146,7 +153,10 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
           return;
         }
         savedId = data[0]?.id || savedId;
+        router.push("/#" + savedId);
+        router.refresh();
       } else {
+        // New entry — do NOT send status; DB default sets it to 'pending'
         const { data, error } = await supabase
           .from("entries")
           .insert(payload)
@@ -158,11 +168,9 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
           setSubmitting(false);
           return;
         }
-        savedId = data[0]?.id || savedId;
+        // Show success message instead of navigating to the entry
+        setSubmitted(true);
       }
-
-      router.push("/#" + savedId);
-      router.refresh();
     } catch (err) {
       console.error("Form submission exception:", err);
       setGeneralError("មានបញ្ហាមិនរំពឹងទុកមួយបានកើតឡើង។ សូមព្យាយាមម្តងទៀត។ / An unexpected error occurred. Please try again.");
@@ -172,6 +180,20 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
 
   const summaryCount = countWords(formData.summary);
   const meaningCount = countWords(formData.meaning);
+
+  if (submitted) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, padding: "32px 16px", textAlign: "center" }}>
+        <span style={{ fontSize: 32 }}>✅</span>
+        <p style={{ color: "#ffffff", fontSize: 15, lineHeight: 1.6, margin: 0, maxWidth: 420 }}>
+          សូមអរគុណសម្រាប់ការចូលរួមចំណែក! ការបញ្ចូលរបស់អ្នកកំពុងរង់ចាំការពិនិត្យ។
+        </p>
+        <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 14, lineHeight: 1.6, margin: 0, maxWidth: 420 }}>
+          Thank you for your contribution! Your entry is pending review.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
@@ -404,7 +426,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
           ? "កំពុងរក្សាទុក... / Saving Entry..."
           : isEdit
           ? "ធ្វើបច្ចុប្បន្នភាពពិធីការ / Update Ceremony Entry"
-          : "ផ្សព្វផ្សាយពិធីការ / Publish Ceremony Entry"}
+          : "បញ្ជូនពិធីការ / Submit Ceremony Entry"}
       </button>
     </form>
   );

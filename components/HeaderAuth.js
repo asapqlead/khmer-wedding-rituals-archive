@@ -40,6 +40,13 @@ export default function HeaderAuth({ langMode, isMobile }) {
           >
             {langMode === "km" ? "+ បញ្ចូលពិធីការ" : "+ Contribute"}
           </Link>
+          <Link
+            href="/my-entries"
+            className="dropdown-item lang-text"
+            style={{ textAlign: "left", width: "100%", textDecoration: "none" }}
+          >
+            {langMode === "km" ? "ការបញ្ចូលរបស់ខ្ញុំ" : "My Entries"}
+          </Link>
           <button 
             type="button" 
             onClick={handleLogout} 

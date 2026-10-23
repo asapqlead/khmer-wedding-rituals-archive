@@ -48,6 +48,7 @@ export default function useEntries() {
     supabase
       .from("entries")
       .select("*")
+      .eq("status", "published")
       .order("sequence_order", { ascending: true })
       .then(({ data, error }) => {
         if (error) {

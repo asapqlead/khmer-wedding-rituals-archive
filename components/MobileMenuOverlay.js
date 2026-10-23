@@ -73,6 +73,19 @@ export default function MobileMenuOverlay({ isOpen, onClose, navItems, currentVi
             >
               {langMode === "km" ? "+ បញ្ចូលពិធីការ" : "+ Contribute"}
             </Link>
+            <Link
+              href="/my-entries"
+              style={{
+                textAlign: "left",
+                fontSize: 17,
+                padding: "6px 0",
+                color: "#FFFFFF",
+                textDecoration: "none",
+              }}
+              onClick={onClose}
+            >
+              {langMode === "km" ? "ការបញ្ចូលរបស់ខ្ញុំ" : "My Entries"}
+            </Link>
             <button
               type="button"
               onClick={() => { onLogout(); onClose(); }}
