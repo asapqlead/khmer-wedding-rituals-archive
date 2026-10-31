@@ -12,6 +12,7 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
   const [menuOpen, setMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [isReviewer, setIsReviewer] = useState(false);
   const [supabase] = useState(() => createClient());
   const dropdownRef = useRef(null);
 
@@ -28,10 +29,21 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
+      if (user) {
+        supabase.rpc("is_reviewer").then(({ data }) => setIsReviewer(data === true));
+      } else {
+        setIsReviewer(false);
+      }
     });
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
+      const currentUser = session?.user || null;
+      setUser(currentUser);
+      if (currentUser) {
+        supabase.rpc("is_reviewer").then(({ data }) => setIsReviewer(data === true));
+      } else {
+        setIsReviewer(false);
+      }
     });
 
     return () => {
@@ -186,7 +198,7 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
               gap: "4px"
             }}
           >
-            <HeaderAuth langMode={langMode} />
+            <HeaderAuth langMode={langMode} isReviewer={isReviewer} />
             
             <div style={{ height: "1px", backgroundColor: "rgba(255, 255, 255, 0.1)", margin: "4px 0" }} />
             
@@ -210,7 +222,18 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
         </div>
       </header>
 
-      {isMobile && <MobileMenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} navItems={navItems} currentView={currentView} langMode={langMode} user={user} onLogout={handleLogout} />}
+      {isMobile && (
+        <MobileMenuOverlay
+          isOpen={menuOpen}
+          onClose={() => setMenuOpen(false)}
+          navItems={navItems}
+          currentView={currentView}
+          langMode={langMode}
+          user={user}
+          isReviewer={isReviewer}
+          onLogout={handleLogout}
+        />
+      )}
     </>
   );
 }

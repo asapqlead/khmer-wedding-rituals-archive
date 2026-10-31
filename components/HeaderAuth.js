@@ -4,22 +4,16 @@ import { useState, useEffect } from "react";
 import { createClient } from "../utils/supabase/client.js";
 import Link from "next/link";
 
-export default function HeaderAuth({ langMode, isMobile }) {
+export default function HeaderAuth({ langMode, isReviewer }) {
   const [user, setUser] = useState(null);
   const [supabase] = useState(() => createClient());
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-    });
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
+    const { data: authListener } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user || null);
     });
-
-    return () => {
-      authListener?.subscription?.unsubscribe();
-    };
+    return () => authListener?.subscription?.unsubscribe();
   }, [supabase]);
 
   const handleLogout = async () => {
@@ -47,6 +41,15 @@ export default function HeaderAuth({ langMode, isMobile }) {
           >
             {langMode === "km" ? "ការបញ្ចូលរបស់ខ្ញុំ" : "My Entries"}
           </Link>
+          {isReviewer && (
+            <Link
+              href="/review"
+              className="dropdown-item lang-text"
+              style={{ textAlign: "left", width: "100%", textDecoration: "none", color: "var(--accent-gold-light)" }}
+            >
+              {langMode === "km" ? "ពិនិត្យពិធីការ" : "Review Queue"}
+            </Link>
+          )}
           <button 
             type="button" 
             onClick={handleLogout} 

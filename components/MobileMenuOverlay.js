@@ -2,7 +2,7 @@
 "use client";
 import Link from "next/link";
 
-export default function MobileMenuOverlay({ isOpen, onClose, navItems, currentView, langMode, user, onLogout }) {
+export default function MobileMenuOverlay({ isOpen, onClose, navItems, currentView, langMode, user, isReviewer, onLogout }) {
   if (!isOpen) return null;
 
   return (
@@ -86,6 +86,21 @@ export default function MobileMenuOverlay({ isOpen, onClose, navItems, currentVi
             >
               {langMode === "km" ? "ការបញ្ចូលរបស់ខ្ញុំ" : "My Entries"}
             </Link>
+            {isReviewer && (
+              <Link
+                href="/review"
+                style={{
+                  textAlign: "left",
+                  fontSize: 17,
+                  padding: "6px 0",
+                  color: "var(--accent-gold-light)",
+                  textDecoration: "none",
+                }}
+                onClick={onClose}
+              >
+                {langMode === "km" ? "ពិនិត្យពិធីការ" : "Review Queue"}
+              </Link>
+            )}
             <button
               type="button"
               onClick={() => { onLogout(); onClose(); }}
