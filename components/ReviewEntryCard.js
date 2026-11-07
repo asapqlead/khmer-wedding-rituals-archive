@@ -5,7 +5,7 @@ import ReviewActionButtons from "./ReviewActionButtons.js";
 export default function ReviewEntryCard({ entry, onReviewSuccess, onError }) {
   const formattedDate = entry.created_at
     ? new Date(entry.created_at).toLocaleDateString("en-US", {
-        year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+        year: "numeric", month: "short", day: "numeric",
       })
     : "";
 
@@ -13,57 +13,65 @@ export default function ReviewEntryCard({ entry, onReviewSuccess, onError }) {
     <article
       style={{
         backgroundColor: "rgba(255, 255, 255, 0.03)",
-        border: "1px solid rgba(255, 255, 255, 0.08)",
-        borderRadius: "14px",
+        border: "1px solid rgba(255, 255, 255, 0.06)",
+        borderRadius: 14,
         padding: "20px",
-        marginBottom: "20px",
         display: "flex",
         flexDirection: "column",
-        gap: "12px",
+        gap: 12,
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", flexWrap: "wrap" }}>
-        <div>
-          <span style={{ fontSize: "11px", letterSpacing: "0.08em", color: "var(--accent-gold)", textTransform: "uppercase" }}>
-            Step #{entry.sequence_order ?? 1} • {formattedDate}
-          </span>
-          <h2 style={{ fontSize: "19px", color: "#ffffff", margin: "4px 0 2px", fontWeight: 600 }}>
-            {entry.title}
-          </h2>
-          {entry.title_khmer && (
-            <div style={{ fontSize: "15px", color: "rgba(255, 255, 255, 0.7)" }}>
-              {entry.title_khmer}
-            </div>
-          )}
-        </div>
+      {/* Title row */}
+      <div>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", letterSpacing: "0.04em" }}>
+          #{entry.sequence_order ?? 1} · {formattedDate}
+        </span>
+        <h2 style={{ fontSize: 17, color: "#ffffff", margin: "4px 0 0", fontWeight: 600, lineHeight: 1.35 }}>
+          {entry.title}
+        </h2>
+        {entry.title_khmer && (
+          <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginTop: 2 }}>
+            {entry.title_khmer}
+          </div>
+        )}
       </div>
 
+      {/* Photo */}
       {entry.photo_url && (
-        <div style={{ width: "100%", maxHeight: "240px", overflow: "hidden", borderRadius: "8px" }}>
+        <div style={{ overflow: "hidden", borderRadius: 10 }}>
           <img
             src={entry.photo_url}
             alt={entry.title}
-            style={{ width: "100%", height: "240px", objectFit: "cover" }}
+            style={{ width: "100%", height: 200, objectFit: "cover", display: "block" }}
           />
         </div>
       )}
 
+      {/* Summary */}
       {(entry.summary || entry.summary_khmer) && (
-        <div style={{ fontSize: "14px", lineHeight: 1.6, color: "rgba(255, 255, 255, 0.85)" }}>
-          {entry.summary && <p style={{ margin: "0 0 4px" }}>{entry.summary}</p>}
-          {entry.summary_khmer && <p style={{ margin: 0, color: "rgba(255, 255, 255, 0.65)" }}>{entry.summary_khmer}</p>}
+        <div style={{ fontSize: 14, lineHeight: 1.65, color: "rgba(255,255,255,0.7)" }}>
+          {entry.summary && <p style={{ margin: 0 }}>{entry.summary}</p>}
+          {entry.summary_khmer && (
+            <p style={{ margin: "4px 0 0", color: "rgba(255,255,255,0.45)", fontSize: 13 }}>
+              {entry.summary_khmer}
+            </p>
+          )}
         </div>
       )}
 
+      {/* Meaning */}
       {entry.meaning && (
-        <div style={{ fontSize: "13px", lineHeight: 1.5, color: "rgba(255, 255, 255, 0.7)", background: "rgba(0,0,0,0.25)", padding: "10px 12px", borderRadius: "8px" }}>
-          <strong style={{ color: "var(--accent-gold-light)" }}>Meaning / អត្ថន័យ: </strong>
+        <div style={{ fontSize: 13, lineHeight: 1.55, color: "rgba(255,255,255,0.55)", padding: "10px 14px", background: "rgba(0,0,0,0.2)", borderRadius: 8 }}>
+          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", display: "block", marginBottom: 4 }}>
+            Meaning / អត្ថន័យ
+          </span>
           {entry.meaning}
         </div>
       )}
 
+      {/* Source */}
       {entry.source && (
-        <div style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", fontStyle: "italic" }}>
+        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontStyle: "italic" }}>
           Source: {entry.source}
         </div>
       )}

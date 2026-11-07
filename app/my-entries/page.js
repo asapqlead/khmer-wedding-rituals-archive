@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "../../utils/supabase/client.js";
+import ReviewModal from "../../components/ReviewModal.js";
 
 const STATUS_LABELS = {
   pending:   { en: "Pending Review",  km: "រង់ចាំការពិនិត្យ" },
@@ -16,7 +17,7 @@ const STATUS_COLORS = {
   returned:  { bg: "rgba(251, 146, 60, 0.12)", border: "rgba(251, 146, 60, 0.3)", text: "#fb923c" },
 };
 
-/* ── glass styles (same system as login / signup / contribute) ── */
+/* ── glass styles ── */
 const glassStyles = `
   .link-text {
     color: rgba(255, 255, 255, 0.7);
@@ -25,6 +26,36 @@ const glassStyles = `
   }
   .link-text:hover {
     color: #ffffff;
+  }
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.65);
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 150ms ease,
+                color 150ms ease,
+                border-color 150ms ease;
+  }
+  .icon-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+  .icon-btn:active {
+    transform: scale(0.92);
+  }
+  .icon-btn-delete:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.35);
   }
 `;
 
@@ -87,7 +118,7 @@ function StatusBadge({ status }) {
   );
 }
 
-function EntryRow({ entry }) {
+function EntryRow({ entry, onDeleteClick }) {
   return (
     <div
       style={{
@@ -110,7 +141,40 @@ function EntryRow({ entry }) {
           </span>
         )}
       </div>
-      <StatusBadge status={entry.status} />
+
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <StatusBadge status={entry.status} />
+
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Link
+            href={`/contribute?edit=${entry.id}`}
+            className="icon-btn"
+            aria-label="Edit entry / កែសម្រួល"
+            title="Edit / កែសម្រួល"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+              <path d="m15 5 4 4" />
+            </svg>
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => onDeleteClick(entry)}
+            className="icon-btn icon-btn-delete"
+            aria-label="Delete entry / លុបពិធី"
+            title="Delete / លុប"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 6h18" />
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+              <line x1="10" x2="10" y1="11" y2="17" />
+              <line x1="14" x2="14" y1="11" y2="17" />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -120,6 +184,8 @@ export default function MyEntriesPage() {
   const [user, setUser] = useState(null);
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [entryToDelete, setEntryToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     async function init() {
@@ -144,6 +210,30 @@ export default function MyEntriesPage() {
 
     init();
   }, [supabase]);
+
+  const handleConfirmDelete = async () => {
+    if (!entryToDelete) return;
+    setIsDeleting(true);
+
+    try {
+      const { data, error } = await supabase
+        .from("entries")
+        .delete()
+        .eq("id", entryToDelete.id)
+        .select();
+
+      if (!error && data && data.length > 0) {
+        setEntries((prev) => prev.filter((item) => item.id !== entryToDelete.id));
+        setEntryToDelete(null);
+      } else {
+        console.error("Delete operation rejected by policy or failed:", error);
+      }
+    } catch (err) {
+      console.error("Unexpected error during delete:", err);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   /* ── Loading ── */
   if (loading) {
@@ -285,12 +375,31 @@ export default function MyEntriesPage() {
           ) : (
             <div>
               {entries.map((entry) => (
-                <EntryRow key={entry.id} entry={entry} />
+                <EntryRow
+                  key={entry.id}
+                  entry={entry}
+                  onDeleteClick={(selected) => setEntryToDelete(selected)}
+                />
               ))}
             </div>
           )}
         </div>
       </main>
+
+      <ReviewModal
+        isOpen={!!entryToDelete}
+        title="លុបពិធីការនេះ? / Delete this entry?"
+        message={
+          entryToDelete
+            ? `${entryToDelete.title} — តើអ្នកប្រាកដជាចង់លុបពិធីការនេះមែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។ / Are you sure you want to delete this ritual entry? This action cannot be undone.`
+            : ""
+        }
+        confirmLabel="លុប / Delete"
+        confirmVariant="delete"
+        isLoading={isDeleting}
+        onConfirm={handleConfirmDelete}
+        onClose={() => setEntryToDelete(null)}
+      />
     </>
   );
 }

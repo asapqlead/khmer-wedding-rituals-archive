@@ -11,6 +11,17 @@ export const metadata = {
 const UNAUTHORIZED_MESSAGE =
   "Access restricted. You do not have reviewer permissions to view this page. / អ្នកមិនមានសិទ្ធិចូលមើលទំព័រពិនិត្យនេះទេ។";
 
+const glassStyles = `
+  .link-text {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+  .link-text:hover {
+    color: #ffffff;
+  }
+`;
+
 const pageStyle = {
   position: "relative",
   width: "100%",
@@ -29,14 +40,21 @@ const pageStyle = {
 
 const cardStyle = {
   width: "100%",
-  maxWidth: "800px",
-  backgroundColor: "rgba(18, 18, 18, 0.65)",
+  maxWidth: "720px",
+  backgroundColor: "rgba(18, 18, 18, 0.55)",
   backdropFilter: "blur(24px) saturate(180%)",
   WebkitBackdropFilter: "blur(24px) saturate(180%)",
   border: "1px solid rgba(255, 255, 255, 0.08)",
+  borderTop: "1px solid rgba(255, 255, 255, 0.16)",
   borderRadius: "20px",
   padding: "40px 32px",
-  boxShadow: "0 24px 48px rgba(0, 0, 0, 0.4)",
+  boxShadow: "0 24px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0,0,0,0.2)",
+};
+
+const narrowCardStyle = {
+  ...cardStyle,
+  maxWidth: "420px",
+  textAlign: "center",
 };
 
 export default async function ReviewPage() {
@@ -47,29 +65,47 @@ export default async function ReviewPage() {
 
   if (reviewerError || isReviewer !== true) {
     return (
-      <main style={pageStyle}>
-        <div style={{ ...cardStyle, maxWidth: "480px", textAlign: "center" }}>
-          <div style={{ fontSize: "36px", marginBottom: "16px" }}>🔒</div>
-          <p style={{ margin: "0 0 20px", fontSize: "15px", lineHeight: 1.6, color: "#fca5a5" }}>
-            {UNAUTHORIZED_MESSAGE}
-          </p>
-          <Link
-            href="/"
-            style={{
-              display: "inline-block",
-              padding: "10px 20px",
-              backgroundColor: "#ffffff",
-              color: "#000000",
-              borderRadius: "8px",
-              fontSize: "14px",
-              fontWeight: 600,
-              textDecoration: "none",
-            }}
-          >
-            ← Back to Archive / ត្រឡប់ទៅបណ្ណសារ
-          </Link>
-        </div>
-      </main>
+      <>
+        <style>{glassStyles}</style>
+        <main style={pageStyle}>
+          <div style={narrowCardStyle}>
+            <div style={{ marginBottom: 28 }}>
+              <h1
+                style={{
+                  fontSize: 22,
+                  margin: "0 0 10px 0",
+                  fontWeight: 600,
+                  color: "#ffffff",
+                  lineHeight: 1.35,
+                }}
+              >
+                ការចូលប្រើត្រូវបានបដិសេធ
+                <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>
+                  Access Restricted
+                </span>
+              </h1>
+              <p style={{ margin: 0, color: "rgba(255,255,255,0.5)", fontSize: 13, lineHeight: 1.6 }}>
+                {UNAUTHORIZED_MESSAGE}
+              </p>
+            </div>
+            <Link
+              href="/"
+              style={{
+                display: "inline-block",
+                padding: "10px 24px",
+                backgroundColor: "#ffffff",
+                color: "#000000",
+                borderRadius: 10,
+                fontWeight: 600,
+                fontSize: 14,
+                textDecoration: "none",
+              }}
+            >
+              ត្រឡប់ទៅបណ្ណសារ / Back to Archive
+            </Link>
+          </div>
+        </main>
+      </>
     );
   }
 
@@ -87,10 +123,13 @@ export default async function ReviewPage() {
   }
 
   return (
-    <main style={pageStyle}>
-      <div style={cardStyle}>
-        <ReviewQueueClient initialEntries={pendingEntries || []} />
-      </div>
-    </main>
+    <>
+      <style>{glassStyles}</style>
+      <main style={pageStyle}>
+        <div style={cardStyle}>
+          <ReviewQueueClient initialEntries={pendingEntries || []} />
+        </div>
+      </main>
+    </>
   );
 }

@@ -2,6 +2,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "../utils/supabase/client.js";
 import { validateEntry, validatePhotoFile, NO_REGIONAL_EN, NO_REGIONAL_KHMER, normalize, countWords } from "../utils/validation.js";
 import ParticipantsListEditor from "./ParticipantsListEditor.js";
@@ -134,9 +135,12 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
       let savedId = initialData?.id || "";
 
       if (isEdit && initialData?.id) {
-        // Check if user is a reviewer — reviewers keep the current status
+        // Any returned or pending entry being resubmitted must revert to 'pending'
+        // so it reappears in the review queue.
+        // Reviewers editing an already published entry keep it published.
         const { data: isReviewer } = await supabase.rpc("is_reviewer");
-        if (!isReviewer) {
+        const shouldBePending = initialData.status !== "published" || !isReviewer;
+        if (shouldBePending) {
           payload.status = "pending";
         }
 
@@ -153,8 +157,13 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
           return;
         }
         savedId = data[0]?.id || savedId;
-        router.push("/#" + savedId);
-        router.refresh();
+
+        if (shouldBePending) {
+          setSubmitted(true);
+        } else {
+          router.push("/#" + savedId);
+          router.refresh();
+        }
       } else {
         // New entry — do NOT send status; DB default sets it to 'pending'
         const { data, error } = await supabase
@@ -186,11 +195,44 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, padding: "32px 16px", textAlign: "center" }}>
         <span style={{ fontSize: 32 }}>✅</span>
         <p style={{ color: "#ffffff", fontSize: 15, lineHeight: 1.6, margin: 0, maxWidth: 420 }}>
-          សូមអរគុណសម្រាប់ការចូលរួមចំណែក! ការបញ្ចូលរបស់អ្នកកំពុងរង់ចាំការពិនិត្យ។
+          {isEdit
+            ? "ការផ្លាស់ប្តូរត្រូវបានរក្សាទុក! ការបញ្ចូលរបស់អ្នកត្រូវបានបញ្ជូនទៅពិនិត្យឡើងវិញ។"
+            : "សូមអរគុណសម្រាប់ការចូលរួមចំណែក! ការបញ្ចូលរបស់អ្នកកំពុងរង់ចាំការពិនិត្យ។"}
         </p>
         <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 14, lineHeight: 1.6, margin: 0, maxWidth: 420 }}>
-          Thank you for your contribution! Your entry is pending review.
+          {isEdit
+            ? "Changes saved! Your entry has been resubmitted for review."
+            : "Thank you for your contribution! Your entry is pending review."}
         </p>
+        <div style={{ display: "flex", gap: 12, marginTop: 8, flexWrap: "wrap", justifyContent: "center" }}>
+          <Link
+            href="/my-entries"
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#ffffff",
+              color: "#000000",
+              borderRadius: 10,
+              fontWeight: 600,
+              fontSize: 14,
+              textDecoration: "none",
+            }}
+          >
+            មើលការបញ្ចូលរបស់ខ្ញុំ / View My Entries
+          </Link>
+          <Link
+            href="/"
+            className="link-text"
+            style={{
+              padding: "10px 16px",
+              fontSize: 14,
+              display: "flex",
+              alignItems: "center",
+              fontWeight: 500,
+            }}
+          >
+            ← ត្រឡប់ទៅបណ្ណសារ / Back to Archive
+          </Link>
+        </div>
       </div>
     );
   }

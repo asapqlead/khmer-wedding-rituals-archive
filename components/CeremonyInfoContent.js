@@ -1,6 +1,5 @@
 // components/CeremonyInfoContent.js
 "use client";
-import CeremonyOwnerActions from "./CeremonyOwnerActions.js";
 import CeremonyContributorBadge from "./CeremonyContributorBadge.js";
 
 export default function CeremonyInfoContent({ ceremony, langMode, isVisible, isMobile }) {
@@ -67,9 +66,6 @@ export default function CeremonyInfoContent({ ceremony, langMode, isVisible, isM
       >
         <CeremonyContributorBadge ceremony={ceremony} langMode={langMode} isMobile={isMobile} />
       </div>
-
-      {/* Owner actions (Edit / Delete) */}
-      <CeremonyOwnerActions ceremony={ceremony} langMode={langMode} />
     </div>
   );
 }

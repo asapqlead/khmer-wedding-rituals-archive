@@ -9,78 +9,67 @@ const EMPTY_MESSAGE =
 
 export default function ReviewQueueClient({ initialEntries = [] }) {
   const [entries, setEntries] = useState(initialEntries);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const handleReviewSuccess = (reviewedId) => {
     setEntries((prev) => prev.filter((item) => item.id !== reviewedId));
-    setErrorMessage("");
   };
 
   return (
-    <div style={{ width: "100%", maxWidth: "800px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-        <Link
-          href="/"
-          style={{ color: "rgba(255, 255, 255, 0.7)", textDecoration: "none", fontSize: "14px" }}
-        >
-          ← Back to Archive / ត្រឡប់ទៅបណ្ណសារ
-        </Link>
-        <span style={{ fontSize: "13px", color: "var(--accent-gold)" }}>
-          {entries.length} pending
-        </span>
-      </div>
+    <div style={{ width: "100%" }}>
+      {/* Back link */}
+      <Link
+        href="/"
+        className="link-text"
+        style={{
+          fontSize: 13,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          marginBottom: 20,
+          fontWeight: 500,
+        }}
+      >
+        ← ត្រឡប់ទៅបណ្ណសារ / Back to Archive
+      </Link>
 
-      <header style={{ marginBottom: "24px" }}>
-        <h1 style={{ fontSize: "26px", color: "#ffffff", margin: "0 0 6px", fontWeight: 600 }}>
-          Review Queue / បញ្ជីពិនិត្យ
-        </h1>
-        <p style={{ margin: 0, fontSize: "14px", color: "rgba(255, 255, 255, 0.6)" }}>
-          Publish entries to make them public or return them to contributors for edits.
-        </p>
-      </header>
-
-      {errorMessage && (
-        <div
-          role="alert"
+      {/* Header — one clean line */}
+      <div style={{ marginBottom: 32 }}>
+        <h1
           style={{
-            padding: "12px 16px",
-            backgroundColor: "rgba(239, 68, 68, 0.15)",
-            border: "1px solid rgba(239, 68, 68, 0.3)",
-            color: "#fca5a5",
-            borderRadius: "10px",
-            fontSize: "13px",
-            marginBottom: "20px",
-            lineHeight: 1.5,
+            fontSize: "clamp(20px, 3vw, 24px)",
+            color: "#ffffff",
+            margin: 0,
+            fontWeight: 600,
+            lineHeight: 1.4,
           }}
         >
-          {errorMessage}
-        </div>
-      )}
+          បញ្ជីពិនិត្យ <span style={{ color: "rgba(255,255,255,0.4)", fontWeight: 400 }}>/ Review Queue</span>
+        </h1>
+        <p style={{ margin: "6px 0 0", fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>
+          {entries.length} pending
+        </p>
+      </div>
 
       {entries.length === 0 ? (
         <div
           style={{
-            padding: "48px 20px",
+            padding: "56px 20px",
             textAlign: "center",
-            backgroundColor: "rgba(255, 255, 255, 0.02)",
-            border: "1px dashed rgba(255, 255, 255, 0.1)",
-            borderRadius: "14px",
-            color: "rgba(255, 255, 255, 0.6)",
-            fontSize: "14px",
-            lineHeight: 1.6,
+            color: "rgba(255, 255, 255, 0.4)",
+            fontSize: 14,
+            lineHeight: 1.7,
           }}
         >
-          <span style={{ fontSize: "32px", display: "block", marginBottom: "12px" }}>✓</span>
+          <span style={{ fontSize: 28, display: "block", marginBottom: 12, opacity: 0.6 }}>✓</span>
           {EMPTY_MESSAGE}
         </div>
       ) : (
-        <div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {entries.map((entry) => (
             <ReviewEntryCard
               key={entry.id}
               entry={entry}
               onReviewSuccess={handleReviewSuccess}
-              onError={setErrorMessage}
             />
           ))}
         </div>
