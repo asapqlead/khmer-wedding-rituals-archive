@@ -141,14 +141,12 @@ function ContributeContent() {
   /* ── Loading state ── */
   if (loading) {
     return (
-      <div style={narrowCardStyle}>
-        <span
-          className="font-mono-tag"
-          style={{ color: "var(--accent-gold)", fontSize: 13, letterSpacing: "0.12em" }}
-        >
-          កំពុងពិនិត្យសិទ្ធិចូលប្រើ… / CHECKING ACCESS…
-        </span>
-      </div>
+      <span
+        className="font-mono-tag"
+        style={{ color: "var(--accent-gold)", fontSize: 13, letterSpacing: "0.12em", textAlign: "center" }}
+      >
+        កំពុងពិនិត្យសិទ្ធិចូលប្រើ… / CHECKING ACCESS…
+      </span>
     );
   }
 
@@ -334,14 +332,12 @@ export default function ContributePage() {
       <main style={pageStyle}>
         <Suspense
           fallback={
-            <div style={narrowCardStyle}>
-              <span
-                className="font-mono-tag"
-                style={{ color: "var(--accent-gold)", fontSize: 13, letterSpacing: "0.12em" }}
-              >
-                កំពុងដំណើរការ… / Loading…
-              </span>
-            </div>
+            <span
+              className="font-mono-tag"
+              style={{ color: "var(--accent-gold)", fontSize: 13, letterSpacing: "0.12em", textAlign: "center" }}
+            >
+              កំពុងដំណើរការ… / Loading…
+            </span>
           }
         >
           <ContributeContent />

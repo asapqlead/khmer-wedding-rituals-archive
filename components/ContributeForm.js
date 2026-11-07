@@ -1,18 +1,19 @@
 // components/ContributeForm.js
 "use client";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "../utils/supabase/client.js";
 import { validateEntry, validatePhotoFile, NO_REGIONAL_EN, NO_REGIONAL_KHMER, normalize, countWords } from "../utils/validation.js";
 import ParticipantsListEditor from "./ParticipantsListEditor.js";
 import SacredItemsListEditor from "./SacredItemsListEditor.js";
+import useDraftProtection from "../hooks/useDraftProtection.js";
 
 export default function ContributeForm({ initialData = null, isEdit = false }) {
   const router = useRouter();
   const [supabase] = useState(() => createClient());
 
-  const [formData, setFormData] = useState({
+  const defaultValues = {
     title: initialData?.title || initialData?.titleEn || "",
     title_khmer: initialData?.title_khmer || initialData?.titleKhmer || "",
     sequence_order: initialData?.sequence_order ?? initialData?.order ?? 1,
@@ -25,7 +26,9 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
     regional_notes_en: initialData?.regionalNotesEn || initialData?.regional_notes_en || NO_REGIONAL_EN,
     regional_notes_khmer: initialData?.regionalNotesKhmer || initialData?.regional_notes_khmer || NO_REGIONAL_KHMER,
     source: initialData?.source || "",
-  });
+  };
+
+  const [formData, setFormData] = useState(defaultValues);
 
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(initialData?.photo_url || initialData?.mediaPlaceholder?.image || null);
@@ -33,6 +36,21 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
   const [submitting, setSubmitting] = useState(false);
   const [generalError, setGeneralError] = useState("");
   const [submitted, setSubmitted] = useState(false);
+
+  // ── Draft autosave (Google Forms style) ────────────────────────
+  const {
+    saveStatus,
+    hasDraft,
+    showPhotoReminder,
+    setShowPhotoReminder,
+    clearDraft,
+  } = useDraftProtection(
+    initialData?.id || null,
+    formData,
+    setFormData,
+    Boolean(photoFile || photoPreview),
+    defaultValues
+  );
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -48,6 +66,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
       return;
     }
     setErrors((prev) => ({ ...prev, photo: null }));
+    setShowPhotoReminder(false);
     setPhotoFile(file);
     setPhotoPreview(URL.createObjectURL(file));
   };
@@ -158,6 +177,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
         }
         savedId = data[0]?.id || savedId;
 
+        clearDraft();
         if (shouldBePending) {
           setSubmitted(true);
         } else {
@@ -178,6 +198,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
           return;
         }
         // Show success message instead of navigating to the entry
+        clearDraft();
         setSubmitted(true);
       }
     } catch (err) {
@@ -237,8 +258,75 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
     );
   }
 
+  const handleClearDraft = () => {
+    clearDraft(true);
+    setPhotoFile(null);
+    setPhotoPreview(initialData?.photo_url || initialData?.mediaPlaceholder?.image || null);
+    setErrors({});
+  };
+
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+    < form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      {/* ── Google Forms style draft status indicator ── */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "8px 14px",
+          backgroundColor: "rgba(255, 255, 255, 0.04)",
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+          borderRadius: 10,
+          fontSize: 13,
+          color: "rgba(255, 255, 255, 0.75)",
+          gap: 12,
+          flexWrap: "wrap",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {saveStatus === "saving" ? (
+            <>
+              <span style={{ fontSize: 13 }}>⏳</span>
+              <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                កំពុងរក្សាទុកសេចក្ដីព្រាង / Saving draft
+              </span>
+            </>
+          ) : hasDraft || saveStatus === "saved" ? (
+            <>
+              <span style={{ fontSize: 13, color: "var(--accent-gold, #C5A059)" }}>☁️ ✓</span>
+              <span style={{ color: "rgba(255, 255, 255, 0.85)" }}>
+                បានរក្សាទុកសេចក្ដីព្រាងដោយស្វ័យប្រវត្តិ / Draft saved automatically
+              </span>
+            </>
+          ) : (
+            <>
+              <span style={{ fontSize: 13, opacity: 0.6 }}>☁️</span>
+              <span style={{ color: "rgba(255, 255, 255, 0.5)" }}>
+                ការផ្លាស់ប្តូរត្រូវបានរក្សាទុកដោយស្វ័យប្រវត្តិ / Autosave draft active
+              </span>
+            </>
+          )}
+        </div>
+
+        {hasDraft && (
+          <button
+            type="button"
+            onClick={handleClearDraft}
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "rgba(255, 255, 255, 0.45)",
+              fontSize: 12,
+              cursor: "pointer",
+              textDecoration: "underline",
+              padding: 0,
+              fontFamily: "inherit",
+            }}
+          >
+            សម្អាតសេចក្ដីព្រាង / Clear draft
+          </button>
+        )}
+      </div>
       {generalError && (
         <div style={{ padding: "12px 16px", backgroundColor: "rgba(255, 107, 107, 0.15)", border: "1px solid #ff6b6b", borderRadius: 10, color: "#ff8787", fontSize: 14 }}>
           {generalError}
@@ -426,9 +514,16 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
 
       {/* Photo Upload & Preview */}
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4 }}>
-          រូបថតពិធីការ / Ceremony Photo {!isEdit && <span style={{ color: "var(--accent-gold)" }}>*</span>} (JPEG, PNG, WebP &lt; 5MB, landscape)
-        </label>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
+          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4 }}>
+            រូបថតពិធីការ / Ceremony Photo {!isEdit && <span style={{ color: "var(--accent-gold)" }}>*</span>} (JPEG, PNG, WebP &lt; 5MB, landscape)
+          </label>
+          {showPhotoReminder && !photoFile && (
+            <span style={{ fontSize: 12, color: "var(--accent-gold-light, #DFC07A)" }}>
+              📷 សូមជ្រើសរើសរូបថតឡើងវិញ / Please re-select photo
+            </span>
+          )}
+        </div>
         <input
           type="file"
           accept="image/jpeg,image/png,image/webp"
@@ -467,8 +562,8 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
         {submitting
           ? "កំពុងរក្សាទុក... / Saving Entry..."
           : isEdit
-          ? "ធ្វើបច្ចុប្បន្នភាពពិធីការ / Update Ceremony Entry"
-          : "បញ្ជូនពិធីការ / Submit Ceremony Entry"}
+            ? "ធ្វើបច្ចុប្បន្នភាពពិធីការ / Update Ceremony Entry"
+            : "បញ្ជូនពិធីការ / Submit Ceremony Entry"}
       </button>
     </form>
   );
