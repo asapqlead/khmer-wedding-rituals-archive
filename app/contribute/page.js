@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "../../utils/supabase/client.js";
 import ContributeForm from "../../components/ContributeForm.js";
+import LanguageSwitcher from "../../components/LanguageSwitcher.js";
+import useLanguage from "../../hooks/useLanguage.js";
 
 /* ── shared glass styles (same system as login/signup) ── */
 const glassStyles = `
@@ -110,6 +112,8 @@ function ContributeContent() {
   const [loading, setLoading] = useState(true);
   const [editEntry, setEditEntry] = useState(null);
   const [unauthorized, setUnauthorized] = useState(false);
+  const [langMode, setLangMode] = useLanguage();
+  const isKm = langMode === "km";
 
   useEffect(() => {
     async function init() {
@@ -145,7 +149,7 @@ function ContributeContent() {
         className="font-mono-tag"
         style={{ color: "var(--accent-gold)", fontSize: 13, letterSpacing: "0.12em", textAlign: "center" }}
       >
-        កំពុងពិនិត្យសិទ្ធិចូលប្រើ… / CHECKING ACCESS…
+        {isKm ? "កំពុងពិនិត្យសិទ្ធិចូលប្រើ…" : "CHECKING ACCESS…"}
       </span>
     );
   }
@@ -154,6 +158,9 @@ function ContributeContent() {
   if (!user) {
     return (
       <div style={narrowCardStyle}>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
+          <LanguageSwitcher langMode={langMode} onChange={setLangMode} />
+        </div>
         <div style={{ marginBottom: "28px" }}>
           <h1
             style={{
@@ -162,12 +169,10 @@ function ContributeContent() {
               fontWeight: "600",
               color: "#ffffff",
               lineHeight: 1.35,
+              fontFamily: isKm ? "var(--font-khmer-serif)" : "inherit",
             }}
           >
-            ទាមទារសិទ្ធិជាអ្នកចូលរួមចំណែក
-            <span style={{ display: "block", fontSize: "15px", fontWeight: "400", color: "rgba(255, 255, 255, 0.7)", marginTop: 4 }}>
-              Contributor Access Required
-            </span>
+            {isKm ? "ទាមទារសិទ្ធិជាអ្នកចូលរួមចំណែក" : "Contributor Access Required"}
           </h1>
           <p
             style={{
@@ -175,12 +180,12 @@ function ContributeContent() {
               color: "rgba(255, 255, 255, 0.7)",
               fontSize: "14px",
               lineHeight: 1.6,
+              fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
             }}
           >
-            អ្នកត្រូវតែចូលគណនីដើម្បីចូលរួមចំណែកបញ្ចូលពិធីការទៅក្នុងបណ្ណសារពិធីមង្គលការខ្មែរ។
-            <span style={{ display: "block", fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", marginTop: 4 }}>
-              You must be logged in to contribute ceremony entries to the Khmer Wedding Rituals Archive.
-            </span>
+            {isKm
+              ? "អ្នកត្រូវតែចូលគណនីដើម្បីចូលរួមចំណែកបញ្ចូលពិធីការទៅក្នុងបណ្ណសារពិធីមង្គលការខ្មែរ។"
+              : "You must be logged in to contribute ceremony entries to the Khmer Wedding Rituals Archive."}
           </p>
         </div>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -193,9 +198,10 @@ function ContributeContent() {
               width: "auto",
               display: "inline-block",
               textAlign: "center",
+              fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
             }}
           >
-            ចូលគណនី / Log In
+            {isKm ? "ចូលគណនី" : "Log In"}
           </Link>
           <Link
             href="/"
@@ -206,9 +212,10 @@ function ContributeContent() {
               display: "flex",
               alignItems: "center",
               fontWeight: 500,
+              fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
             }}
           >
-            ← ត្រឡប់ទៅបណ្ណសារ / Back to Archive
+            {isKm ? "← ត្រឡប់ទៅបណ្ណសារ" : "← Back to Archive"}
           </Link>
         </div>
       </div>
@@ -219,6 +226,9 @@ function ContributeContent() {
   if (unauthorized) {
     return (
       <div style={narrowCardStyle}>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
+          <LanguageSwitcher langMode={langMode} onChange={setLangMode} />
+        </div>
         <div style={{ marginBottom: "28px" }}>
           <h1
             style={{
@@ -227,12 +237,10 @@ function ContributeContent() {
               fontWeight: "600",
               color: "#ff6b6b",
               lineHeight: 1.35,
+              fontFamily: isKm ? "var(--font-khmer-serif)" : "inherit",
             }}
           >
-            ការចូលប្រើត្រូវបានបដិសេធ
-            <span style={{ display: "block", fontSize: "15px", fontWeight: "400", color: "#ff8787", marginTop: 4 }}>
-              Access Denied
-            </span>
+            {isKm ? "ការចូលប្រើត្រូវបានបដិសេធ" : "Access Denied"}
           </h1>
           <p
             style={{
@@ -240,20 +248,20 @@ function ContributeContent() {
               color: "rgba(255, 255, 255, 0.7)",
               fontSize: "14px",
               lineHeight: 1.6,
+              fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
             }}
           >
-            អ្នកមិនមានសិទ្ធិកែសម្រួលពិធីការនេះទេ។ អ្នកអាចកែសម្រួលបានតែពិធីការផ្ទាល់ខ្លួនរបស់អ្នកប៉ុណ្ណោះ។
-            <span style={{ display: "block", fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", marginTop: 4 }}>
-              You do not have permission to edit this entry. You can only edit your own entries.
-            </span>
+            {isKm
+              ? "អ្នកមិនមានសិទ្ធិកែសម្រួលពិធីការនេះទេ។ អ្នកអាចកែសម្រួលបានតែពិធីការផ្ទាល់ខ្លួនរបស់អ្នកប៉ុណ្ណោះ។"
+              : "You do not have permission to edit this entry. You can only edit your own entries."}
           </p>
         </div>
         <Link
           href="/"
           className="link-text"
-          style={{ fontWeight: 600, color: "#ffffff", fontSize: 14 }}
+          style={{ fontWeight: 600, color: "#ffffff", fontSize: 14, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}
         >
-          ← ត្រឡប់ទៅបណ្ណសារ / Return to Archive
+          {isKm ? "← ត្រឡប់ទៅបណ្ណសារ" : "← Return to Archive"}
         </Link>
       </div>
     );
@@ -264,20 +272,24 @@ function ContributeContent() {
     <div style={cardStyle}>
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
-        <Link
-          href="/"
-          className="link-text"
-          style={{
-            fontSize: 13,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            marginBottom: 14,
-            fontWeight: 500,
-          }}
-        >
-          ← ត្រឡប់ទៅបណ្ណសារ / Back to Archive
-        </Link>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+          <Link
+            href="/"
+            className="link-text"
+            style={{
+              fontSize: 13,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              fontWeight: 500,
+              fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
+            }}
+          >
+            {isKm ? "← ត្រឡប់ទៅបណ្ណសារ" : "← Back to Archive"}
+          </Link>
+          <LanguageSwitcher langMode={langMode} onChange={setLangMode} />
+        </div>
+
         <h1
           style={{
             fontSize: "clamp(22px, 3.5vw, 26px)",
@@ -285,12 +297,16 @@ function ContributeContent() {
             color: "#FFFFFF",
             margin: 0,
             lineHeight: 1.35,
+            fontFamily: isKm ? "var(--font-khmer-serif)" : "inherit",
           }}
         >
-          {editEntry ? "កែសម្រួលពិធីការអាពាហ៍ពិពាហ៍" : "ចូលរួមចំណែកពិធីការថ្មី"}
-          <span style={{ display: "block", fontSize: "15px", fontWeight: "400", color: "rgba(255, 255, 255, 0.7)", marginTop: 4 }}>
-            {editEntry ? "Edit Ritual Ceremony" : "Contribute New Ritual"}
-          </span>
+          {editEntry
+            ? isKm
+              ? "កែសម្រួលពិធីការអាពាហ៍ពិពាហ៍"
+              : "Edit Ritual Ceremony"
+            : isKm
+              ? "ចូលរួមចំណែកពិធីការថ្មី"
+              : "Contribute New Ritual"}
         </h1>
         <p
           style={{
@@ -298,16 +314,16 @@ function ContributeContent() {
             fontSize: 14,
             marginTop: 8,
             lineHeight: 1.6,
+            fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
           }}
         >
           {editEntry
-            ? "ធ្វើបច្ចុប្បន្នភាពព័ត៌មានលម្អិតនៃពិធីការបណ្ណសាររបស់អ្នកនៅខាងក្រោម។"
-            : "កត់ត្រាជំហាននៃពិធីការអាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរសម្រាប់បណ្ណសាររស់រវើក។"}
-          <span style={{ display: "block", fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", marginTop: 2 }}>
-            {editEntry
-              ? "Update your archival entry details below."
+            ? isKm
+              ? "ធ្វើបច្ចុប្បន្នភាពព័ត៌មានលម្អិតនៃពិធីការបណ្ណសាររបស់អ្នកនៅខាងក្រោម។"
+              : "Update your archival entry details below."
+            : isKm
+              ? "កត់ត្រាជំហាននៃពិធីការអាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរសម្រាប់បណ្ណសាររស់រវើក។"
               : "Document a traditional Khmer wedding ceremony step for the living archive."}
-          </span>
         </p>
       </div>
 
@@ -320,7 +336,7 @@ function ContributeContent() {
         }}
       />
 
-      <ContributeForm initialData={editEntry} isEdit={Boolean(editEntry)} />
+      <ContributeForm initialData={editEntry} isEdit={Boolean(editEntry)} langMode={langMode} />
     </div>
   );
 }

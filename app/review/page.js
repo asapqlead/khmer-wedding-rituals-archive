@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { createClient } from "../../utils/supabase/server.js";
 import ReviewQueueClient from "../../components/ReviewQueueClient.js";
+import ReviewUnauthorizedView from "../../components/ReviewUnauthorizedView.js";
 
 export const metadata = {
   title: "Review Queue | Traditional Khmer Wedding Rituals",
@@ -68,42 +69,7 @@ export default async function ReviewPage() {
       <>
         <style>{glassStyles}</style>
         <main style={pageStyle}>
-          <div style={narrowCardStyle}>
-            <div style={{ marginBottom: 28 }}>
-              <h1
-                style={{
-                  fontSize: 22,
-                  margin: "0 0 10px 0",
-                  fontWeight: 600,
-                  color: "#ffffff",
-                  lineHeight: 1.35,
-                }}
-              >
-                ការចូលប្រើត្រូវបានបដិសេធ
-                <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>
-                  Access Restricted
-                </span>
-              </h1>
-              <p style={{ margin: 0, color: "rgba(255,255,255,0.5)", fontSize: 13, lineHeight: 1.6 }}>
-                {UNAUTHORIZED_MESSAGE}
-              </p>
-            </div>
-            <Link
-              href="/"
-              style={{
-                display: "inline-block",
-                padding: "10px 24px",
-                backgroundColor: "#ffffff",
-                color: "#000000",
-                borderRadius: 10,
-                fontWeight: 600,
-                fontSize: 14,
-                textDecoration: "none",
-              }}
-            >
-              ត្រឡប់ទៅបណ្ណសារ / Back to Archive
-            </Link>
-          </div>
+          <ReviewUnauthorizedView cardStyle={narrowCardStyle} />
         </main>
       </>
     );

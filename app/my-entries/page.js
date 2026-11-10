@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "../../utils/supabase/client.js";
 import ReviewModal from "../../components/ReviewModal.js";
+import LanguageSwitcher from "../../components/LanguageSwitcher.js";
+import useLanguage from "../../hooks/useLanguage.js";
 
 const STATUS_LABELS = {
   pending: { en: "Pending Review", km: "រង់ចាំការពិនិត្យ" },
@@ -94,9 +96,10 @@ const narrowCardStyle = {
   textAlign: "center",
 };
 
-function StatusBadge({ status }) {
+function StatusBadge({ status, langMode }) {
   const colors = STATUS_COLORS[status] || STATUS_COLORS.pending;
   const labels = STATUS_LABELS[status] || { en: status, km: status };
+  const label = langMode === "km" ? labels.km : labels.en;
 
   return (
     <span
@@ -111,14 +114,18 @@ function StatusBadge({ status }) {
         color: colors.text,
         lineHeight: 1.6,
         whiteSpace: "nowrap",
+        fontFamily: langMode === "km" ? "var(--font-khmer-sans)" : "inherit",
       }}
     >
-      {labels.km} / {labels.en}
+      {label}
     </span>
   );
 }
 
-function EntryRow({ entry, onDeleteClick }) {
+function EntryRow({ entry, onDeleteClick, langMode }) {
+  const isKm = langMode === "km";
+  const displayTitle = isKm ? (entry.title_khmer || entry.title) : entry.title;
+
   return (
     <div
       style={{
@@ -132,25 +139,27 @@ function EntryRow({ entry, onDeleteClick }) {
       }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ color: "#ffffff", fontSize: 15, fontWeight: 500 }}>
-          {entry.title}
+        <span
+          style={{
+            color: "#ffffff",
+            fontSize: 15,
+            fontWeight: 500,
+            fontFamily: isKm ? "var(--font-khmer-serif)" : "inherit",
+          }}
+        >
+          {displayTitle}
         </span>
-        {entry.title_khmer && (
-          <span style={{ display: "block", color: "rgba(255,255,255,0.6)", fontSize: 14, marginTop: 2 }}>
-            {entry.title_khmer}
-          </span>
-        )}
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <StatusBadge status={entry.status} />
+        <StatusBadge status={entry.status} langMode={langMode} />
 
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <Link
             href={`/contribute?edit=${entry.id}`}
             className="icon-btn"
-            aria-label="Edit entry / កែសម្រួល"
-            title="Edit / កែសម្រួល"
+            aria-label={isKm ? "កែសម្រួលពិធី" : "Edit entry"}
+            title={isKm ? "កែសម្រួល" : "Edit"}
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
@@ -162,8 +171,8 @@ function EntryRow({ entry, onDeleteClick }) {
             type="button"
             onClick={() => onDeleteClick(entry)}
             className="icon-btn icon-btn-delete"
-            aria-label="Delete entry / លុបពិធី"
-            title="Delete / លុប"
+            aria-label={isKm ? "លុបពិធី" : "Delete entry"}
+            title={isKm ? "លុប" : "Delete"}
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 6h18" />
@@ -186,6 +195,8 @@ export default function MyEntriesPage() {
   const [loading, setLoading] = useState(true);
   const [entryToDelete, setEntryToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [langMode, setLangMode] = useLanguage();
+  const isKm = langMode === "km";
 
   useEffect(() => {
     async function init() {
@@ -240,164 +251,168 @@ export default function MyEntriesPage() {
     return (
       <>
         <style>{glassStyles}</style>
-          <main style={{ ...pageStyle, alignItems: "center", padding: "20px" }}>
-            <span
-              className="font-mono-tag"
-              style={{ color: "var(--accent-gold)", fontSize: 13, letterSpacing: "0.12em", textAlign: "center" }}
-            >
-              កំពុងដំណើរការ… / Loading…
-            </span>
-          </main>
-        </>
-        );
+        <main style={{ ...pageStyle, alignItems: "center", padding: "20px" }}>
+          <span
+            className="font-mono-tag"
+            style={{ color: "var(--accent-gold)", fontSize: 13, letterSpacing: "0.12em", textAlign: "center" }}
+          >
+            {isKm ? "កំពុងដំណើរការ…" : "LOADING ARCHIVE…"}
+          </span>
+        </main>
+      </>
+    );
   }
 
-        /* ── Not logged in ── */
-        if (!user) {
+  /* ── Not logged in ── */
+  if (!user) {
     return (
-        <>
-          <style>{glassStyles}</style>
-          <main style={pageStyle}>
-            <div style={narrowCardStyle}>
-              <div style={{ marginBottom: 28 }}>
-                <h1
-                  style={{
-                    fontSize: 22,
-                    margin: "0 0 10px 0",
-                    fontWeight: 600,
-                    color: "#ffffff",
-                    lineHeight: 1.35,
-                  }}
-                >
-                  ទាមទារសិទ្ធិចូលប្រើ
-                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: "rgba(255,255,255,0.7)", marginTop: 4 }}>
-                    Login Required
-                  </span>
-                </h1>
-                <p style={{ margin: 0, color: "rgba(255,255,255,0.7)", fontSize: 14, lineHeight: 1.6 }}>
-                  អ្នកត្រូវតែចូលគណនីដើម្បីមើលការបញ្ចូលរបស់អ្នក។
-                  <span style={{ display: "block", fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>
-                    You must be logged in to view your entries.
-                  </span>
-                </p>
-              </div>
-              <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                <Link
-                  href="/login"
-                  style={{
-                    textDecoration: "none",
-                    padding: "12px 28px",
-                    backgroundColor: "#ffffff",
-                    color: "#000000",
-                    borderRadius: 10,
-                    fontWeight: 600,
-                    fontSize: 15,
-                  }}
-                >
-                  ចូលគណនី / Log In
-                </Link>
-                <Link
-                  href="/"
-                  className="link-text"
-                  style={{ padding: "12px 20px", fontSize: 14, fontWeight: 500, display: "flex", alignItems: "center" }}
-                >
-                  ← ត្រឡប់ទៅបណ្ណសារ / Back to Archive
-                </Link>
-              </div>
+      <>
+        <style>{glassStyles}</style>
+        <main style={pageStyle}>
+          <div style={narrowCardStyle}>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
+              <LanguageSwitcher langMode={langMode} onChange={setLangMode} />
             </div>
-          </main>
-        </>
-        );
-  }
-
-        /* ── Logged in: show entries ── */
-        return (
-        <>
-          <style>{glassStyles}</style>
-          <main style={pageStyle}>
-            <div style={cardStyle}>
+            <div style={{ marginBottom: 28 }}>
+              <h1
+                style={{
+                  fontSize: 22,
+                  margin: "0 0 10px 0",
+                  fontWeight: 600,
+                  color: "#ffffff",
+                  lineHeight: 1.35,
+                  fontFamily: isKm ? "var(--font-khmer-serif)" : "inherit",
+                }}
+              >
+                {isKm ? "ទាមទារសិទ្ធិចូលប្រើ" : "Login Required"}
+              </h1>
+              <p style={{ margin: 0, color: "rgba(255,255,255,0.7)", fontSize: 14, lineHeight: 1.6, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+                {isKm
+                  ? "អ្នកត្រូវតែចូលគណនីដើម្បីមើលការបញ្ចូលរបស់អ្នក។"
+                  : "You must be logged in to view your entries."}
+              </p>
+            </div>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+              <Link
+                href="/login"
+                style={{
+                  textDecoration: "none",
+                  padding: "12px 28px",
+                  backgroundColor: "#ffffff",
+                  color: "#000000",
+                  borderRadius: 10,
+                  fontWeight: 600,
+                  fontSize: 15,
+                  fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
+                }}
+              >
+                {isKm ? "ចូលគណនី" : "Log In"}
+              </Link>
               <Link
                 href="/"
                 className="link-text"
-                style={{ fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6, marginBottom: 14, fontWeight: 500 }}
+                style={{ padding: "12px 20px", fontSize: 14, fontWeight: 500, display: "flex", alignItems: "center", fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}
               >
-                ← ត្រឡប់ទៅបណ្ណសារ / Back to Archive
+                {isKm ? "← ត្រឡប់ទៅបណ្ណសារ" : "← Back to Archive"}
               </Link>
+            </div>
+          </div>
+        </main>
+      </>
+    );
+  }
 
-              <h1
+  /* ── Logged in: show entries ── */
+  return (
+    <>
+      <style>{glassStyles}</style>
+      <main style={pageStyle}>
+        <div style={cardStyle}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+            <Link
+              href="/"
+              className="link-text"
+              style={{ fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6, fontWeight: 500, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}
+            >
+              {isKm ? "← ត្រឡប់ទៅបណ្ណសារ" : "← Back to Archive"}
+            </Link>
+            <LanguageSwitcher langMode={langMode} onChange={setLangMode} />
+          </div>
+
+          <h1
+            style={{
+              fontSize: "clamp(22px, 3.5vw, 26px)",
+              fontWeight: 600,
+              color: "#FFFFFF",
+              margin: "0 0 4px 0",
+              lineHeight: 1.35,
+              fontFamily: isKm ? "var(--font-khmer-serif)" : "inherit",
+            }}
+          >
+            {isKm ? "ការបញ្ចូលរបស់ខ្ញុំ" : "My Entries"}
+          </h1>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, margin: "0 0 24px 0" }}>
+            {user.email}
+          </p>
+
+          <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 8 }} />
+
+          {entries.length === 0 ? (
+            <div style={{ padding: "32px 0", textAlign: "center" }}>
+              <span style={{ fontSize: 28 }}>📜</span>
+              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, marginTop: 12, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+                {isKm ? "អ្នកមិនទាន់មានការបញ្ចូលទេ។" : "You have no entries yet."}
+              </p>
+              <Link
+                href="/contribute"
                 style={{
-                  fontSize: "clamp(22px, 3.5vw, 26px)",
+                  display: "inline-block",
+                  marginTop: 16,
+                  padding: "10px 24px",
+                  backgroundColor: "#ffffff",
+                  color: "#000000",
+                  borderRadius: 10,
                   fontWeight: 600,
-                  color: "#FFFFFF",
-                  margin: "0 0 4px 0",
-                  lineHeight: 1.35,
+                  fontSize: 14,
+                  textDecoration: "none",
+                  fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
                 }}
               >
-                ការបញ្ចូលរបស់ខ្ញុំ
-                <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: "rgba(255,255,255,0.7)", marginTop: 4 }}>
-                  My Entries
-                </span>
-              </h1>
-              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, margin: "0 0 24px 0" }}>
-                {user.email}
-              </p>
-
-              <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 8 }} />
-
-              {entries.length === 0 ? (
-                <div style={{ padding: "32px 0", textAlign: "center" }}>
-                  <span style={{ fontSize: 28 }}>📜</span>
-                  <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, marginTop: 12 }}>
-                    អ្នកមិនទាន់មានការបញ្ចូលទេ។
-                    <span style={{ display: "block", fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 4 }}>
-                      You have no entries yet.
-                    </span>
-                  </p>
-                  <Link
-                    href="/contribute"
-                    style={{
-                      display: "inline-block",
-                      marginTop: 16,
-                      padding: "10px 24px",
-                      backgroundColor: "#ffffff",
-                      color: "#000000",
-                      borderRadius: 10,
-                      fontWeight: 600,
-                      fontSize: 14,
-                      textDecoration: "none",
-                    }}
-                  >
-                    + បញ្ចូលពិធីការ / Contribute
-                  </Link>
-                </div>
-              ) : (
-                <div>
-                  {entries.map((entry) => (
-                    <EntryRow
-                      key={entry.id}
-                      entry={entry}
-                      onDeleteClick={(selected) => setEntryToDelete(selected)}
-                    />
-                  ))}
-                </div>
-              )}
+                {isKm ? "+ បញ្ចូលពិធីការ" : "+ Contribute"}
+              </Link>
             </div>
-          </main>
+          ) : (
+            <div>
+              {entries.map((entry) => (
+                <EntryRow
+                  key={entry.id}
+                  entry={entry}
+                  langMode={langMode}
+                  onDeleteClick={(selected) => setEntryToDelete(selected)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
 
-          <ReviewModal
-            isOpen={!!entryToDelete}
-            title="លុបពិធីការនេះ? / Delete this entry?"
-            message={
-              entryToDelete
-                ? `${entryToDelete.title} — តើអ្នកប្រាកដជាចង់លុបពិធីការនេះមែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។ / Are you sure you want to delete this ritual entry? This action cannot be undone.`
-                : ""
-            }
-            confirmLabel="លុប / Delete"
-            confirmVariant="delete"
-            isLoading={isDeleting}
-            onConfirm={handleConfirmDelete}
-            onClose={() => setEntryToDelete(null)}
-          />
-        </>
-        );
+      <ReviewModal
+        isOpen={!!entryToDelete}
+        title={isKm ? "លុបពិធីការនេះ?" : "Delete this entry?"}
+        message={
+          entryToDelete
+            ? isKm
+              ? `${entryToDelete.title_khmer || entryToDelete.title} — តើអ្នកប្រាកដជាចង់លុបពិធីការនេះមែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។`
+              : `Are you sure you want to delete "${entryToDelete.title}"? This action cannot be undone.`
+            : ""
+        }
+        confirmLabel={isKm ? "លុប" : "Delete"}
+        cancelLabel={isKm ? "បោះបង់" : "Cancel"}
+        confirmVariant="delete"
+        isLoading={isDeleting}
+        onConfirm={handleConfirmDelete}
+        onClose={() => setEntryToDelete(null)}
+      />
+    </>
+  );
 }

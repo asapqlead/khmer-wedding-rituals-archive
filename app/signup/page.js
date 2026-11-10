@@ -4,12 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "../../utils/supabase/client";
+import LanguageSwitcher from "../../components/LanguageSwitcher";
+import useLanguage from "../../hooks/useLanguage";
 
 export default function SignupPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+  const [langMode, setLangMode] = useLanguage();
+  const isKm = langMode === "km";
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -126,7 +130,7 @@ export default function SignupPage() {
             boxShadow: "0 24px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0,0,0,0.2)",
           }}
         >
-          <div style={{ marginBottom: "20px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
             <Link
               href="/"
               className="link-text"
@@ -138,18 +142,16 @@ export default function SignupPage() {
                 fontWeight: 500,
                 lineHeight: 1,
               }}
-              aria-label="Back to Archive"
+              aria-label={isKm ? "ត្រឡប់ទៅបណ្ណសារ" : "Back to Archive"}
             >
               ←
             </Link>
+            <LanguageSwitcher langMode={langMode} onChange={setLangMode} />
           </div>
 
           <div style={{ marginBottom: "28px", textAlign: "center" }}>
-            <h1 style={{ fontSize: "24px", margin: 0, fontWeight: "600", color: "#ffffff", lineHeight: 1.35 }}>
-              ចុះឈ្មោះចូលរួមចំណែក
-              <span style={{ display: "block", fontSize: "16px", fontWeight: "400", color: "rgba(255, 255, 255, 0.7)", marginTop: 4 }}>
-                Join the Archive
-              </span>
+            <h1 style={{ fontSize: "24px", margin: 0, fontWeight: "600", color: "#ffffff", lineHeight: 1.35, fontFamily: isKm ? "var(--font-khmer-serif)" : "inherit" }}>
+              {isKm ? "ចុះឈ្មោះចូលរួមចំណែក" : "Join the Archive"}
             </h1>
           </div>
 
@@ -168,8 +170,8 @@ export default function SignupPage() {
             )}
 
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              <label htmlFor="email" style={{ fontSize: "13px", fontWeight: 500, color: "rgba(255, 255, 255, 0.9)" }}>
-                អ៊ីមែល / Email
+              <label htmlFor="email" style={{ fontSize: "13px", fontWeight: 500, color: "rgba(255, 255, 255, 0.9)", fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+                {isKm ? "អ៊ីមែល" : "Email"}
               </label>
               <input
                 id="email"
@@ -182,8 +184,8 @@ export default function SignupPage() {
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              <label htmlFor="password" style={{ fontSize: "13px", fontWeight: 500, color: "rgba(255, 255, 255, 0.9)" }}>
-                ពាក្យសម្ងាត់ / Password
+              <label htmlFor="password" style={{ fontSize: "13px", fontWeight: 500, color: "rgba(255, 255, 255, 0.9)", fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+                {isKm ? "ពាក្យសម្ងាត់" : "Password"}
               </label>
               <input
                 id="password"
@@ -192,20 +194,22 @@ export default function SignupPage() {
                 required
                 className="glass-input"
               />
-              <span style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", marginTop: "-2px" }}>
-                យ៉ាងហោចណាស់ ៨ តួអក្សរ / Must be at least 8 characters.
+              <span style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.5)", marginTop: "-2px", fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+                {isKm ? "យ៉ាងហោចណាស់ ៨ តួអក្សរ" : "Must be at least 8 characters."}
               </span>
             </div>
 
-            <button type="submit" disabled={loading} className="glass-btn">
-              {loading ? "កំពុងចុះឈ្មោះ... / Signing up..." : "ចុះឈ្មោះ / Sign Up"}
+            <button type="submit" disabled={loading} className="glass-btn" style={{ fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+              {loading
+                ? (isKm ? "កំពុងចុះឈ្មោះ..." : "Signing up...")
+                : (isKm ? "ចុះឈ្មោះ" : "Sign Up")}
             </button>
           </form>
 
-          <div style={{ marginTop: "24px", fontSize: "13px", color: "rgba(255, 255, 255, 0.7)", textAlign: "center", lineHeight: 1.6, display: "flex", flexDirection: "column", gap: "6px", alignItems: "center" }}>
-            <span>មានគណនីរួចហើយមែនទេ? / Already have an account?</span>
+          <div style={{ marginTop: "24px", fontSize: "13px", color: "rgba(255, 255, 255, 0.7)", textAlign: "center", lineHeight: 1.6, display: "flex", flexDirection: "column", gap: "6px", alignItems: "center", fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+            <span>{isKm ? "មានគណនីរួចហើយមែនទេ?" : "Already have an account?"}</span>
             <Link href="/login" className="link-text" style={{ fontWeight: "600", color: "#ffffff", textDecoration: "underline" }}>
-              ចូលគណនី / Log In
+              {isKm ? "ចូលគណនី" : "Log In"}
             </Link>
           </div>
         </div>

@@ -1,6 +1,6 @@
 // app/page.js
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import GalleryHeader from "../components/GalleryHeader.js";
 import HorizontalGallery from "../components/HorizontalGallery.js";
 import GalleryCounter from "../components/GalleryCounter.js";
@@ -33,6 +33,17 @@ export default function Home() {
   const activeCeremony = ceremonies[activeIndex] || ceremonies[0];
   const isGalleryInteractive = currentView === "work" && selectedIdx === null;
 
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("archive_lang_mode");
+      if (saved === "km" || saved === "en") {
+        setLangMode(saved);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   const handleToggleLang = (nextVal) => {
     if (isLangChanging.current) return;
     const target =
@@ -50,6 +61,12 @@ export default function Home() {
 
     setTimeout(() => {
       setLangMode(target);
+      try {
+        localStorage.setItem("archive_lang_mode", target);
+        window.dispatchEvent(new Event("languagechange"));
+      } catch {
+        /* ignore */
+      }
       setLangPhase("in");
 
       setTimeout(() => {

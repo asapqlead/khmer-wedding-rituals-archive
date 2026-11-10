@@ -1,7 +1,9 @@
 // components/SacredItemsListEditor.js
 "use client";
 
-export default function SacredItemsListEditor({ items, onChange, error }) {
+export default function SacredItemsListEditor({ items, onChange, error, langMode = "en" }) {
+  const isKm = langMode === "km";
+
   const handleItemChange = (index, field, value) => {
     const next = items.map((item, i) => (i === index ? { ...item, [field]: value } : item));
     onChange(next);
@@ -18,15 +20,15 @@ export default function SacredItemsListEditor({ items, onChange, error }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255, 255, 255, 0.9)", lineHeight: 1.4 }}>
-        គ្រឿងសក្ការៈ និងវត្ថុពិសិដ្ឋ / Sacred Items <span style={{ color: "var(--accent-gold)" }}>*</span>
+      <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255, 255, 255, 0.9)", lineHeight: 1.4, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+        {isKm ? "គ្រឿងសក្ការៈ និងវត្ថុពិសិដ្ឋ" : "Sacred Items & Ritual Objects"} <span style={{ color: "var(--accent-gold)" }}>*</span>
       </label>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {items.map((item, idx) => (
           <div key={idx} style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <input
               type="text"
-              placeholder="ឈ្មោះសម្ភារៈ (អង់គ្លេស) ឧ. Popil Candle"
+              placeholder={isKm ? "ឈ្មោះសម្ភារៈ (អង់គ្លេស) ឧ. Popil Candle" : "Item (English) e.g. Popil Candle"}
               value={item.nameEn || item.name || ""}
               onChange={(e) => {
                 const val = e.target.value;
@@ -38,18 +40,18 @@ export default function SacredItemsListEditor({ items, onChange, error }) {
             />
             <input
               type="text"
-              placeholder="ឈ្មោះសម្ភារៈ (ខ្មែរ) ឧ. ពពិលប្រាក់"
+              placeholder={isKm ? "ឈ្មោះសម្ភារៈ (ខ្មែរ) ឧ. ពពិលប្រាក់" : "Item (Khmer) e.g. ពពិលប្រាក់"}
               value={item.nameKhmer || ""}
               onChange={(e) => handleItemChange(idx, "nameKhmer", e.target.value)}
               className="glass-input"
-              style={{ flex: 1 }}
+              style={{ flex: 1, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}
             />
             {items.length > 1 && (
               <button
                 type="button"
                 onClick={() => handleRemove(idx)}
                 style={{ background: "transparent", border: "none", color: "#ff6b6b", cursor: "pointer", fontSize: 18, padding: "4px 8px" }}
-                aria-label="Remove sacred item / លុបគ្រឿងសក្ការៈ"
+                aria-label={isKm ? "លុបគ្រឿងសក្ការៈ" : "Remove sacred item"}
               >
                 ✕
               </button>
@@ -60,9 +62,9 @@ export default function SacredItemsListEditor({ items, onChange, error }) {
       <button
         type="button"
         onClick={handleAdd}
-        style={{ alignSelf: "flex-start", background: "transparent", border: "1px dashed rgba(255,255,255,0.2)", borderRadius: 8, color: "var(--accent-gold-light)", padding: "6px 14px", fontSize: 13, cursor: "pointer", marginTop: 4 }}
+        style={{ alignSelf: "flex-start", background: "transparent", border: "1px dashed rgba(255,255,255,0.2)", borderRadius: 8, color: "var(--accent-gold-light)", padding: "6px 14px", fontSize: 13, cursor: "pointer", marginTop: 4, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}
       >
-        + បន្ថែមគ្រឿងសក្ការៈ / + Add Sacred Item
+        {isKm ? "+ បន្ថែមគ្រឿងសក្ការៈ" : "+ Add Sacred Item"}
       </button>
       {error && <span style={{ color: "#ff6b6b", fontSize: 12 }}>{error}</span>}
     </div>

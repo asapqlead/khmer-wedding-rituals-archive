@@ -1,7 +1,9 @@
 // components/ParticipantsListEditor.js
 "use client";
 
-export default function ParticipantsListEditor({ items, onChange, error }) {
+export default function ParticipantsListEditor({ items, onChange, error, langMode = "en" }) {
+  const isKm = langMode === "km";
+
   const handleItemChange = (index, field, value) => {
     const next = items.map((item, i) => (i === index ? { ...item, [field]: value } : item));
     onChange(next);
@@ -18,15 +20,15 @@ export default function ParticipantsListEditor({ items, onChange, error }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255, 255, 255, 0.9)", lineHeight: 1.4 }}>
-        អ្នកចូលរួមពិធី / Participants <span style={{ color: "var(--accent-gold)" }}>*</span>
+      <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255, 255, 255, 0.9)", lineHeight: 1.4, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+        {isKm ? "អ្នកចូលរួមពិធី" : "Participants"} <span style={{ color: "var(--accent-gold)" }}>*</span>
       </label>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {items.map((item, idx) => (
           <div key={idx} style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <input
               type="text"
-              placeholder="តួនាទី (អង់គ្លេស) ឧ. Achar"
+              placeholder={isKm ? "តួនាទី (អង់គ្លេស) ឧ. Achar" : "Role (English) e.g. Achar"}
               value={item.roleEn || item.role || ""}
               onChange={(e) => {
                 const val = e.target.value;
@@ -38,18 +40,18 @@ export default function ParticipantsListEditor({ items, onChange, error }) {
             />
             <input
               type="text"
-              placeholder="តួនាទី (ខ្មែរ) ឧ. លោកអាចារ្យ"
+              placeholder={isKm ? "តួនាទី (ខ្មែរ) ឧ. លោកអាចារ្យ" : "Role (Khmer) e.g. លោកអាចារ្យ"}
               value={item.roleKhmer || ""}
               onChange={(e) => handleItemChange(idx, "roleKhmer", e.target.value)}
               className="glass-input"
-              style={{ flex: 1 }}
+              style={{ flex: 1, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}
             />
             {items.length > 1 && (
               <button
                 type="button"
                 onClick={() => handleRemove(idx)}
                 style={{ background: "transparent", border: "none", color: "#ff6b6b", cursor: "pointer", fontSize: 18, padding: "4px 8px" }}
-                aria-label="Remove participant / លុបអ្នកចូលរួម"
+                aria-label={isKm ? "លុបអ្នកចូលរួម" : "Remove participant"}
               >
                 ✕
               </button>
@@ -60,9 +62,9 @@ export default function ParticipantsListEditor({ items, onChange, error }) {
       <button
         type="button"
         onClick={handleAdd}
-        style={{ alignSelf: "flex-start", background: "transparent", border: "1px dashed rgba(255,255,255,0.2)", borderRadius: 8, color: "var(--accent-gold-light)", padding: "6px 14px", fontSize: 13, cursor: "pointer", marginTop: 4 }}
+        style={{ alignSelf: "flex-start", background: "transparent", border: "1px dashed rgba(255,255,255,0.2)", borderRadius: 8, color: "var(--accent-gold-light)", padding: "6px 14px", fontSize: 13, cursor: "pointer", marginTop: 4, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}
       >
-        + បន្ថែមអ្នកចូលរួម / + Add Participant
+        {isKm ? "+ បន្ថែមអ្នកចូលរួម" : "+ Add Participant"}
       </button>
       {error && <span style={{ color: "#ff6b6b", fontSize: 12 }}>{error}</span>}
     </div>

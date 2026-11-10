@@ -9,9 +9,10 @@ import ParticipantsListEditor from "./ParticipantsListEditor.js";
 import SacredItemsListEditor from "./SacredItemsListEditor.js";
 import useDraftProtection from "../hooks/useDraftProtection.js";
 
-export default function ContributeForm({ initialData = null, isEdit = false }) {
+export default function ContributeForm({ initialData = null, isEdit = false, langMode = "en" }) {
   const router = useRouter();
   const [supabase] = useState(() => createClient());
+  const isKm = langMode === "km";
 
   const defaultValues = {
     title: initialData?.title || initialData?.titleEn || "",
@@ -95,7 +96,11 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
     try {
       const { data: { user }, error: authError } = await supabase.auth.getUser();
       if (authError || !user) {
-        setGeneralError("អ្នកត្រូវតែចូលគណនីដើម្បីចូលរួមចំណែក។ សូមចូលគណនីជាមុនសិន។ / You must be logged in to contribute. Please log in first.");
+        setGeneralError(
+          isKm
+            ? "អ្នកត្រូវតែចូលគណនីដើម្បីចូលរួមចំណែក។ សូមចូលគណនីជាមុនសិន។"
+            : "You must be logged in to contribute. Please log in first."
+        );
         setSubmitting(false);
         return;
       }
@@ -203,7 +208,11 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
       }
     } catch (err) {
       console.error("Form submission exception:", err);
-      setGeneralError("មានបញ្ហាមិនរំពឹងទុកមួយបានកើតឡើង។ សូមព្យាយាមម្តងទៀត។ / An unexpected error occurred. Please try again.");
+      setGeneralError(
+        isKm
+          ? "មានបញ្ហាមិនរំពឹងទុកមួយបានកើតឡើង។ សូមព្យាយាមម្តងទៀត។"
+          : "An unexpected error occurred. Please try again."
+      );
       setSubmitting(false);
     }
   };
@@ -215,15 +224,14 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, padding: "32px 16px", textAlign: "center" }}>
         <span style={{ fontSize: 32 }}>✅</span>
-        <p style={{ color: "#ffffff", fontSize: 15, lineHeight: 1.6, margin: 0, maxWidth: 420 }}>
+        <p style={{ color: "#ffffff", fontSize: 15, lineHeight: 1.6, margin: 0, maxWidth: 420, fontFamily: isKm ? "var(--font-khmer-serif)" : "inherit" }}>
           {isEdit
-            ? "ការផ្លាស់ប្តូរត្រូវបានរក្សាទុក! ការបញ្ចូលរបស់អ្នកត្រូវបានបញ្ជូនទៅពិនិត្យឡើងវិញ។"
-            : "សូមអរគុណសម្រាប់ការចូលរួមចំណែក! ការបញ្ចូលរបស់អ្នកកំពុងរង់ចាំការពិនិត្យ។"}
-        </p>
-        <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 14, lineHeight: 1.6, margin: 0, maxWidth: 420 }}>
-          {isEdit
-            ? "Changes saved! Your entry has been resubmitted for review."
-            : "Thank you for your contribution! Your entry is pending review."}
+            ? (isKm
+                ? "ការផ្លាស់ប្តូរត្រូវបានរក្សាទុក! ការបញ្ចូលរបស់អ្នកត្រូវបានបញ្ជូនទៅពិនិត្យឡើងវិញ។"
+                : "Changes saved! Your entry has been resubmitted for review.")
+            : (isKm
+                ? "សូមអរគុណសម្រាប់ការចូលរួមចំណែក! ការបញ្ចូលរបស់អ្នកកំពុងរង់ចាំការពិនិត្យ។"
+                : "Thank you for your contribution! Your entry is pending review.")}
         </p>
         <div style={{ display: "flex", gap: 12, marginTop: 8, flexWrap: "wrap", justifyContent: "center" }}>
           <Link
@@ -236,9 +244,10 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
               fontWeight: 600,
               fontSize: 14,
               textDecoration: "none",
+              fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
             }}
           >
-            មើលការបញ្ចូលរបស់ខ្ញុំ / View My Entries
+            {isKm ? "មើលការបញ្ចូលរបស់ខ្ញុំ" : "View My Entries"}
           </Link>
           <Link
             href="/"
@@ -249,9 +258,10 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
               display: "flex",
               alignItems: "center",
               fontWeight: 500,
+              fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
             }}
           >
-            ← ត្រឡប់ទៅបណ្ណសារ / Back to Archive
+            {isKm ? "← ត្រឡប់ទៅបណ្ណសារ" : "← Back to Archive"}
           </Link>
         </div>
       </div>
@@ -266,7 +276,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
   };
 
   return (
-    < form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       {/* ── Google Forms style draft status indicator ── */}
       <div
         style={{
@@ -281,6 +291,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
           color: "rgba(255, 255, 255, 0.75)",
           gap: 12,
           flexWrap: "wrap",
+          fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -288,21 +299,21 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
             <>
               <span style={{ fontSize: 13 }}>⏳</span>
               <span style={{ color: "rgba(255, 255, 255, 0.7)" }}>
-                កំពុងរក្សាទុកសេចក្ដីព្រាង / Saving draft
+                {isKm ? "កំពុងរក្សាទុកសេចក្ដីព្រាង..." : "Saving draft..."}
               </span>
             </>
           ) : hasDraft || saveStatus === "saved" ? (
             <>
               <span style={{ fontSize: 13, color: "var(--accent-gold, #C5A059)" }}>☁️ ✓</span>
               <span style={{ color: "rgba(255, 255, 255, 0.85)" }}>
-                បានរក្សាទុកសេចក្ដីព្រាងដោយស្វ័យប្រវត្តិ / Draft saved automatically
+                {isKm ? "បានរក្សាទុកសេចក្ដីព្រាងដោយស្វ័យប្រវត្តិ" : "Draft saved automatically"}
               </span>
             </>
           ) : (
             <>
               <span style={{ fontSize: 13, opacity: 0.6 }}>☁️</span>
               <span style={{ color: "rgba(255, 255, 255, 0.5)" }}>
-                ការផ្លាស់ប្តូរត្រូវបានរក្សាទុកដោយស្វ័យប្រវត្តិ / Autosave draft active
+                {isKm ? "ការផ្លាស់ប្តូរត្រូវបានរក្សាទុកដោយស្វ័យប្រវត្តិ" : "Autosave draft active"}
               </span>
             </>
           )}
@@ -320,10 +331,10 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
               cursor: "pointer",
               textDecoration: "underline",
               padding: 0,
-              fontFamily: "inherit",
+              fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
             }}
           >
-            សម្អាតសេចក្ដីព្រាង / Clear draft
+            {isKm ? "សម្អាតសេចក្ដីព្រាង" : "Clear draft"}
           </button>
         )}
       </div>
@@ -336,14 +347,14 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
       {/* Row 1: English Title & Khmer Title */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4 }}>
-            ចំណងជើងជាភាសាអង់គ្លេស / Title (English) <span style={{ color: "var(--accent-gold)" }}>*</span>
+          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+            {isKm ? "ចំណងជើងជាភាសាអង់គ្លេស" : "Title (English)"} <span style={{ color: "var(--accent-gold)" }}>*</span>
           </label>
           <input
             type="text"
             value={formData.title}
             onChange={(e) => handleChange("title", e.target.value)}
-            placeholder="e.g. Hae Chomnoon"
+            placeholder={isKm ? "ឧ. Hae Chomnoon" : "e.g. Hae Chomnoon"}
             className="glass-input"
             maxLength={120}
           />
@@ -351,8 +362,8 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4 }}>
-            ចំណងជើងជាភាសាខ្មែរ / Title (Khmer) <span style={{ color: "var(--accent-gold)" }}>*</span>
+          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+            {isKm ? "ចំណងជើងជាភាសាខ្មែរ" : "Title (Khmer)"} <span style={{ color: "var(--accent-gold)" }}>*</span>
           </label>
           <input
             type="text"
@@ -360,6 +371,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
             onChange={(e) => handleChange("title_khmer", e.target.value)}
             placeholder="ឧ. ពិធីហែជំនូន"
             className="glass-input"
+            style={{ fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}
           />
           {errors.title_khmer && <span style={{ color: "#ff6b6b", fontSize: 12 }}>{errors.title_khmer}</span>}
         </div>
@@ -368,8 +380,8 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
       {/* Row 2: Sequence Order & Translation */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 16 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4 }}>
-            លំដាប់លំដោយពិធី / Sequence Order <span style={{ color: "var(--accent-gold)" }}>*</span>
+          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+            {isKm ? "លំដាប់លំដោយពិធី" : "Sequence Order"} <span style={{ color: "var(--accent-gold)" }}>*</span>
           </label>
           <input
             type="number"
@@ -382,14 +394,14 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4 }}>
-            ចំណងជើងរងបកប្រែជាភាសាអង់គ្លេស / English Translation Subtitle <span style={{ color: "var(--accent-gold)" }}>*</span>
+          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+            {isKm ? "ចំណងជើងរងបកប្រែជាភាសាអង់គ្លេស" : "English Translation Subtitle"} <span style={{ color: "var(--accent-gold)" }}>*</span>
           </label>
           <input
             type="text"
             value={formData.translation_en}
             onChange={(e) => handleChange("translation_en", e.target.value)}
-            placeholder="e.g. Groom's Procession & Fruit Offerings"
+            placeholder={isKm ? "ឧ. Groom's Procession & Fruit Offerings" : "e.g. Groom's Procession & Fruit Offerings"}
             className="glass-input"
           />
           {errors.translation_en && <span style={{ color: "#ff6b6b", fontSize: 12 }}>{errors.translation_en}</span>}
@@ -399,18 +411,18 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
       {/* Summary (English) */}
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 4 }}>
-          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4 }}>
-            សេចក្តីសង្ខេបជាភាសាអង់គ្លេស / Summary (English, 10–500 words) <span style={{ color: "var(--accent-gold)" }}>*</span>
+          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+            {isKm ? "សេចក្តីសង្ខេបជាភាសាអង់គ្លេស (១០–៥០០ ពាក្យ)" : "Summary (English, 10–500 words)"} <span style={{ color: "var(--accent-gold)" }}>*</span>
           </label>
-          <span style={{ fontSize: 12, color: summaryCount >= 10 && summaryCount <= 500 ? "var(--accent-gold-light)" : "rgba(255,255,255,0.4)" }}>
-            {summaryCount} words / ពាក្យ
+          <span style={{ fontSize: 12, color: summaryCount >= 10 && summaryCount <= 500 ? "var(--accent-gold-light)" : "rgba(255,255,255,0.4)", fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+            {isKm ? `${summaryCount} ពាក្យ` : `${summaryCount} words`}
           </span>
         </div>
         <textarea
           rows={4}
           value={formData.summary}
           onChange={(e) => handleChange("summary", e.target.value)}
-          placeholder="Describe the ceremony procedure in English (10–500 words)..."
+          placeholder={isKm ? "ពណ៌នាអំពីដំណើរការពិធីជាភាសាអង់គ្លេស (១០–៥០០ ពាក្យ)..." : "Describe the ceremony procedure in English (10–500 words)..."}
           className="glass-input"
           style={{ resize: "vertical" }}
         />
@@ -420,18 +432,18 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
       {/* Meaning (English) */}
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 4 }}>
-          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4 }}>
-            អត្ថន័យខាងជំនឿ និងស្មារតី / Spiritual Meaning (English, 10–500 words) <span style={{ color: "var(--accent-gold)" }}>*</span>
+          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+            {isKm ? "អត្ថន័យខាងជំនឿ និងស្មារតី (១០–៥០០ ពាក្យ)" : "Spiritual Meaning (English, 10–500 words)"} <span style={{ color: "var(--accent-gold)" }}>*</span>
           </label>
-          <span style={{ fontSize: 12, color: meaningCount >= 10 && meaningCount <= 500 ? "var(--accent-gold-light)" : "rgba(255,255,255,0.4)" }}>
-            {meaningCount} words / ពាក្យ
+          <span style={{ fontSize: 12, color: meaningCount >= 10 && meaningCount <= 500 ? "var(--accent-gold-light)" : "rgba(255,255,255,0.4)", fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+            {isKm ? `${meaningCount} ពាក្យ` : `${meaningCount} words`}
           </span>
         </div>
         <textarea
           rows={4}
           value={formData.meaning}
           onChange={(e) => handleChange("meaning", e.target.value)}
-          placeholder="Explain cultural and spiritual significance in English (10–500 words, distinct from summary)..."
+          placeholder={isKm ? "ពន្យល់ពីសារៈសំខាន់ខាងវប្បធម៌ និងជំនឿជាភាសាអង់គ្លេស (១០–៥០០ ពាក្យ)..." : "Explain cultural and spiritual significance in English (10–500 words, distinct from summary)..."}
           className="glass-input"
           style={{ resize: "vertical" }}
         />
@@ -441,11 +453,11 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
       {/* Summary (Khmer) */}
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 4 }}>
-          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4 }}>
-            សេចក្តីសង្ខេបជាភាសាខ្មែរ / Summary in Khmer (10–2000 chars) <span style={{ color: "var(--accent-gold)" }}>*</span>
+          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+            {isKm ? "សេចក្តីសង្ខេបជាភាសាខ្មែរ (១០–២០០០ តួអក្សរ)" : "Summary in Khmer (10–2000 chars)"} <span style={{ color: "var(--accent-gold)" }}>*</span>
           </label>
-          <span style={{ fontSize: 12, color: formData.summary_khmer.length >= 10 && formData.summary_khmer.length <= 2000 ? "var(--accent-gold-light)" : "rgba(255,255,255,0.4)" }}>
-            {formData.summary_khmer.length} chars / តួអក្សរ
+          <span style={{ fontSize: 12, color: formData.summary_khmer.length >= 10 && formData.summary_khmer.length <= 2000 ? "var(--accent-gold-light)" : "rgba(255,255,255,0.4)", fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+            {isKm ? `${formData.summary_khmer.length} តួអក្សរ` : `${formData.summary_khmer.length} chars`}
           </span>
         </div>
         <textarea
@@ -454,7 +466,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
           onChange={(e) => handleChange("summary_khmer", e.target.value)}
           placeholder="សង្ខេបខ្លឹមសារ និងដំណើរការពិធីជាភាសាខ្មែរ (១០ ដល់ ២០០០ តួអក្សរ)..."
           className="glass-input"
-          style={{ resize: "vertical" }}
+          style={{ resize: "vertical", fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}
         />
         {errors.summary_khmer && <span style={{ color: "#ff6b6b", fontSize: 12 }}>{errors.summary_khmer}</span>}
       </div>
@@ -464,6 +476,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
         items={formData.participants}
         onChange={(items) => handleChange("participants", items)}
         error={errors.participants}
+        langMode={langMode}
       />
 
       {/* Dynamic Sacred Items List */}
@@ -471,20 +484,21 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
         items={formData.sacred_items}
         onChange={(items) => handleChange("sacred_items", items)}
         error={errors.sacred_items}
+        langMode={langMode}
       />
 
       {/* Regional Notes with Quick Toggle */}
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
-          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4 }}>
-            កំណត់សម្គាល់តំបន់ និងប្រភពផ្ទាល់មាត់ / Regional Notes & Oral Provenance <span style={{ color: "var(--accent-gold)" }}>*</span>
+          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+            {isKm ? "កំណត់សម្គាល់តំបន់ និងប្រភពផ្ទាល់មាត់" : "Regional Notes & Oral Provenance"} <span style={{ color: "var(--accent-gold)" }}>*</span>
           </label>
           <button
             type="button"
             onClick={handleSetNoVariation}
-            style={{ background: "transparent", border: "none", color: "var(--accent-gold-light)", fontSize: 12, cursor: "pointer", textDecoration: "underline" }}
+            style={{ background: "transparent", border: "none", color: "var(--accent-gold-light)", fontSize: 12, cursor: "pointer", textDecoration: "underline", fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}
           >
-            កំណត់ថាគ្មានភាពខុសគ្នាតាមតំបន់ / Set No Regional Variation
+            {isKm ? "កំណត់ថាគ្មានភាពខុសគ្នាតាមតំបន់" : "Set No Regional Variation"}
           </button>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
@@ -493,7 +507,7 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
               type="text"
               value={formData.regional_notes_en}
               onChange={(e) => handleChange("regional_notes_en", e.target.value)}
-              placeholder="English regional note"
+              placeholder={isKm ? "កំណត់សម្គាល់តំបន់ (អង់គ្លេស)" : "English regional note"}
               className="glass-input"
             />
             {errors.regional_notes_en && <span style={{ color: "#ff6b6b", fontSize: 12 }}>{errors.regional_notes_en}</span>}
@@ -503,8 +517,9 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
               type="text"
               value={formData.regional_notes_khmer}
               onChange={(e) => handleChange("regional_notes_khmer", e.target.value)}
-              placeholder="កំណត់សម្គាល់តំបន់ជាភាសាខ្មែរ"
+              placeholder={isKm ? "កំណត់សម្គាល់តំបន់ជាភាសាខ្មែរ" : "Khmer regional note"}
               className="glass-input"
+              style={{ fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}
             />
             {errors.regional_notes_khmer && <span style={{ color: "#ff6b6b", fontSize: 12 }}>{errors.regional_notes_khmer}</span>}
           </div>
@@ -515,12 +530,12 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
       {/* Photo Upload & Preview */}
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
-          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4 }}>
-            រូបថតពិធីការ / Ceremony Photo {!isEdit && <span style={{ color: "var(--accent-gold)" }}>*</span>} (JPEG, PNG, WebP &lt; 5MB, landscape)
+          <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+            {isKm ? "រូបថតពិធីការ" : "Ceremony Photo"} {!isEdit && <span style={{ color: "var(--accent-gold)" }}>*</span>} (JPEG, PNG, WebP &lt; 5MB, landscape)
           </label>
           {showPhotoReminder && !photoFile && (
-            <span style={{ fontSize: 12, color: "var(--accent-gold-light, #DFC07A)" }}>
-              📷 សូមជ្រើសរើសរូបថតឡើងវិញ / Please re-select photo
+            <span style={{ fontSize: 12, color: "var(--accent-gold-light, #DFC07A)", fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+              {isKm ? "📷 សូមជ្រើសរើសរូបថតឡើងវិញ" : "📷 Please re-select photo"}
             </span>
           )}
         </div>
@@ -540,15 +555,16 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
 
       {/* Source (Optional) */}
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4 }}>
-          ប្រភព ឬការបញ្ជាក់ចំណេះដឹង / Source & Knowledge Credit (Optional)
+        <label style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.9)", lineHeight: 1.4, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+          {isKm ? "ប្រភព ឬការបញ្ជាក់ចំណេះដឹង (ស្រេចចិត្ត)" : "Source & Knowledge Credit (Optional)"}
         </label>
         <input
           type="text"
           value={formData.source}
           onChange={(e) => handleChange("source", e.target.value)}
-          placeholder="ឧ. បទសម្ភាសន៍ផ្ទាល់មាត់ជាមួយចាស់ទុំក្នុងគ្រួសារ / e.g. Oral interview with family elders"
+          placeholder={isKm ? "ឧ. បទសម្ភាសន៍ផ្ទាល់មាត់ជាមួយចាស់ទុំក្នុងគ្រួសារ" : "e.g. Oral interview with family elders"}
           className="glass-input"
+          style={{ fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}
         />
         {errors.source && <span style={{ color: "#ff6b6b", fontSize: 12 }}>{errors.source}</span>}
       </div>
@@ -557,13 +573,13 @@ export default function ContributeForm({ initialData = null, isEdit = false }) {
         type="submit"
         disabled={submitting}
         className="glass-btn"
-        style={{ marginTop: 12 }}
+        style={{ marginTop: 12, fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}
       >
         {submitting
-          ? "កំពុងរក្សាទុក... / Saving Entry..."
+          ? (isKm ? "កំពុងរក្សាទុក..." : "Saving Entry...")
           : isEdit
-            ? "ធ្វើបច្ចុប្បន្នភាពពិធីការ / Update Ceremony Entry"
-            : "បញ្ជូនពិធីការ / Submit Ceremony Entry"}
+            ? (isKm ? "ធ្វើបច្ចុប្បន្នភាពពិធីការ" : "Update Ceremony Entry")
+            : (isKm ? "បញ្ជូនពិធីការ" : "Submit Ceremony Entry")}
       </button>
     </form>
   );

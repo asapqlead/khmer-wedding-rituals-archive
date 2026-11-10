@@ -4,24 +4,6 @@ import { useState } from "react";
 import { createClient } from "../utils/supabase/client.js";
 import ReviewModal from "./ReviewModal.js";
 
-const FAILURE_MESSAGE =
-  "Unable to update entry. It may have already been reviewed or permission was denied. / មិនអាចធ្វើបច្ចុប្បន្នភាពបានទេ។ ទិន្នន័យនេះអាចត្រូវបានពិនិត្យរួចហើយ។";
-
-const CONFIRM_COPY = {
-  published: {
-    title: "បញ្ជាក់ការផ្សព្វផ្សាយ / Confirm Publish",
-    message: "តើអ្នកប្រាកដជាចង់ផ្សព្វផ្សាយពិធីការនេះទៅកាន់បណ្ណសារសាធារណៈមែនទេ? / Are you sure you want to publish this ceremony entry to the public archive?",
-    label: "Publish / ផ្សព្វផ្សាយ",
-    variant: "publish",
-  },
-  returned: {
-    title: "បញ្ជាក់ការបញ្ជូនត្រឡប់ / Confirm Return",
-    message: "តើអ្នកប្រាកដជាចង់បញ្ជូនពិធីការនេះត្រឡប់ទៅអ្នកចូលរួមចំណែកវិញមែនទេ? / Are you sure you want to return this ceremony entry to the contributor for edits?",
-    label: "Return / បញ្ជូនត្រឡប់",
-    variant: "return",
-  },
-};
-
 const actionStyles = `
   .review-btn {
     padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 500;
@@ -32,11 +14,16 @@ const actionStyles = `
   .review-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 `;
 
-export default function ReviewActionButtons({ entryId, onReviewSuccess, onError }) {
+export default function ReviewActionButtons({ entryId, langMode, onReviewSuccess, onError }) {
   const [supabase] = useState(() => createClient());
   const [pendingAction, setPendingAction] = useState(null);
   const [alertMessage, setAlertMessage] = useState(null);
   const [loadingDecision, setLoadingDecision] = useState(null);
+  const isKm = langMode === "km";
+
+  const failureMessage = isKm
+    ? "មិនអាចធ្វើបច្ចុប្បន្នភាពបានទេ។ ទិន្នន័យនេះអាចត្រូវបានពិនិត្យរួចហើយ។"
+    : "Unable to update entry. It may have already been reviewed or permission was denied.";
 
   const handleConfirmDecision = async () => {
     const decision = pendingAction;
@@ -51,35 +38,73 @@ export default function ReviewActionButtons({ entryId, onReviewSuccess, onError 
       }
 
       setPendingAction(null);
-      let alertMsg = FAILURE_MESSAGE;
+      let alertMsg = failureMessage;
       const { data: eData } = await supabase.from("entries").select("status").eq("id", entryId).maybeSingle();
       if (eData?.status === "published") {
-        alertMsg = "ពិធីការនេះត្រូវបានផ្សព្វផ្សាយរួចរាល់ហើយ។ / This entry has already been published.";
+        alertMsg = isKm ? "ពិធីការនេះត្រូវបានផ្សព្វផ្សាយរួចរាល់ហើយ។" : "This entry has already been published.";
       } else if (eData?.status === "returned") {
-        alertMsg = "ពិធីការនេះត្រូវបានបញ្ជូនត្រឡប់រួចរាល់ហើយ។ / This entry has already been returned.";
+        alertMsg = isKm ? "ពិធីការនេះត្រូវបានបញ្ជូនត្រឡប់រួចរាល់ហើយ។" : "This entry has already been returned.";
       }
       setAlertMessage(alertMsg);
-      onError?.(FAILURE_MESSAGE);
+      onError?.(failureMessage);
     } catch {
       setPendingAction(null);
-      setAlertMessage(FAILURE_MESSAGE);
-      onError?.(FAILURE_MESSAGE);
+      setAlertMessage(failureMessage);
+      onError?.(failureMessage);
     } finally {
       setLoadingDecision(null);
     }
   };
 
-  const confirmInfo = CONFIRM_COPY[pendingAction];
+  const confirmCopy = {
+    published: {
+      title: isKm ? "បញ្ជាក់ការផ្សព្វផ្សាយ" : "Confirm Publish",
+      message: isKm
+        ? "តើអ្នកប្រាកដជាចង់ផ្សព្វផ្សាយពិធីការនេះទៅកាន់បណ្ណសារសាធារណៈមែនទេ?"
+        : "Are you sure you want to publish this ceremony entry to the public archive?",
+      label: isKm ? "ផ្សព្វផ្សាយ" : "Publish",
+      variant: "publish",
+    },
+    returned: {
+      title: isKm ? "បញ្ជាក់ការបញ្ជូនត្រឡប់" : "Confirm Return",
+      message: isKm
+        ? "តើអ្នកប្រាកដជាចង់បញ្ជូនពិធីការនេះត្រឡប់ទៅអ្នកចូលរួមចំណែកវិញមែនទេ?"
+        : "Are you sure you want to return this ceremony entry to the contributor for edits?",
+      label: isKm ? "បញ្ជូនត្រឡប់" : "Return",
+      variant: "return",
+    },
+  };
+
+  const confirmInfo = confirmCopy[pendingAction];
 
   return (
     <>
       <style>{actionStyles}</style>
       <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-        <button type="button" onClick={() => setPendingAction("published")} className="review-btn" style={{ backgroundColor: "#ffffff", color: "#000000" }}>
-          Publish / ផ្សព្វផ្សាយ
+        <button
+          type="button"
+          onClick={() => setPendingAction("published")}
+          className="review-btn"
+          style={{
+            backgroundColor: "#ffffff",
+            color: "#000000",
+            fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
+          }}
+        >
+          {isKm ? "ផ្សព្វផ្សាយ" : "Publish"}
         </button>
-        <button type="button" onClick={() => setPendingAction("returned")} className="review-btn" style={{ backgroundColor: "transparent", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.1)" }}>
-          Return / បញ្ជូនត្រឡប់
+        <button
+          type="button"
+          onClick={() => setPendingAction("returned")}
+          className="review-btn"
+          style={{
+            backgroundColor: "transparent",
+            color: "rgba(255,255,255,0.6)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
+          }}
+        >
+          {isKm ? "បញ្ជូនត្រឡប់" : "Return"}
         </button>
       </div>
 
@@ -89,6 +114,7 @@ export default function ReviewActionButtons({ entryId, onReviewSuccess, onError 
           title={confirmInfo.title}
           message={confirmInfo.message}
           confirmLabel={confirmInfo.label}
+          cancelLabel={isKm ? "បោះបង់" : "Cancel"}
           confirmVariant={confirmInfo.variant}
           isLoading={!!loadingDecision}
           onConfirm={handleConfirmDecision}
@@ -98,7 +124,8 @@ export default function ReviewActionButtons({ entryId, onReviewSuccess, onError 
 
       <ReviewModal
         isOpen={!!alertMessage}
-        title="ពិធីការត្រូវបានពិនិត្យរួចហើយ / Entry Already Reviewed"
+        title={isKm ? "ពិធីការត្រូវបានពិនិត្យរួចហើយ" : "Entry Already Reviewed"}
+        cancelLabel={isKm ? "យល់ព្រម" : "OK"}
         message={alertMessage}
         onClose={() => setAlertMessage(null)}
       />
