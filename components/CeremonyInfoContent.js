@@ -6,6 +6,8 @@ export default function CeremonyInfoContent({ ceremony, langMode, isVisible, isM
   const isKhmer = langMode === "km";
   const rise = (delay) => `baseline-rise ${delay} ${isVisible ? "is-visible" : ""}`;
   const titleSize = isMobile ? (isKhmer ? "clamp(24px, 6vw, 34px)" : "clamp(26px, 7vw, 38px)") : (isKhmer ? "clamp(30px, 3.6vw, 44px)" : "clamp(34px, 4.2vw, 54px)");
+  const hasRegional = Boolean(ceremony.regionalNotesEn || ceremony.regionalNotesKhmer);
+  const badgeDelay = hasRegional && ceremony.source ? "delay-7" : (hasRegional || ceremony.source ? "delay-6" : "delay-5");
 
   return (
     <div style={{ width: "100%", maxWidth: isMobile ? "100%" : 540, display: "flex", flexDirection: "column", gap: "clamp(24px, 3.5vh, 36px)", opacity: isVisible ? 1 : 0, transition: "opacity 300ms ease" }}>
@@ -48,7 +50,7 @@ export default function CeremonyInfoContent({ ceremony, langMode, isVisible, isM
       </div>
 
       {/* Oral Provenance Block */}
-      {ceremony.regionalNotesEn && (
+      {hasRegional && (
         <div className={rise("delay-5")} style={{ borderTop: "1px solid rgba(255, 255, 255, 0.12)", paddingTop: 16 }}>
           <h2 className={isKhmer ? "khmer-sans" : "font-mono-tag"} style={{ fontSize: 11, color: "var(--accent-gold)", letterSpacing: isKhmer ? "0" : "0.12em", marginBottom: 6, textTransform: "uppercase" }}>
             {isKhmer ? "ការចងចាំផ្ទាល់មាត់" : "Oral Provenance"}
@@ -59,11 +61,23 @@ export default function CeremonyInfoContent({ ceremony, langMode, isVisible, isM
         </div>
       )}
 
+      {/* Source Block */}
+      {ceremony.source && (
+        <div
+          className={rise(hasRegional ? "delay-6" : "delay-5")}
+          style={{ borderTop: "1px solid rgba(255, 255, 255, 0.12)", paddingTop: 16 }}
+        >
+          <h2 className={isKhmer ? "khmer-sans" : "font-mono-tag"} style={{ fontSize: 11, color: "var(--accent-gold)", letterSpacing: isKhmer ? "0" : "0.12em", marginBottom: 6, textTransform: "uppercase" }}>
+            {isKhmer ? "ប្រភព" : "Source"}
+          </h2>
+          <p className={isKhmer ? "khmer-sans" : ""} style={{ fontSize: isMobile ? (isKhmer ? 12.5 : 12) : (isKhmer ? 13.5 : 13), color: "#A8A8A8", lineHeight: isKhmer ? 1.75 : 1.6 }}>
+            {ceremony.source}
+          </p>
+        </div>
+      )}
+
       {/* Contributor Attribution & Source Credit */}
-      <div
-        className={rise(ceremony.regionalNotesEn ? "delay-6" : "delay-5")}
-        style={{ borderTop: "1px solid rgba(255, 255, 255, 0.12)", paddingTop: 16 }}
-      >
+      <div className={rise(badgeDelay)} style={{ borderTop: "1px solid rgba(255, 255, 255, 0.12)", paddingTop: 16 }}>
         <CeremonyContributorBadge ceremony={ceremony} langMode={langMode} isMobile={isMobile} />
       </div>
     </div>

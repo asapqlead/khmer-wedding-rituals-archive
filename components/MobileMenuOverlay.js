@@ -71,7 +71,7 @@ export default function MobileMenuOverlay({ isOpen, onClose, navItems, currentVi
               }}
               onClick={onClose}
             >
-              {langMode === "km" ? "+ បញ្ចូលពិធីការ" : "+ Contribute"}
+              {langMode === "km" ? "បញ្ចូលពិធីការ" : "Contribute"}
             </Link>
             <Link
               href="/my-entries"

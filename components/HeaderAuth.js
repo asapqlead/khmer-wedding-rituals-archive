@@ -32,7 +32,7 @@ export default function HeaderAuth({ langMode, isReviewer }) {
             className="dropdown-item lang-text"
             style={{ textAlign: "left", width: "100%", textDecoration: "none", color: "var(--accent-gold-light)" }}
           >
-            {langMode === "km" ? "+ បញ្ចូលពិធីការ" : "+ Contribute"}
+            {langMode === "km" ? "បញ្ចូលពិធីការ" : "Contribute"}
           </Link>
           <Link
             href="/my-entries"
