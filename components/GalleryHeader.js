@@ -3,15 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import collection from "../collection.config.js";
 import useIsMobile from "./useIsMobile.js";
-import MobileMenuOverlay from "./MobileMenuOverlay.js";
 import HeaderAuth from "./HeaderAuth.js";
 import { createClient } from "../utils/supabase/client.js";
 
 export default function GalleryHeader({ currentView, setCurrentView, isFullscreen, onCloseFullscreen, langMode, setLangMode, isHidden, isScrolled }) {
   const { isMobile } = useIsMobile();
-  const [menuOpen, setMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [user, setUser] = useState(null);
   const [isReviewer, setIsReviewer] = useState(false);
   const [supabase] = useState(() => createClient());
   const dropdownRef = useRef(null);
@@ -28,7 +25,6 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
       if (user) {
         supabase.rpc("is_reviewer").then(({ data }) => setIsReviewer(data === true));
       } else {
@@ -38,7 +34,6 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       const currentUser = session?.user || null;
-      setUser(currentUser);
       if (currentUser) {
         supabase.rpc("is_reviewer").then(({ data }) => setIsReviewer(data === true));
       } else {
@@ -51,20 +46,28 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
     };
   }, [supabase]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-  };
-
   const handleCeremony = () => {
     if (isFullscreen) onCloseFullscreen?.();
     setCurrentView("work");
-    setMenuOpen(false);
+    setSettingsOpen(false);
+  };
+
+  const handleAbout = () => {
+    if (isFullscreen) onCloseFullscreen?.();
+    setCurrentView("about");
+    setSettingsOpen(false);
+  };
+
+  const handleGlossary = () => {
+    if (isFullscreen) onCloseFullscreen?.();
+    setCurrentView("glossary");
+    setSettingsOpen(false);
   };
 
   const navItems = [
     { view: "work", labelEn: "Ceremony", labelKm: "កម្រងពិធីការ", onClick: handleCeremony },
-    { view: "about", labelEn: "About", labelKm: "អំពីបណ្ណសារ", onClick: () => { setCurrentView("about"); setMenuOpen(false); } },
-    { view: "glossary", labelEn: "Glossary", labelKm: "សទ្ទានុក្រម", onClick: () => { setCurrentView("glossary"); setMenuOpen(false); } },
+    { view: "about", labelEn: "About", labelKm: "អំពីបណ្ណសារ", onClick: handleAbout },
+    { view: "glossary", labelEn: "Glossary", labelKm: "សទ្ទានុក្រម", onClick: handleGlossary },
   ];
 
   return (
@@ -117,10 +120,21 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
           display: flex;
           align-items: center;
           justify-content: flex-start;
+          width: 100%;
         }
         .dropdown-item:hover {
           background-color: rgba(255, 255, 255, 0.1);
           color: #ffffff;
+        }
+        @media (max-width: 768px) {
+          .desktop-nav {
+            display: none !important;
+          }
+        }
+        @media (min-width: 769px) {
+          .mobile-menu-item {
+            display: none !important;
+          }
         }
       `}</style>
 
@@ -136,30 +150,22 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
           background: "transparent",
         }}
       >
-        {isMobile ? (
-          <>
-            <button type="button" onClick={() => setMenuOpen((p) => !p)} aria-label="Menu" className="minimal-lang-btn" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 44, height: 44 }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="4" y1="8" x2="20" y2="8" /><line x1="4" y1="16" x2="20" y2="16" /></svg>
-            </button>
-            <div style={{ flex: 1 }} />
-          </>
-        ) : (
-          <>
-            <div style={{ flex: 1 }} />
-            <nav style={{ display: "flex", alignItems: "center", gap: 32, flex: 0, justifyContent: "center" }}>
-              {navItems.map((item) => (
-                <button
-                  key={item.view}
-                  type="button"
-                  onClick={item.onClick}
-                  className={`minimal-nav-btn lang-text ${currentView === item.view ? "active" : ""}`}
-                  style={{ fontFamily: langMode === "km" ? "var(--font-khmer-serif)" : "var(--font-sans)", whiteSpace: "nowrap" }}
-                >
-                  {langMode === "km" ? item.labelKm : item.labelEn}
-                </button>
-              ))}
-            </nav>
-          </>
+        <div style={{ flex: 1 }} />
+
+        {!isMobile && (
+          <nav className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 32, flex: 0, justifyContent: "center" }}>
+            {navItems.map((item) => (
+              <button
+                key={item.view}
+                type="button"
+                onClick={item.onClick}
+                className={`minimal-nav-btn lang-text ${currentView === item.view ? "active" : ""}`}
+                style={{ fontFamily: langMode === "km" ? "var(--font-khmer-serif)" : "var(--font-sans)", whiteSpace: "nowrap" }}
+              >
+                {langMode === "km" ? item.labelKm : item.labelEn}
+              </button>
+            ))}
+          </nav>
         )}
 
         <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "flex-end", position: "relative" }} ref={dropdownRef}>
@@ -168,7 +174,7 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
             onClick={() => setSettingsOpen(!settingsOpen)}
             className="minimal-lang-btn"
             style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 44, height: 44 }}
-            aria-label="Settings"
+            aria-label="Menu"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="4" y1="8" x2="20" y2="8" /><line x1="4" y1="16" x2="20" y2="16" /></svg>
           </button>
@@ -181,6 +187,8 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
               right: 0,
               marginTop: "8px",
               width: "200px",
+              maxHeight: "calc(100vh - 80px)",
+              overflowY: "auto",
               backgroundColor: "rgba(18, 18, 18, 0.75)",
               backdropFilter: "blur(24px) saturate(180%)",
               WebkitBackdropFilter: "blur(24px) saturate(180%)",
@@ -198,6 +206,26 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
               gap: "4px"
             }}
           >
+            {/* Mobile Navigation Links: Ceremony, About, Glossary */}
+            <div className="mobile-menu-item" style={{ display: isMobile ? "flex" : "none", flexDirection: "column", gap: "4px" }}>
+              {navItems.map((item) => (
+                <button
+                  key={item.view}
+                  type="button"
+                  onClick={item.onClick}
+                  className={`dropdown-item lang-text ${currentView === item.view ? "active" : ""}`}
+                  style={{
+                    fontFamily: langMode === "km" ? "var(--font-khmer-serif)" : "var(--font-sans)",
+                    color: currentView === item.view ? "var(--accent-gold, #C5A059)" : "#e4e4e7",
+                    fontWeight: currentView === item.view ? 600 : 400,
+                  }}
+                >
+                  {langMode === "km" ? item.labelKm : item.labelEn}
+                </button>
+              ))}
+              <div style={{ height: "1px", backgroundColor: "rgba(255, 255, 255, 0.1)", margin: "4px 0" }} />
+            </div>
+
             <HeaderAuth langMode={langMode} isReviewer={isReviewer} />
             
             <div style={{ height: "1px", backgroundColor: "rgba(255, 255, 255, 0.1)", margin: "4px 0" }} />
@@ -221,19 +249,6 @@ export default function GalleryHeader({ currentView, setCurrentView, isFullscree
           </div>
         </div>
       </header>
-
-      {isMobile && (
-        <MobileMenuOverlay
-          isOpen={menuOpen}
-          onClose={() => setMenuOpen(false)}
-          navItems={navItems}
-          currentView={currentView}
-          langMode={langMode}
-          user={user}
-          isReviewer={isReviewer}
-          onLogout={handleLogout}
-        />
-      )}
     </>
   );
 }
