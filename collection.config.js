@@ -17,7 +17,7 @@ const collection = {
   curator: "Chhom Alead",
 
   // Where does your knowledge come from? A person, a place, a community.
-  source: "The knowledge for this archive comes from my mother, who have been through and helped organize traditional Khmer wedding ceremonies.",
+  source: "The knowledge for this archive comes from my mother, who has been through and helped organize traditional Khmer wedding ceremonies.",
 };
 
 export default collection;

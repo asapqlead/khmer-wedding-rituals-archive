@@ -188,13 +188,13 @@ function ContributeContent() {
               : "You must be logged in to contribute ceremony entries to the Khmer Wedding Rituals Archive."}
           </p>
         </div>
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", alignItems: "center" }}>
           <Link
             href="/login"
             className="glass-btn"
             style={{
               textDecoration: "none",
-              padding: "12px 28px",
+              padding: "12px 24px",
               width: "auto",
               display: "inline-block",
               textAlign: "center",
@@ -204,10 +204,27 @@ function ContributeContent() {
             {isKm ? "ចូលគណនី" : "Log In"}
           </Link>
           <Link
+            href="/signup"
+            className="glass-btn"
+            style={{
+              textDecoration: "none",
+              padding: "12px 24px",
+              width: "auto",
+              display: "inline-block",
+              textAlign: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              color: "#ffffff",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
+            }}
+          >
+            {isKm ? "ចុះឈ្មោះ" : "Sign Up"}
+          </Link>
+          <Link
             href="/"
             className="link-text"
             style={{
-              padding: "12px 20px",
+              padding: "12px 16px",
               fontSize: 14,
               display: "flex",
               alignItems: "center",

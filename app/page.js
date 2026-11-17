@@ -13,6 +13,7 @@ import ScrollProgress from "../components/ScrollProgress.js";
 import useIsMobile from "../components/useIsMobile.js";
 import MobileMainView from "../components/MobileMainView.js";
 import useEntries from "../components/useEntries.js";
+import { toSlug, findCeremonyIndex } from "../utils/slug.js";
 
 export default function Home() {
   const { ceremonies, isLoading } = useEntries();
@@ -43,6 +44,55 @@ export default function Home() {
       /* ignore */
     }
   }, []);
+
+  // Synchronize initial URL query parameters on mount or when ceremonies load
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get("view");
+    const ritualParam = params.get("ritual");
+
+    if (viewParam === "about" || viewParam === "glossary") {
+      setCurrentView(viewParam);
+    }
+
+    if (ritualParam && ceremonies.length > 0) {
+      const idx = findCeremonyIndex(ceremonies, ritualParam);
+      if (idx !== -1) {
+        setSelectedIdx(idx);
+        setActiveIndex(idx);
+      }
+    }
+  }, [ceremonies]);
+
+  // Handle browser Back / Forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const viewParam = params.get("view");
+      const ritualParam = params.get("ritual");
+
+      if (viewParam === "about" || viewParam === "glossary") {
+        setCurrentView(viewParam);
+        setSelectedIdx(null);
+        setShowDetails(false);
+      } else if (ritualParam && ceremonies.length > 0) {
+        const idx = findCeremonyIndex(ceremonies, ritualParam);
+        if (idx !== -1) {
+          setCurrentView("work");
+          setSelectedIdx(idx);
+          setShowDetails(false);
+        }
+      } else {
+        setCurrentView("work");
+        setSelectedIdx(null);
+        setShowDetails(false);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [ceremonies]);
 
   const handleToggleLang = (nextVal) => {
     if (isLangChanging.current) return;
@@ -81,9 +131,24 @@ export default function Home() {
     setSelectedRect(rect || null);
     setSelectedIdx(idx !== -1 ? idx : 0);
     setShowDetails(false);
+    if (typeof window !== "undefined") {
+      const slug = toSlug(ceremony.titleEn);
+      window.history.pushState({ ritual: slug }, "", `/?ritual=${slug}`);
+    }
+  };
+
+  const handleSelectIndex = (nextIdx) => {
+    setSelectedIdx(nextIdx);
+    if (typeof window !== "undefined" && ceremonies[nextIdx]) {
+      const slug = toSlug(ceremonies[nextIdx].titleEn);
+      window.history.replaceState({ ritual: slug }, "", `/?ritual=${slug}`);
+    }
   };
 
   const handleCloseFullscreen = (options = {}) => {
+    if (typeof window !== "undefined" && window.location.search.includes("ritual")) {
+      window.history.pushState({}, "", "/");
+    }
     if (options?.fade === false) {
       setSelectedIdx(null);
       setSelectedRect(null);
@@ -107,6 +172,11 @@ export default function Home() {
   const handleViewChange = (view) => {
     if (isTransitioning.current || (view === currentView && selectedIdx === null)) return;
     setIsScrolledInModal(false);
+
+    if (typeof window !== "undefined") {
+      const nextUrl = view === "work" ? "/" : `/?view=${view}`;
+      window.history.pushState({ view }, "", nextUrl);
+    }
 
     isTransitioning.current = true;
     setPageCurtain(true);
@@ -196,7 +266,7 @@ export default function Home() {
         <FullscreenCeremonyView
           ceremonies={ceremonies}
           currentIndex={selectedIdx}
-          onSelectIndex={(idx) => setSelectedIdx(idx)}
+          onSelectIndex={handleSelectIndex}
           initialRect={selectedRect}
           onClose={handleCloseFullscreen}
           onOpenDetails={() => setShowDetails(true)}
@@ -209,8 +279,8 @@ export default function Home() {
           ceremony={selectedCeremony}
           onClose={() => setShowDetails(false)}
           langMode={langMode}
-          onNext={() => setSelectedIdx((prev) => (prev + 1) % ceremonies.length)}
-          onPrev={() => setSelectedIdx((prev) => (prev - 1 + ceremonies.length) % ceremonies.length)}
+          onNext={() => handleSelectIndex((selectedIdx + 1) % ceremonies.length)}
+          onPrev={() => handleSelectIndex((selectedIdx - 1 + ceremonies.length) % ceremonies.length)}
         />
       )}
       {currentView === "about" && (

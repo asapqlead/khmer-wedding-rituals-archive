@@ -61,6 +61,13 @@ export default function HeaderAuth({ langMode, isReviewer }) {
         </>
       ) : (
         <>
+          <Link
+            href="/contribute"
+            className="dropdown-item lang-text"
+            style={{ textAlign: "left", width: "100%", textDecoration: "none", color: "var(--accent-gold-light)" }}
+          >
+            {langMode === "km" ? "បញ្ចូលពិធីការ" : "Contribute"}
+          </Link>
           <Link href="/login" className="dropdown-item lang-text" style={{ textAlign: "left", width: "100%", textDecoration: "none" }}>
             {langMode === "km" ? "ចូលគណនី" : "Login"}
           </Link>

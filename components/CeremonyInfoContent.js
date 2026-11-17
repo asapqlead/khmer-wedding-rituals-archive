@@ -1,6 +1,7 @@
 // components/CeremonyInfoContent.js
 "use client";
 import CeremonyContributorBadge from "./CeremonyContributorBadge.js";
+import { formatItalics } from "../utils/formatText.js";
 
 export default function CeremonyInfoContent({ ceremony, langMode, isVisible, isMobile }) {
   const isKhmer = langMode === "km";
@@ -32,7 +33,7 @@ export default function CeremonyInfoContent({ ceremony, langMode, isVisible, isM
           {isKhmer ? "ខ្លឹមសារ និងអត្ថន័យនៃពិធី" : "Liturgical Purpose"}
         </h2>
         <p className={isKhmer ? "khmer-sans" : ""} style={{ fontSize: isMobile ? (isKhmer ? 14 : 13.5) : (isKhmer ? 15 : 14.5), color: "#D6D6D4", lineHeight: isKhmer ? 1.8 : 1.68 }}>
-          {isKhmer ? ceremony.summaryKhmer : ceremony.summaryEn}
+          {isKhmer ? ceremony.summaryKhmer : formatItalics(ceremony.summaryEn)}
         </p>
       </div>
 

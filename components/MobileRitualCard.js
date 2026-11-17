@@ -1,5 +1,6 @@
 // components/MobileRitualCard.js
 "use client";
+import { formatItalics } from "../utils/formatText.js";
 
 const KHMER_DIGITS = "០១២៣៤៥៦៧៨៩";
 
@@ -51,7 +52,7 @@ export default function MobileRitualCard({ ceremony, index, onClick, langMode })
             display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
           }}
         >
-          {summary}
+          {formatItalics(summary)}
         </p>
       </div>
     </article>

@@ -55,7 +55,7 @@ export const glossaryTerms = [
     khmer: "ភ្លេងមហោរី",
     romanized: "Pleng Mohaori",
     category: "Music & Art",
-    definitionEn: "Traditional acoustic Khmer chamber music ensemble featuring tro (bowed lutes), roneat (bamboo xylophone), khloy (flutes), and drums playing ceremonial melodies like Hae Chomnoon and Kae Sar.",
+    definitionEn: "Traditional acoustic Khmer chamber music ensemble featuring tro (bowed lutes), roneat (bamboo xylophone), khloy (flutes), and drums playing ceremonial melodies like Hae Chomnoon, Kat Sork, and Bongvil Popil.",
     definitionKhmer: "វង់ភ្លេងបុរាណខ្មែរដែលប្រគំក្នុងពិធីមង្គលការ ដូចជាបទហែជំនូន បទកាត់សក់ និងបទបង្វិលពពិល។"
   },
   {
@@ -115,8 +115,8 @@ export const glossaryTerms = [
     definitionKhmer: "ការបាចផ្កាស្លាពណ៌សក្រអូបលើកូនទាំងពីរ មុនពេលនាំចូលបន្ទប់ផ្សំដំណេក។"
   },
   {
-    khmer: "កិច្ចព្រះថោងតោងស្បៃនាងនាគ",
-    romanized: "Preah Thong Torng Sbai Neang Neak",
+    khmer: "ពិធីផ្ទឹម (សំពះផ្ទឹម)",
+    romanized: "Pithi Phtuem",
     category: "Rituals",
     definitionEn: "The central nuptial union ritual where the bride and groom sit side-by-side on silk mats to honor the Triple Gem and receive formal blessings.",
     definitionKhmer: "ពិធីផ្ទឹមមុខមេបា គោរពព្រះរតនត្រ័យ និងផ្សារភ្ជាប់និស្ស័យប្តីប្រពន្ធ។"

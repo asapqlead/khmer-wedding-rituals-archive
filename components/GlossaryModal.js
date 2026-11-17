@@ -54,18 +54,23 @@ export default function GlossaryModal({ onClose, langMode, onScrollTopChange }) 
   };
 
   const cleanText = (str) => (str || "").replace(/[\u200B]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+  const stripSpaces = (str) => (str || "").replace(/[\s\u200B]+/g, "").toLowerCase();
   const q = cleanText(searchQuery);
+  const qNoSpace = stripSpaces(searchQuery);
 
   const filtered = glossaryTerms.filter((t) => {
     if (activeCategory !== "All" && t.category !== activeCategory) return false;
     if (!q) return true;
-    return (
+    const matchesKhmer =
       cleanText(t.khmer).includes(q) ||
-      cleanText(t.romanized).includes(q) ||
-      cleanText(t.category).includes(q) ||
-      cleanText(t.definitionEn).includes(q) ||
-      cleanText(t.definitionKhmer).includes(q)
-    );
+      (qNoSpace && stripSpaces(t.khmer).includes(qNoSpace));
+    const matchesRomanized = cleanText(t.romanized).includes(q);
+    const matchesCategory = cleanText(t.category).includes(q);
+    const matchesDefinition = isKhmer
+      ? cleanText(t.definitionKhmer).includes(q) || (qNoSpace && stripSpaces(t.definitionKhmer).includes(qNoSpace))
+      : cleanText(t.definitionEn).includes(q);
+
+    return matchesKhmer || matchesRomanized || matchesCategory || matchesDefinition;
   });
 
   return (
