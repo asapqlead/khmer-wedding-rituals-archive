@@ -58,7 +58,7 @@ export default function GlossarySearchInput({ value, onChange, onClear, langMode
         <button
           type="button"
           onClick={() => { onClear(); inputRef.current?.focus(); }}
-          aria-label="Clear search"
+          aria-label={isKhmer ? "សម្អាតការស្វែងរក" : "Clear search"}
           style={{
             width: 28, height: 28, borderRadius: "50%", backgroundColor: "rgba(255, 255, 255, 0.15)", color: "var(--text-primary)",
             display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, lineHeight: 1, cursor: "pointer", flexShrink: 0,

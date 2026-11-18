@@ -7,6 +7,7 @@ export default function GlossaryCardItem({ term, langMode }) {
   const [isHovered, setIsHovered] = useState(false);
   const isKhmer = langMode === "km";
   const { canHover, isMobile } = useIsMobile();
+  const categoryLabel = isKhmer ? (term.categoryKhmer || term.category) : term.category;
 
   return (
     <div
@@ -22,8 +23,18 @@ export default function GlossaryCardItem({ term, langMode }) {
         transition: "border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease",
       }}
     >
-      <span className="font-mono-tag" style={{ fontSize: 9, color: "var(--accent-gold)" }}>
-        {term.category}
+      <span
+        className={isKhmer ? "khmer-sans" : "font-mono-tag"}
+        style={{
+          fontSize: isKhmer ? 11 : 9,
+          color: "var(--accent-gold)",
+          letterSpacing: isKhmer ? "0.02em" : "0.12em",
+          textTransform: isKhmer ? "none" : "uppercase",
+          fontFamily: isKhmer ? "var(--font-khmer-sans)" : "var(--font-mono)",
+          display: "inline-block",
+        }}
+      >
+        {categoryLabel}
       </span>
       <h3 className="khmer-serif" style={{ fontSize: isMobile ? 16 : 18, color: "#FFFFFF", margin: "6px 0" }}>
         {term.khmer}

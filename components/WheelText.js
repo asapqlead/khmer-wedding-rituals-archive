@@ -42,7 +42,6 @@ export default function WheelText({ text, direction = 1, className = "", style =
   const outWords = words(outgoing);
 
   const getWordStyle = (i, isOut) => {
-    const delay = `0ms`;
     const ease = "transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 500ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 500ms cubic-bezier(0.2, 0.8, 0.2, 1)";
     if (isOut) {
       return {
@@ -53,7 +52,6 @@ export default function WheelText({ text, direction = 1, className = "", style =
         opacity: isRolling ? 0 : 1,
         filter: isRolling ? "blur(2px)" : "blur(0px)",
         transition: isRolling ? ease : "none",
-        transitionDelay: delay,
         willChange: "transform, opacity, filter",
         marginRight: "0.28em",
       };
@@ -66,7 +64,6 @@ export default function WheelText({ text, direction = 1, className = "", style =
       opacity: outgoing ? (isRolling ? 1 : 0) : 1,
       filter: outgoing ? (isRolling ? "blur(0px)" : "blur(2px)") : "blur(0px)",
       transition: isRolling ? ease : "none",
-      transitionDelay: delay,
       willChange: "transform, opacity, filter",
       marginRight: "0.28em",
     };

@@ -11,6 +11,7 @@ export default function AboutView({ onClose, langMode, onScrollTopChange }) {
   const [isClosing, setIsClosing] = useState(false);
   const containerRef = useRef(null);
   const { isMobile } = useIsMobile();
+  const isKhmer = langMode === "km";
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => setIsVisible(true));
@@ -62,23 +63,34 @@ export default function AboutView({ onClose, langMode, onScrollTopChange }) {
     >
       <ScrollProgress containerRef={containerRef} />
       <div className={`page-view ${isVisible && !isClosing ? "is-visible" : "is-exiting"}`} style={{ maxWidth: 680, textAlign: "center", margin: "auto" }}>
-        <span className="font-mono-tag" style={{ color: "var(--accent-gold)", marginBottom: 16, display: "inline-block" }}>
-          ARCHIVAL PROVENANCE & ORAL TRANSMISSION
+        <span
+          className={isKhmer ? "khmer-sans" : "font-mono-tag"}
+          style={{
+            color: "var(--accent-gold)",
+            marginBottom: 16,
+            display: "inline-block",
+            fontSize: isKhmer ? 11 : undefined,
+            letterSpacing: isKhmer ? "0.04em" : "0.12em",
+            textTransform: isKhmer ? "none" : "uppercase",
+            fontFamily: isKhmer ? "var(--font-khmer-sans)" : "var(--font-mono)",
+          }}
+        >
+          {isKhmer ? "ប្រភពបណ្ណសារ និងការចងចាំផ្ទាល់មាត់" : "ARCHIVAL PROVENANCE & ORAL TRANSMISSION"}
         </span>
 
         <div style={{ marginBottom: 24 }}>
           <WheelText
-            text={langMode === "km" ? "ការចងក្រងនូវកម្រងពិធីការអាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ" : collection.description}
+            text={isKhmer ? (collection.descriptionKhmer || "ការចងក្រងនូវកម្រងពិធីការអាពាហ៍ពិពាហ៍ប្រពៃណីខ្មែរ") : collection.description}
             direction={1}
-            className={langMode === "km" ? "khmer-serif" : ""}
+            className={isKhmer ? "khmer-serif" : ""}
             style={{ fontSize: isMobile ? "clamp(20px, 5.5vw, 28px)" : "clamp(24px, 3.5vw, 36px)", color: "#FFFFFF", lineHeight: 1.35 }}
             as="h2"
           />
         </div>
 
         <blockquote style={{ borderLeft: "2px solid var(--accent-gold)", paddingLeft: isMobile ? 14 : 20, textAlign: "left", margin: "24px 0" }}>
-          <p className={langMode === "km" ? "khmer-sans" : ""} style={{ fontSize: isMobile ? 14 : 16, fontStyle: "italic", color: "var(--text-primary)", lineHeight: 1.7 }}>
-            &ldquo;{collection.source}&rdquo;
+          <p className={isKhmer ? "khmer-sans" : ""} style={{ fontSize: isMobile ? 14 : 16, fontStyle: "italic", color: "var(--text-primary)", lineHeight: isKhmer ? 1.85 : 1.7 }}>
+            &ldquo;{isKhmer ? (collection.sourceKhmer || collection.source) : collection.source}&rdquo;
           </p>
         </blockquote>
 
@@ -90,7 +102,20 @@ export default function AboutView({ onClose, langMode, onScrollTopChange }) {
           gap: isMobile ? 12 : 24,
           alignItems: "center",
         }}>
-          <span className="font-mono-tag" style={{ color: "var(--text-muted)" }}>CURATED BY {collection.curator.toUpperCase()}</span>
+          <span
+            className={isKhmer ? "khmer-sans" : "font-mono-tag"}
+            style={{
+              color: "var(--text-muted)",
+              fontSize: isKhmer ? 11 : undefined,
+              letterSpacing: isKhmer ? "0.02em" : undefined,
+              textTransform: isKhmer ? "none" : "uppercase",
+              fontFamily: isKhmer ? "var(--font-khmer-sans)" : "var(--font-mono)",
+            }}
+          >
+            {isKhmer
+              ? `រៀបចំចងក្រងដោយ ${collection.curator || collection.curator}`
+              : `CURATED BY ${collection.curator.toUpperCase()}`}
+          </span>
           {!isMobile && <span style={{ width: 4, height: 4, borderRadius: "50%", backgroundColor: "var(--accent-gold)" }} />}
           <span className="font-mono-tag" style={{ color: "var(--text-muted)" }}>AUPP ICT 340</span>
         </div>

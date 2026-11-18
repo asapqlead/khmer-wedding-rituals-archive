@@ -1,15 +1,13 @@
 // components/GlossaryModal.js
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { glossaryTerms } from "../data/glossary.js";
+import { glossaryTerms, GLOSSARY_CATEGORIES } from "../data/glossary.js";
 import WheelText from "./WheelText.js";
 import ScrollProgress from "./ScrollProgress.js";
 import GlossarySearchInput from "./GlossarySearchInput.js";
 import GlossaryCategoryTabs from "./GlossaryCategoryTabs.js";
 import GlossaryCardItem from "./GlossaryCardItem.js";
 import useIsMobile from "./useIsMobile.js";
-
-const CATEGORIES = ["All", "Sacred Objects", "People & Roles", "Rituals", "Attire", "Music & Art", "Mythology & Meaning"];
 
 export default function GlossaryModal({ onClose, langMode, onScrollTopChange }) {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -65,7 +63,7 @@ export default function GlossaryModal({ onClose, langMode, onScrollTopChange }) 
       cleanText(t.khmer).includes(q) ||
       (qNoSpace && stripSpaces(t.khmer).includes(qNoSpace));
     const matchesRomanized = cleanText(t.romanized).includes(q);
-    const matchesCategory = cleanText(t.category).includes(q);
+    const matchesCategory = cleanText(t.category).includes(q) || cleanText(t.categoryKhmer).includes(q);
     const matchesDefinition = isKhmer
       ? cleanText(t.definitionKhmer).includes(q) || (qNoSpace && stripSpaces(t.definitionKhmer).includes(qNoSpace))
       : cleanText(t.definitionEn).includes(q);
@@ -93,8 +91,19 @@ export default function GlossaryModal({ onClose, langMode, onScrollTopChange }) 
       <div className={`page-view ${isVisible && !isClosing ? "is-visible" : "is-exiting"}`} style={{ maxWidth: 840, margin: "0 auto" }}>
         {/* Header Section: Eyebrow + Title & Search */}
         <div style={{ marginBottom: 28 }}>
-          <span className="font-mono-tag" style={{ color: "var(--accent-gold)", display: "block", marginBottom: 8 }}>
-            CULTURAL TERMINOLOGY
+          <span
+            className={isKhmer ? "khmer-sans" : "font-mono-tag"}
+            style={{
+              color: "var(--accent-gold)",
+              display: "block",
+              marginBottom: 8,
+              fontSize: isKhmer ? 11 : undefined,
+              letterSpacing: isKhmer ? "0.04em" : "0.12em",
+              textTransform: isKhmer ? "none" : "uppercase",
+              fontFamily: isKhmer ? "var(--font-khmer-sans)" : "var(--font-mono)",
+            }}
+          >
+            {isKhmer ? "វាក្យសព្ទវប្បធម៌" : "CULTURAL TERMINOLOGY"}
           </span>
           <div
             style={{
@@ -123,10 +132,11 @@ export default function GlossaryModal({ onClose, langMode, onScrollTopChange }) 
         </div>
 
         <GlossaryCategoryTabs
-          categories={CATEGORIES}
+          categories={GLOSSARY_CATEGORIES}
           activeCategory={activeCategory}
           onSelectCategory={setActiveCategory}
           isMobile={isMobile}
+          langMode={langMode}
         />
 
         {filtered.length > 0 ? (

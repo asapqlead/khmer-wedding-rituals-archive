@@ -4,7 +4,7 @@ import collection from "../collection.config.js";
 
 export default function CeremonyContributorBadge({ ceremony, langMode, isMobile }) {
   const isKhmer = langMode === "km";
-  const contributorName = collection.curator;
+  const contributorName = isKhmer ? (collection.curatorKhmer || collection.curator) : collection.curator;
 
   return (
     <p
