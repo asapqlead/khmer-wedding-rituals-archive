@@ -10,6 +10,7 @@ import useLanguage from "../../hooks/useLanguage";
 export default function LoginPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showForgotInfo, setShowForgotInfo] = useState(false);
   const router = useRouter();
   const supabase = createClient();
   const [langMode, setLangMode] = useLanguage();
@@ -31,14 +32,22 @@ export default function LoginPage() {
       });
 
       if (authError) {
-        setError(authError.message);
+        setError(
+          isKm
+            ? "អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ។"
+            : "Invalid email or password."
+        );
         setLoading(false);
       } else {
         router.refresh();
         router.push("/");
       }
     } catch (err) {
-      setError("An unexpected error occurred");
+      setError(
+        isKm
+          ? "មានបញ្ហាមិនរំពឹងទុកមួយបានកើតឡើង។"
+          : "An unexpected error occurred."
+      );
       setLoading(false);
     }
   };
@@ -188,9 +197,21 @@ export default function LoginPage() {
                 <label htmlFor="password" style={{ fontSize: "13px", fontWeight: 500, color: "rgba(255, 255, 255, 0.9)", fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
                   {isKm ? "ពាក្យសម្ងាត់" : "Password"}
                 </label>
-                <a href="#" className="link-text" style={{ fontSize: "12px", fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowForgotInfo(!showForgotInfo)}
+                  className="link-text"
+                  style={{
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                    cursor: "pointer",
+                    fontSize: "12px",
+                    fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
+                  }}
+                >
                   {isKm ? "ភ្លេចពាក្យសម្ងាត់?" : "Forgot?"}
-                </a>
+                </button>
               </div>
               <input
                 id="password"
@@ -199,6 +220,26 @@ export default function LoginPage() {
                 required
                 className="glass-input"
               />
+              {showForgotInfo && (
+                <div
+                  style={{
+                    color: "var(--accent-gold, #C5A059)",
+                    fontSize: "12px",
+                    lineHeight: 1.5,
+                    backgroundColor: "rgba(197, 160, 89, 0.12)",
+                    border: "1px solid rgba(197, 160, 89, 0.25)",
+                    padding: "8px 12px",
+                    borderRadius: 8,
+                    textAlign: "left",
+                    fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
+                    marginTop: 2,
+                  }}
+                >
+                  {isKm
+                    ? "ដើម្បីកំណត់ពាក្យសម្ងាត់ឡើងវិញ សូមទាក់ទងអ្នកគ្រប់គ្រងបណ្ណសារ (chhomalead@gmail.com)។"
+                    : "For password recovery, please contact the archive administrator (chhomalead@gmail.com)."}
+                </div>
+              )}
             </div>
 
             <button type="submit" disabled={loading} className="glass-btn" style={{ fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit" }}>

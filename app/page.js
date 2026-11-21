@@ -211,7 +211,19 @@ export default function Home() {
       {/* Loading state */}
       {isLoading && (
         <div style={{ position: "fixed", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
-          <span className="font-mono-tag" style={{ color: "var(--accent-gold)", fontSize: 13, letterSpacing: "0.12em", opacity: 0.8, animation: "pulse 1.6s ease-in-out infinite" }}>LOADING ARCHIVE…</span>
+          <span
+            className="font-mono-tag"
+            style={{
+              color: "var(--accent-gold)",
+              fontSize: 13,
+              letterSpacing: "0.12em",
+              opacity: 0.8,
+              animation: "pulse 1.6s ease-in-out infinite",
+              fontFamily: langMode === "km" ? "var(--font-khmer-sans)" : "inherit",
+            }}
+          >
+            {langMode === "km" ? "កំពុងដំណើរការ…" : "LOADING ARCHIVE…"}
+          </span>
         </div>
       )}
 
@@ -219,8 +231,30 @@ export default function Home() {
       {!isLoading && ceremonies.length === 0 && currentView === "work" && (
         <div style={{ position: "fixed", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12, zIndex: 100, padding: 24, textAlign: "center" }}>
           <span style={{ fontSize: 32 }}>📜</span>
-          <span className="font-mono-tag" style={{ color: "var(--text-muted)", fontSize: 13, letterSpacing: "0.1em" }}>NO ENTRIES YET</span>
-          <span style={{ color: "var(--text-muted)", fontSize: 14, fontFamily: "var(--font-sans)", maxWidth: 320 }}>Entries will appear here once they are published to the archive.</span>
+          <span
+            className="font-mono-tag"
+            style={{
+              color: "var(--text-muted)",
+              fontSize: 13,
+              letterSpacing: "0.1em",
+              fontFamily: langMode === "km" ? "var(--font-khmer-sans)" : "inherit",
+            }}
+          >
+            {langMode === "km" ? "មិនទាន់មានការបញ្ចូលនៅឡើយទេ" : "NO ENTRIES YET"}
+          </span>
+          <span
+            style={{
+              color: "var(--text-muted)",
+              fontSize: 14,
+              fontFamily: langMode === "km" ? "var(--font-khmer-sans)" : "var(--font-sans)",
+              maxWidth: 360,
+              lineHeight: 1.6,
+            }}
+          >
+            {langMode === "km"
+              ? "ពិធីការនឹងបង្ហាញនៅទីនេះនៅពេលដែលត្រូវបានផ្សព្វផ្សាយទៅកាន់បណ្ណសារ។"
+              : "Entries will appear here once they are published to the archive."}
+          </span>
         </div>
       )}
       <GalleryHeader

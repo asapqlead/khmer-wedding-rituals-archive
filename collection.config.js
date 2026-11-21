@@ -17,6 +17,7 @@ const collection = {
 
   // Who is building this archive? Your name, as you want it shown.
   curator: "Chhom Alead",
+  curatorKhmer: "ឆោម អេលីដ",
 
   // Where does your knowledge come from? A person, a place, a community.
   source: "The knowledge for this archive comes from my mother, who has been through and helped organize traditional Khmer wedding ceremonies.",

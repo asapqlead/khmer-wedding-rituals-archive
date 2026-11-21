@@ -9,6 +9,7 @@ import useLanguage from "../../hooks/useLanguage";
 
 export default function SignupPage() {
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
@@ -19,13 +20,14 @@ export default function SignupPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setSuccessMessage(null);
     
     const formData = new FormData(e.target);
     const email = formData.get("email");
     const password = formData.get("password");
 
     try {
-      const { error: authError } = await supabase.auth.signUp({
+      const { data, error: authError } = await supabase.auth.signUp({
         email,
         password,
       });
@@ -33,12 +35,23 @@ export default function SignupPage() {
       if (authError) {
         setError(authError.message);
         setLoading(false);
+      } else if (data?.user && !data?.session) {
+        setSuccessMessage(
+          isKm
+            ? "តំណបញ្ជាក់ត្រូវបានផ្ញើទៅកាន់អ៊ីមែលរបស់អ្នក! សូមពិនិត្យមើលប្រអប់សំបុត្រដើម្បីដំណើរការគណនីមុនពេលចូលប្រើប្រាស់។"
+            : "Confirmation link sent to your email! Please check your inbox to activate your account before logging in."
+        );
+        setLoading(false);
       } else {
         router.refresh();
         router.push("/");
       }
     } catch (err) {
-      setError("An unexpected error occurred");
+      setError(
+        isKm
+          ? "មានបញ្ហាមិនរំពឹងទុកមួយបានកើតឡើង។"
+          : "An unexpected error occurred."
+      );
       setLoading(false);
     }
   };
@@ -166,6 +179,25 @@ export default function SignupPage() {
             {error && (
               <div style={{ color: "#ff6b6b", fontSize: "13px", fontWeight: "500", textAlign: "center", lineHeight: 1.5, backgroundColor: "rgba(255, 107, 107, 0.1)", padding: "8px 12px", borderRadius: 8 }}>
                 {error}
+              </div>
+            )}
+
+            {successMessage && (
+              <div
+                style={{
+                  color: "#4ade80",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  textAlign: "center",
+                  lineHeight: 1.5,
+                  backgroundColor: "rgba(74, 222, 128, 0.1)",
+                  border: "1px solid rgba(74, 222, 128, 0.25)",
+                  padding: "10px 14px",
+                  borderRadius: 8,
+                  fontFamily: isKm ? "var(--font-khmer-sans)" : "inherit",
+                }}
+              >
+                {successMessage}
               </div>
             )}
 
